@@ -41,7 +41,7 @@
     ARCH.soffit=new T.MeshStandardMaterial({color:0x6a625a,roughness:.9});
     ARCH.water=new T.MeshStandardMaterial({color:0x07080b,roughness:.06,metalness:.4,transparent:true,opacity:.42,depthWrite:false});
     /* tree canopy: vertex colour (brightness) also scales the purple emissive -> lit from below */
-    ARCH.canopy=new T.MeshStandardMaterial({color:0x231d2b,emissive:0x6e42a3,emissiveIntensity:.3,roughness:1,flatShading:true,vertexColors:true});
+    ARCH.canopy=new T.MeshStandardMaterial({color:0x1c1824,emissive:0x6e42a3,emissiveIntensity:.2,roughness:1,flatShading:true,vertexColors:true});
     ARCH.canopy.onBeforeCompile=function(s){s.fragmentShader=s.fragmentShader.replace('#include <emissivemap_fragment>','#include <emissivemap_fragment>\n#ifdef USE_COLOR\ntotalEmissiveRadiance*=vColor*vColor;\n#endif')};
     /* additive light planes, coloured per vertex (colour x brightness) so one material serves many */
     function add(map){return new T.MeshBasicMaterial({map:map,vertexColors:true,transparent:true,blending:T.AdditiveBlending,depthWrite:false,fog:true})}
@@ -129,9 +129,9 @@
 
     /* ----- lettering: TESTAMENTS above the portal (lit, with halo); tagline cut into the portal lintel ----- */
     var sign=archText(13.6,1.9,function(c,W,H){c.fillStyle='#fbf7ef';c.font='500 '+Math.round(H*.8)+'px "Bodoni Moda"';sp(c,'TESTAMENTS',W/2,H*.8,Math.round(H*.13))},300);
-    sign.position.set(0,12.15,FZ+.02);scene.add(sign);refl.push(sign);
+    dark.bx(-7.6,7.6,10.95,13.35,FZ,FZ+.03);lamp.bx(-7.6,7.6,10.93,10.95,FZ,FZ+.05);sign.position.set(0,12.15,FZ+.04);scene.add(sign);refl.push(sign);
     var halo=glow(15,2.6,0xfff0dc,.1);halo.position.set(0,12.1,FZ+.01);scene.add(halo);
-    var sub=archText(6.4,.5,function(c,W,H){c.fillStyle='#e9e4da';c.font='500 '+Math.round(H*.56)+'px Inter';sp(c,'UNDERSTAND THE WHY.',W/2,H*.72,Math.round(H*.3))},500);
+    var sub=archText(8,.62,function(c,W,H){c.fillStyle='#e9e4da';c.font='500 '+Math.round(H*.56)+'px Inter';sp(c,'UNDERSTAND THE WHY.',W/2,H*.72,Math.round(H*.3))},500);
     sub.position.set(0,PH+.6,FZ+.81);scene.add(sub);refl.push(sub);
 
     /* ----- doors (slide into the wall; doorL/doorR/doorCol drive the core loop) ----- */
@@ -144,7 +144,6 @@
     /* the vestibule behind the glass: a luminous ceiling and washed walls, visibly warm from the plaza */
     var lc=new T.Mesh(new T.PlaneGeometry(5.6,5.4),new T.MeshBasicMaterial({map:ctex(256,256,function(c,W,H){c.fillStyle='#3a3026';c.fillRect(0,0,W,H);var g=c.createRadialGradient(W/2,H/2,0,W/2,H/2,W*.6);g.addColorStop(0,'#fff1dc');g.addColorStop(1,'#e8cfa8');c.fillStyle=g;c.fillRect(10,10,W-20,H-20);c.fillStyle='rgba(0,0,0,.35)';for(var i=1;i<4;i++){c.fillRect(i*W/4-1,10,2,H-20);c.fillRect(10,i*H/4-1,W-20,2)}})}));
     lc.rotation.x=Math.PI/2;lc.position.set(0,5.17,-3);scene.add(lc);
-    [-1,1].forEach(function(s){spotB.quad(5.6,5,s*2.84,2.6,-3,0,-s*Math.PI/2,archCol(WARM,.22))});
     glowB.quad(5.4,5.6,0,.02,-3,-Math.PI/2,0,archCol(WARM,.4));
     var fw=new T.PointLight(0xffe2c0,1.6,24,2);fw.position.set(0,5.6,5.5);scene.add(fw);
 
@@ -179,8 +178,8 @@
     glowB.mesh(A.glowV);var spM=spotB.mesh(A.spotV);
 
     /* ----- the mirrored world seen through the pools (planar reflection by geometry) ----- */
-    var mg=new T.Group();mg.scale.y=-1;mg.position.y=2*WY;refl.forEach(function(o){var c=o.clone();mg.add(c)});scene.add(mg);
-    var hc=halo.clone();mg.add(hc);
+    var lowQ=(S.quality==='auto'?(coarse?'low':'medium'):S.quality)==='low';
+    if(lowQ)A.water.opacity=.85;else{var mg=new T.Group();mg.scale.y=-1;mg.position.y=2*WY;refl.forEach(function(o){mg.add(o.clone())});mg.add(halo.clone());scene.add(mg)}
 
     /* ----- night sky ----- */
     var sg=new T.BufferGeometry(),pts=[];for(var i=0;i<600;i++){var a=rn()*Math.PI*2,rr=70+rn()*60;pts.push(Math.cos(a)*rr,25+rn()*60,Math.sin(a)*rr-20)}

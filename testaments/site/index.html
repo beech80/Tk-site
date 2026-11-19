@@ -1151,7 +1151,7 @@ var STOCKISTS = [];   // confirmed partners only: {name, address}
     ARCH.soffit=new T.MeshStandardMaterial({color:0x6a625a,roughness:.9});
     ARCH.water=new T.MeshStandardMaterial({color:0x07080b,roughness:.06,metalness:.4,transparent:true,opacity:.42,depthWrite:false});
     /* tree canopy: vertex colour (brightness) also scales the purple emissive -> lit from below */
-    ARCH.canopy=new T.MeshStandardMaterial({color:0x231d2b,emissive:0x6e42a3,emissiveIntensity:.3,roughness:1,flatShading:true,vertexColors:true});
+    ARCH.canopy=new T.MeshStandardMaterial({color:0x1c1824,emissive:0x6e42a3,emissiveIntensity:.2,roughness:1,flatShading:true,vertexColors:true});
     ARCH.canopy.onBeforeCompile=function(s){s.fragmentShader=s.fragmentShader.replace('#include <emissivemap_fragment>','#include <emissivemap_fragment>\n#ifdef USE_COLOR\ntotalEmissiveRadiance*=vColor*vColor;\n#endif')};
     /* additive light planes, coloured per vertex (colour x brightness) so one material serves many */
     function add(map){return new T.MeshBasicMaterial({map:map,vertexColors:true,transparent:true,blending:T.AdditiveBlending,depthWrite:false,fog:true})}
@@ -1239,9 +1239,9 @@ var STOCKISTS = [];   // confirmed partners only: {name, address}
 
     /* ----- lettering: TESTAMENTS above the portal (lit, with halo); tagline cut into the portal lintel ----- */
     var sign=archText(13.6,1.9,function(c,W,H){c.fillStyle='#fbf7ef';c.font='500 '+Math.round(H*.8)+'px "Bodoni Moda"';sp(c,'TESTAMENTS',W/2,H*.8,Math.round(H*.13))},300);
-    sign.position.set(0,12.15,FZ+.02);scene.add(sign);refl.push(sign);
+    dark.bx(-7.6,7.6,10.95,13.35,FZ,FZ+.03);lamp.bx(-7.6,7.6,10.93,10.95,FZ,FZ+.05);sign.position.set(0,12.15,FZ+.04);scene.add(sign);refl.push(sign);
     var halo=glow(15,2.6,0xfff0dc,.1);halo.position.set(0,12.1,FZ+.01);scene.add(halo);
-    var sub=archText(6.4,.5,function(c,W,H){c.fillStyle='#e9e4da';c.font='500 '+Math.round(H*.56)+'px Inter';sp(c,'UNDERSTAND THE WHY.',W/2,H*.72,Math.round(H*.3))},500);
+    var sub=archText(8,.62,function(c,W,H){c.fillStyle='#e9e4da';c.font='500 '+Math.round(H*.56)+'px Inter';sp(c,'UNDERSTAND THE WHY.',W/2,H*.72,Math.round(H*.3))},500);
     sub.position.set(0,PH+.6,FZ+.81);scene.add(sub);refl.push(sub);
 
     /* ----- doors (slide into the wall; doorL/doorR/doorCol drive the core loop) ----- */
@@ -1254,7 +1254,6 @@ var STOCKISTS = [];   // confirmed partners only: {name, address}
     /* the vestibule behind the glass: a luminous ceiling and washed walls, visibly warm from the plaza */
     var lc=new T.Mesh(new T.PlaneGeometry(5.6,5.4),new T.MeshBasicMaterial({map:ctex(256,256,function(c,W,H){c.fillStyle='#3a3026';c.fillRect(0,0,W,H);var g=c.createRadialGradient(W/2,H/2,0,W/2,H/2,W*.6);g.addColorStop(0,'#fff1dc');g.addColorStop(1,'#e8cfa8');c.fillStyle=g;c.fillRect(10,10,W-20,H-20);c.fillStyle='rgba(0,0,0,.35)';for(var i=1;i<4;i++){c.fillRect(i*W/4-1,10,2,H-20);c.fillRect(10,i*H/4-1,W-20,2)}})}));
     lc.rotation.x=Math.PI/2;lc.position.set(0,5.17,-3);scene.add(lc);
-    [-1,1].forEach(function(s){spotB.quad(5.6,5,s*2.84,2.6,-3,0,-s*Math.PI/2,archCol(WARM,.22))});
     glowB.quad(5.4,5.6,0,.02,-3,-Math.PI/2,0,archCol(WARM,.4));
     var fw=new T.PointLight(0xffe2c0,1.6,24,2);fw.position.set(0,5.6,5.5);scene.add(fw);
 
@@ -1289,44 +1288,227 @@ var STOCKISTS = [];   // confirmed partners only: {name, address}
     glowB.mesh(A.glowV);var spM=spotB.mesh(A.spotV);
 
     /* ----- the mirrored world seen through the pools (planar reflection by geometry) ----- */
-    var mg=new T.Group();mg.scale.y=-1;mg.position.y=2*WY;refl.forEach(function(o){var c=o.clone();mg.add(c)});scene.add(mg);
-    var hc=halo.clone();mg.add(hc);
+    var lowQ=(S.quality==='auto'?(coarse?'low':'medium'):S.quality)==='low';
+    if(lowQ)A.water.opacity=.85;else{var mg=new T.Group();mg.scale.y=-1;mg.position.y=2*WY;refl.forEach(function(o){mg.add(o.clone())});mg.add(halo.clone());scene.add(mg)}
 
     /* ----- night sky ----- */
     var sg=new T.BufferGeometry(),pts=[];for(var i=0;i<600;i++){var a=rn()*Math.PI*2,rr=70+rn()*60;pts.push(Math.cos(a)*rr,25+rn()*60,Math.sin(a)*rr-20)}
     sg.setAttribute('position',new T.Float32BufferAttribute(pts,3));scene.add(new T.Points(sg,new T.PointsMaterial({color:0x8d8aa0,size:.25,fog:false})));
   }
 
-/* ---- 30-lobby.js ---- */
-  /* ===== central lobby ===== */
-  function buildLobby(){
-    var L=RM.lobby;
-    slab(-14,-6,14,-34,10,MAT.ceil,true);
-    var sky=new T.Mesh(new T.CircleGeometry(4.2,64),new T.MeshBasicMaterial({color:0x6f7f9f,fog:false}));sky.rotation.x=Math.PI/2;sky.position.set(0,9.98,-20);scene.add(sky);
-    var ring=new T.Mesh(new T.RingGeometry(4.2,4.6,64),new T.MeshBasicMaterial({color:0x222226,side:T.DoubleSide}));ring.rotation.x=Math.PI/2;ring.position.set(0,9.97,-20);scene.add(ring);
-    var shaft=new T.Mesh(new T.CylinderGeometry(4.1,5.2,10,48,1,true),new T.MeshBasicMaterial({color:0x9fb0d0,transparent:true,opacity:.02,blending:T.AdditiveBlending,depthWrite:false,side:T.DoubleSide}));shaft.position.set(0,5,-20);scene.add(shaft);
-    var sl=new T.PointLight(0xc9d4f0,1.3,26,2);sl.position.set(0,8.5,-20);scene.add(sl);floorGlow(0,-20,11,11,0x9fb0d0,.22);
-    [[-9,-10],[9,-10],[-9,-30],[9,-30]].forEach(function(c){var m=new T.Mesh(new T.CylinderGeometry(.5,.5,10,32),MAT.col);m.position.set(c[0],5,c[1]);scene.add(m);col(c[0]-.5,c[0]+.5,c[1]-.5,c[1]+.5)});
-    var g=new T.BoxGeometry(2.5,5.4,1.3,4,8,2),pa=g.attributes.position;
-    for(var j=0;j<pa.count;j++){var vz=pa.getZ(j);if(vz>.6)continue;pa.setX(j,pa.getX(j)+(Math.random()-.5)*.5);pa.setY(j,pa.getY(j)+(Math.random()-.5)*.3);pa.setZ(j,vz+(Math.random()-.5)*.45)}
-    g.computeVertexNormals();var mono=new T.Mesh(g,MAT.mono);mono.position.set(0,2.75,-20.2);scene.add(mono);
-    box(3.6,.18,1.9,MAT.bench,0,.09,-20.2);
-    var eng=plane(2.2,1.7,ctex(1000,760,function(c,W){c.fillStyle='rgba(235,232,226,.92)';c.font='400 112px "Bodoni Moda"';sp(c,'EVERY',W/2,210,26);sp(c,'CHAPTER',W/2,400,26);sp(c,'MATTERS.',W/2,590,26)}));eng.position.set(0,3.6,-19.53);scene.add(eng);
-    var ml=new T.PointLight(0x7d4fc4,1.7,7,2);ml.position.set(0,.15,-18.1);scene.add(ml);floorGlow(0,-19.6,5.5,3.4,0x7a4cc0,.6);
-    col(-1.8,1.8,-21.2,-19.2);
-    box(2.6,.46,.6,MAT.bench,-5.5,.23,-20);col(-6.8,-4.2,-20.3,-19.7);box(2.6,.46,.6,MAT.bench,5.5,.23,-20);col(4.2,6.8,-20.3,-19.7);
-    hang('wall-upward',L,'w',-20,2.2,2.6);hang('railroad',L,'e',-20,2.3,2.8);
-    hang('mural-wide',L,'n',-5.5,2.4,2.5);hang('glasses-closeup',L,'n',5.5,2.4,2.5);
-    function over(side,at,top,big){var pos=onWall(L,side,at);var s=plane(4.4,1.1,ctex(1320,330,function(c,W){c.fillStyle='#a3a29e';c.font='500 40px Inter';sp(c,top,W/2,95,14);c.fillStyle='#f4f1ea';c.font='400 128px "Bodoni Moda"';sp(c,big,W/2,250,18)}));place(s,pos.x+NV[pos.n][0]*.01,5,pos.z+NV[pos.n][1]*.01,pos.n)}
-    over('w',-13,'ROOM','ABOUT');over('e',-13,'ROOM','PROCESS');over('n',-11,'READING ROOM','LIBRARY');over('n',11,'THE MUSEUM','SHOP');
-    ['flourish','becoming','freedom'].forEach(function(s){var c=chap(s);if(!c)return;var pos=s==='flourish'?['w',-27]:s==='freedom'?['e',-27]:['n',0];over(pos[0],pos[1],'CHAPTER '+c.num,c.title.toUpperCase());
-      var dp=onWall(L,pos[0],pos[1]);floorGlow(dp.x+NV[dp.n][0]*.6,dp.z+NV[dp.n][1]*.6,pos[0]==='n'?4.6:2.2,pos[0]==='n'?2.2:4.6,0x6e42a3,.5)});
-    panel(L,'s',-8.6,2.7,4.4,2.6,function(c){c.fillStyle='#f4f1ea';c.font='400 74px "Bodoni Moda"';sp(c,'START A',40,130,10,'left');sp(c,'CONVERSATION.',40,225,10,'left');c.fillStyle='#bdbbb6';c.font='400 30px Inter';['General inquiries','Retail partnerships','Press and media','Collaborations','Order support'].forEach(function(t,i){c.fillText('—  '+t,44,310+i*42)})},{act:openContact,verb:'Write',label:'Start a conversation'});
-    panel(L,'s',8.6,3.2,4.2,1.3,function(c,W){c.fillStyle='#a3a29e';c.font='500 34px Inter';sp(c,'VISITOR',W/2,80,14);c.fillStyle='#f4f1ea';c.font='400 104px "Bodoni Moda"';sp(c,'INFORMATION',W/2,210,12)});
-    box(4,1.05,1,MAT.ped,8.6,.52,-8.2);box(4.1,.05,1.1,MAT.frame,8.6,1.07,-8.2);col(6.6,10.6,-8.7,-7.7);floorGlow(8.6,-9,4,2,0x6e42a3,.35);
-    addInter(8.6,-8.7,'nz',3.4,'Ask','Information · FAQ · Newsletter',function(){openInfo('faq')});
+/* ---- 28-detail.js ---- */
+  /* ===== architectural detailing applied to every room in ROOMS (after all rooms are built) =====
+     skirting, bronze-lined door reveals with architraves, a light slot + soft wash at the top of every wall,
+     track-light rails in the galleries, a linear ceiling light and panel joints in the corridors.
+     Everything is merged into a handful of meshes (one per material). */
+  HOOKS.afterBuild.push(function(){try{detailBuild()}catch(e){console.error('detail',e)}});
+  function detailBuild(){
+    var A=archMats(),WARM=0xffe3bf,th=.15;
+    if(!A.trim){A.trim=new T.MeshStandardMaterial({color:0x1d1c1b,roughness:.55,metalness:.35});A.trimW=new T.MeshStandardMaterial({color:0xe2ddd4,roughness:.8});
+      A.skirt=new T.MeshStandardMaterial({color:0x252423,roughness:.45,metalness:.5});A.jointW=new T.MeshBasicMaterial({color:0x8d887f})}
+    var trim=new ArchB(),trimW=new ArchB(),skirt=new ArchB(),bronze=new ArchB(),lamp=new ArchB(),wash=new ArchB(),glowB=new ArchB(),joint=new ArchB(),jointW=new ArchB(),fixt=new ArchB();
+    function find(x,z){for(var i=0;i<ROOMS.length;i++){var q=ROOMS[i];if(x>q.x1&&x<q.x2&&z<q.z1&&z>q.z2)return q}return null}
+    /* a box given along-wall extents (a1..a2), height and offsets from the wall plane (o1..o2, + = into the room) */
+    function wb(b,side,plane,a1,a2,y1,y2,o1,o2){var n=side==='s'||side==='e'?-1:1,f1=plane+n*o1,f2=plane+n*o2;if(side==='s'||side==='n')b.bx(a1,a2,y1,y2,f1,f2);else b.bx(f1,f2,y1,y2,a1,a2)}
+    function wq(b,side,plane,along,y,w,h,off,col,rz){var n=side==='s'||side==='e'?-1:1,ry={s:Math.PI,n:0,w:Math.PI/2,e:-Math.PI/2}[side],p=plane+n*off;
+      if(side==='s'||side==='n')b.quad(w,h,along,y,p,0,ry,col,rz);else b.quad(w,h,p,y,along,0,ry,col,rz)}
+
+    ROOMS.forEach(function(r){
+      var white=!!r.white,TR=white?trimW:trim,JN=white?jointW:joint,gallery=!!(r.chapter||r.id==='about'||r.id==='process'),lob=r.id==='lobby',ves=r.id==='vestibule';
+      var sides={s:[r.z1,r.x1,r.x2],n:[r.z2,r.x1,r.x2],w:[r.x1,r.z2,r.z1],e:[r.x2,r.z2,r.z1]};
+      Object.keys(sides).forEach(function(k){
+        if(r.open&&r.open.indexOf(k)>=0)return;
+        var sd=sides[k],wall=sd[0],a=sd[1],b=sd[2],len=b-a,mid=(a+b)/2,inner=wall+(k==='s'||k==='e'?-th:th);
+        var gaps=(r.doors||[]).filter(function(d){return d.s===k}).map(function(d){var w=d.w||4;return {a:d.at-w/2,b:d.at+w/2,h:d.h||4,at:d.at,w:w}}).sort(function(p,q){return p.a-q.a});
+        /* wall segments between doorways: skirting + panel joints */
+        var cur=a;gaps.concat([{a:b,b:b}]).forEach(function(g){
+          if(g.a-cur>.01){wb(skirt,k,inner,cur,g.a,0,.1,0,.02);
+            if(r.cor||lob||ves){var step=r.cor?1.6:3.5,n0=Math.ceil((cur+.4)/step);for(var t=n0*step;t<g.a-.4;t+=step)wq(JN,k,inner,t,(r.cor?r.h:lob?6:r.h)/2,.014,(r.cor?r.h:lob?6:r.h)-.02,.004)}}
+          cur=Math.max(cur,g.b)});
+        /* doorways (the lobby builds its own portals) */
+        if(!lob)gaps.forEach(function(g){var hw=g.w/2,tw=.2,tp=.06,dh=Math.min(g.h,r.h);
+          /* bronze-lined reveal through the wall + a thin light line in the head */
+          wb(bronze,k,wall,g.a,g.a+.03,0,dh,-th,th);wb(bronze,k,wall,g.b-.03,g.b,0,dh,-th,th);
+          if(r.h>g.h){wb(bronze,k,wall,g.a,g.b,dh-.03,dh,-th,th);wb(lamp,k,wall,g.a+.15,g.b-.15,dh-.035,dh-.03,-.02,.02)}
+          /* architrave on the room face, and on the far face when it opens into a room (not a corridor) */
+          var faces=[[inner,0]];var n=k==='s'||k==='e'?1:-1,px=k==='w'||k==='e'?wall+n*.8:g.at,pz=k==='n'||k==='s'?wall+n*.8:g.at,o=find(px,pz);
+          if(o&&!o.cor&&o.id!=='vestibule'&&o.id!=='lobby')faces.push([wall+n*th,1]);
+          faces.forEach(function(f){var s2=f[1]?{s:'n',n:'s',w:'e',e:'w'}[k]:k,M=f[1]&&o&&!o.white?trim:TR;
+            wb(M,s2,f[0],g.a-tw,g.a,0,dh+tw,0,tp);wb(M,s2,f[0],g.b,g.b+tw,0,dh+tw,0,tp);if(r.h>g.h)wb(M,s2,f[0],g.a-tw,g.b+tw,dh,dh+tw,0,tp)});
+        });
+        /* light slot at the top of the wall and a soft wash down it */
+        if(!lob){var wh=Math.min(r.cor?1.6:2.4,r.h-Math.max.apply(null,gaps.map(function(g){return g.h}).concat([0]))-.05);
+          wb(lamp,k,inner,a,b,r.h-.05,r.h-.02,0,.04);
+          if(wh>.3)wq(wash,k,inner,mid,r.h-wh/2-.02,len,wh,.006,archCol(WARM,white?.08:r.cor?.1:.14))}
+      });
+
+      var cx=(r.x1+r.x2)/2,cz=(r.z1+r.z2)/2,W=r.x2-r.x1,D=r.z1-r.z2;
+      /* corridors: a linear light in the ceiling and a soft pool on the floor */
+      if(r.cor){var alongX=W>D,L2=(alongX?W:D)-.6;
+        if(alongX){lamp.bx(cx-L2/2,cx+L2/2,r.h-.03,r.h-.01,cz-.04,cz+.04)}else lamp.bx(cx-.04,cx+.04,r.h-.03,r.h-.01,cz-L2/2,cz+L2/2);
+        glowB.quad(alongX?W:2.6,alongX?2.6:D,cx,.02,cz,-Math.PI/2,0,archCol(WARM,.22))}
+      /* galleries: two track-light rails parallel to the long walls, fixtures aimed at the walls */
+      if(gallery){var longX=W>=D,len2=(longX?W:D)-2.4,off=1.7,yR=r.h-.08;
+        [-1,1].forEach(function(s){var rc=longX?(s<0?r.z2+off:r.z1-off):(s<0?r.x1+off:r.x2-off);
+          if(longX)trim.bx(cx-len2/2,cx+len2/2,yR-.02,yR+.02,rc-.03,rc+.03);else trim.bx(rc-.03,rc+.03,yR-.02,yR+.02,cz-len2/2,cz+len2/2);
+          var nf=Math.max(2,Math.round(len2/2.2));
+          for(var i=0;i<nf;i++){var t=-len2/2+(i+.5)*len2/nf,fx=longX?cx+t:rc,fz=longX?rc:cz+t;
+            /* aim: towards the wall (s<0 -> towards x1/z2) and down 40 degrees */
+            var dir=longX?new T.Vector3(0,0,s):new T.Vector3(s,0,0),aim=dir.clone().multiplyScalar(Math.cos(.7)).add(new T.Vector3(0,-Math.sin(.7),0)).normalize();
+            var q=new T.Quaternion().setFromUnitVectors(new T.Vector3(0,-1,0),aim),c=new T.Vector3(fx,yR-.17,fz).add(aim.clone().multiplyScalar(.05));
+            fixt.add(new T.CylinderGeometry(.055,.045,.2,12),new T.Matrix4().compose(c,q,new T.Vector3(1,1,1)));
+            fixt.add(new T.BoxGeometry(.02,.12,.02),new T.Matrix4().setPosition(fx,yR-.07,fz));
+            var lc=c.clone().add(aim.clone().multiplyScalar(.101));lamp.add(new T.CircleGeometry(.04,10),new T.Matrix4().compose(lc,new T.Quaternion().setFromUnitVectors(new T.Vector3(0,0,1),aim),new T.Vector3(1,1,1)))}
+        })}
+    });
+    trim.mesh(A.trim);trimW.mesh(A.trimW);skirt.mesh(A.skirt);bronze.mesh(A.bronze);lamp.mesh(MAT.lamp);fixt.mesh(A.trim);
+    joint.mesh(A.dark);jointW.mesh(A.jointW);wash.mesh(A.washV);glowB.mesh(A.glowV);
   }
 
+/* ---- 30-lobby.js ---- */
+  /* ===== central lobby: a grand hall with a coffered ceiling, an oculus with a deep lit reveal,
+     a gallery-level balcony, columns, a bronze compass inlay and the carved monument ===== */
+  function buildLobby(){
+    var L=RM.lobby,A=archMats(),rn=archRng(7),X1=L.x1,X2=L.x2,Z1=L.z1,Z2=L.z2,H=L.h,OX=0,OZ=-20,RO=4.2,BD=.9,BW=.45;
+    var WARM=0xffe3bf,PUR=0x6e42a3;
+    var stoneB=new ArchB(),darkB=new ArchB(),bronzeB=new ArchB(),lampB=new ArchB(),glowB=new ArchB(),washB=new ArchB(),spotB=new ArchB(),inlay=new ArchB(),beams=new ArchB();
+    if(!A.brass)A.brass=new T.MeshStandardMaterial({color:0x8a6a40,roughness:.3,metalness:.9,emissive:0x2a1d0e});
+    if(!A.beam)A.beam=new T.MeshStandardMaterial({color:0x1b1a19,roughness:.9});
+
+    /* ----- ceiling with the oculus opening ----- */
+    var sh=new T.Shape();sh.moveTo(X1,Z1);sh.lineTo(X2,Z1);sh.lineTo(X2,Z2);sh.lineTo(X1,Z2);sh.lineTo(X1,Z1);
+    var hole=new T.Path();hole.absarc(OX,OZ,RO,0,Math.PI*2,true);sh.holes.push(hole);
+    var cg=new T.ShapeGeometry(sh,48);cg.rotateX(Math.PI/2);var ceil=new T.Mesh(cg,MAT.ceil);ceil.position.y=H;scene.add(ceil);
+    /* the reveal: a deep drum, brighter towards the sky, a light ring at its base */
+    var rv=new T.Mesh(new T.CylinderGeometry(RO,RO,3.4,64,1,true),new T.MeshBasicMaterial({side:T.BackSide,map:ctex(16,256,function(c,W,Hh){var g=c.createLinearGradient(0,0,0,Hh);g.addColorStop(0,'#a9b4cc');g.addColorStop(.25,'#59627a');g.addColorStop(1,'#1a1c22');c.fillStyle=g;c.fillRect(0,0,W,Hh)})}));
+    rv.position.set(OX,H-BD+1.7,OZ);scene.add(rv);
+    var sky=new T.Mesh(new T.CircleGeometry(RO,64),new T.MeshBasicMaterial({fog:false,map:ctex(512,512,function(c,W){var g=c.createRadialGradient(W/2,W/2,0,W/2,W/2,W/2);g.addColorStop(0,'#33405e');g.addColorStop(1,'#1c2236');c.fillStyle=g;c.fillRect(0,0,W,W);var r2=archRng(9);for(var i=0;i<70;i++){c.fillStyle='rgba(230,232,255,'+(.3+r2()*.6)+')';c.fillRect(r2()*W,r2()*W,1.5,1.5)}})}));
+    sky.rotation.x=Math.PI/2;sky.position.set(OX,H-BD+3.4,OZ);scene.add(sky);
+    var rb=new T.Mesh(new T.RingGeometry(RO,RO+.6,64),A.beam);rb.rotation.x=Math.PI/2;rb.position.set(OX,H-BD,OZ);scene.add(rb);
+    var rbo=new T.Mesh(new T.CylinderGeometry(RO+.6,RO+.6,BD,64,1,true),A.beam);rbo.position.set(OX,H-BD/2,OZ);scene.add(rbo);
+    var ring=new T.Mesh(new T.RingGeometry(RO+.02,RO+.09,64),MAT.lamp);ring.rotation.x=Math.PI/2;ring.position.set(OX,H-BD-.01,OZ);scene.add(ring);
+    var shaft=new T.Mesh(new T.CylinderGeometry(RO-.1,RO+.9,H-BD,48,1,true),new T.MeshBasicMaterial({color:0x9fb0d0,transparent:true,opacity:.025,blending:T.AdditiveBlending,depthWrite:false,side:T.DoubleSide}));shaft.position.set(OX,(H-BD)/2,OZ);scene.add(shaft);
+    var sl=new T.PointLight(0xc9d4f0,1.3,26,2);sl.position.set(OX,8.5,OZ);scene.add(sl);
+    glowB.quad(12,12,OX,.02,OZ,-Math.PI/2,0,archCol(0x9fb0d0,.22));
+
+    /* ----- coffered ceiling: beams on the column grid, clipped at the oculus ring beam ----- */
+    var GX=[-9,-4.5,0,4.5,9],GZ=[-10,-15,-20,-25,-30],RC=RO+.6,yb=H-BD/2;
+    function seg(a,b,fixed,alongX){
+      var d=alongX?Math.abs(fixed-OZ):Math.abs(fixed-OX),parts=[[a,b]];
+      if(d<RC){var h=Math.sqrt(RC*RC-d*d),c=alongX?OX:OZ;parts=[[a,c-h],[c+h,b]]}
+      parts.forEach(function(p){if(p[1]-p[0]<.05)return;if(alongX)beams.bx(p[0],p[1],H-BD,H,fixed-BW/2,fixed+BW/2);else beams.bx(fixed-BW/2,fixed+BW/2,H-BD,H,p[0],p[1])})}
+    GZ.forEach(function(z){seg(X1,X2,z,true)});GX.forEach(function(x){seg(Z2,Z1,x,false)});
+    /* a small warm downlight in every coffer outside the oculus */
+    var cx=[X1].concat(GX,[X2]),cz=[Z2].concat(GZ.slice().reverse(),[Z1]);
+    for(var i=0;i<cx.length-1;i++)for(var j=0;j<cz.length-1;j++){var mx=(cx[i]+cx[i+1])/2,mz=(cz[j]+cz[j+1])/2;if(Math.hypot(mx-OX,mz-OZ)<RC+1)continue;
+      lampB.add(new T.CircleGeometry(.12,16),new T.Matrix4().makeRotationX(Math.PI/2).setPosition(mx,H-.02,mz));glowB.quad(1.2,1.2,mx,H-.03,mz,Math.PI/2,0,archCol(WARM,.25))}
+    /* perimeter light slot washing the upper walls */
+    [[X1+.16,'x',1],[X2-.16,'x',-1],[Z1-.16,'z',-1],[Z2+.16,'z',1]].forEach(function(w){var len=w[1]==='x'?Z1-Z2:X2-X1,mid=w[1]==='x'?(Z1+Z2)/2:(X1+X2)/2;
+      if(w[1]==='x'){lampB.bx(w[0]-.02,w[0]+.02,H-.06,H-.02,Z2,Z1);washB.quad(len,3.6,w[0]+w[2]*.005,H-1.8,mid,0,w[2]*Math.PI/2,archCol(WARM,.12))}
+      else{lampB.bx(X1,X2,H-.06,H-.02,w[0]-.02,w[0]+.02);washB.quad(len,3.6,mid,H-1.8,w[0]+w[2]*.005,0,w[2]>0?0:Math.PI,archCol(WARM,.12))}});
+
+    /* ----- gallery-level balcony on all four walls (visual only) ----- */
+    var BY=6,BP=1.4,bt=.4;
+    [['n'],['s'],['w'],['e']].forEach(function(s){s=s[0];var a,b;
+      if(s==='n'||s==='s'){var zf=s==='n'?Z2+BP:Z1-BP,zw=s==='n'?Z2:Z1;a=Math.min(zf,zw);b=Math.max(zf,zw);
+        stoneB.bx(X1,X2,BY,BY+bt,a,b,0,6);bronzeB.bx(X1,X2,BY+bt+1.05,BY+bt+1.1,zf-.05,zf+.05);
+        var gl=new T.Mesh(new T.PlaneGeometry(X2-X1,1.05),MAT.glass);gl.position.set(0,BY+bt+.525,zf);scene.add(gl);
+        lampB.bx(X1,X2,BY-.02,BY-.005,zf+(s==='n'?-.12:.08),zf+(s==='n'?-.08:.12));
+        glowB.quad(X2-X1,1,0,BY-.025,zf+(s==='n'?-.6:.6),Math.PI/2,0,archCol(WARM,.1))}
+      else{var xf=s==='w'?X1+BP:X2-BP,xw=s==='w'?X1:X2;a=Math.min(xf,xw);b=Math.max(xf,xw);
+        stoneB.bx(a,b,BY,BY+bt,Z2+BP,Z1-BP,0,6);bronzeB.bx(xf-.05,xf+.05,BY+bt+1.05,BY+bt+1.1,Z2+BP,Z1-BP);
+        var gl2=new T.Mesh(new T.PlaneGeometry(Z1-Z2-2*BP,1.05),MAT.glass);gl2.rotation.y=Math.PI/2;gl2.position.set(xf,BY+bt+.525,(Z1+Z2)/2);scene.add(gl2);
+        lampB.bx(xf+(s==='w'?-.12:.08),xf+(s==='w'?-.08:.12),BY-.02,BY-.005,Z2+BP,Z1-BP)}});
+
+    /* ----- columns: square stone base, bronze collar, shaft, square capital under the beams ----- */
+    [[-9,-10],[9,-10],[-9,-30],[9,-30]].forEach(function(c){
+      stoneB.bx(c[0]-.7,c[0]+.7,0,.42,c[1]-.7,c[1]+.7,0,6);bronzeB.add(new T.CylinderGeometry(.6,.6,.08,32),new T.Matrix4().setPosition(c[0],.46,c[1]));
+      var m=new T.Mesh(new T.CylinderGeometry(.5,.52,H-BD-.92,40),MAT.col);m.position.set(c[0],.5+(H-BD-.92)/2,c[1]);scene.add(m);
+      stoneB.bx(c[0]-.75,c[0]+.75,H-BD-.42,H-BD,c[1]-.75,c[1]+.75,0,6);bronzeB.bx(c[0]-.62,c[0]+.62,H-BD-.48,H-BD-.42,c[1]-.62,c[1]+.62);
+      spotB.quad(1.6,6,c[0],3.4,c[1]+.53,0,0,archCol(WARM,.16),Math.PI);
+      col(c[0]-.7,c[0]+.7,c[1]-.7,c[1]+.7)});
+
+    /* ----- floor: bronze compass inlay around the monument, processional line from the entrance ----- */
+    function ringI(r,w){inlay.add(new T.RingGeometry(r-w/2,r+w/2,96),new T.Matrix4().makeRotationX(-Math.PI/2).setPosition(OX,.004,OZ))}
+    ringI(5.6,.07);ringI(7.2,.035);
+    for(var k=0;k<16;k++){var an=k/16*Math.PI*2,l=k%4===0?1.6:.6,r0=5.6+.04;inlay.add(new T.PlaneGeometry(k%4===0?.06:.03,l),new T.Matrix4().makeRotationFromEuler(new T.Euler(-Math.PI/2,0,-an,'YXZ')).setPosition(OX+Math.sin(an)*(r0+l/2),.004,OZ+Math.cos(an)*(r0+l/2)))}
+    inlay.bx(-.03,.03,0,.008,OZ+7.2,Z1-.3);
+    glowB.quad(15,15,OX,.015,OZ,-Math.PI/2,0,archCol(PUR,.08));
+
+    /* ----- the monument: a rough-hewn stone with a dressed, engraved face, on a low plinth ----- */
+    var MZ=-20.2,PY=.45;
+    darkB.bx(-1.95,1.95,0,.25,MZ-1.35,MZ+1.35);stoneB.bx(-1.6,1.6,.25,PY,MZ-1.05,MZ+1.05,0,6);
+    var g=new T.BoxGeometry(2.4,5.2,1.2,6,14,4),pa=g.attributes.position;
+    for(var j2=0;j2<pa.count;j2++){var vx=pa.getX(j2),vy=pa.getY(j2),vz=pa.getZ(j2),t=(vy+2.6)/5.2;
+      var nz=Math.sin(vx*5.3+vy*2.1)*Math.cos(vy*3.7-vz*4.1),taper=1-t*.08;vx*=taper;vz*=taper;
+      if(vz>.55*taper&&Math.abs(vx)<1.0&&vy<2.4&&vy>-2.3){/* dressed front face stays flat */}
+      else{vx+=Math.sign(vx)*Math.abs(nz)*.05+(rn()-.5)*.025;vz+=(vz>0?.015:-.05)*Math.abs(nz)+(rn()-.5)*.025;if(vy>2.5)vy+=nz*.18+(rn()-.5)*.06}
+      pa.setXYZ(j2,vx,vy,vz)}
+    g.computeVertexNormals();var mono=new T.Mesh(g,MAT.mono);mono.position.set(0,PY+2.6,MZ);scene.add(mono);
+    var eng=archText(1.9,1.75,function(c,W,Hh){c.font='500 '+Math.round(Hh*.175)+'px "Bodoni Moda"';var gap=Math.round(Hh*.022);
+      ['EVERY','CHAPTER','MATTERS.'].forEach(function(w,i){var y=Hh*(.3+i*.25);
+        c.fillStyle='rgba(0,0,0,.75)';sp(c,w,W/2-3,y-3,gap);c.fillStyle='rgba(255,255,255,.22)';sp(c,w,W/2+2,y+2,gap);c.fillStyle='#ece8e0';sp(c,w,W/2,y,gap)})},500);
+    eng.position.set(0,PY+3.35,MZ+.6*(1-(3.35/5.2)*.08)+.012);scene.add(eng);
+    var ml=new T.PointLight(0x7d4fc4,1.7,7,2);ml.position.set(0,.6,MZ+1.9);scene.add(ml);
+    spotB.quad(2.3,5,0,PY+2.5,MZ+.63,0,0,archCol(PUR,.55),Math.PI);
+    glowB.quad(5.5,3.4,0,.02,MZ+1.6,-Math.PI/2,0,archCol(0x7a4cc0,.5));
+    lampB.bx(-1.55,1.55,.255,.27,MZ+1.06,MZ+1.08);
+    col(-1.95,1.95,MZ-1.35,MZ+1.35);
+
+    /* ----- benches facing the monument ----- */
+    [-1,1].forEach(function(s){stoneB.bx(s*7.8-.35,s*7.8+.35,.08,.46,OZ-1.5,OZ+1.5,0,6);darkB.bx(s*7.8-.27,s*7.8+.27,0,.08,OZ-1.4,OZ+1.4);col(s*7.8-.35,s*7.8+.35,OZ-1.5,OZ+1.5)});
+
+    /* ----- photographs ----- */
+    hang('wall-upward',L,'w',-20,2.2,2.6);hang('railroad',L,'e',-20,2.3,2.8);
+    hang('mural-wide',L,'n',-5.5,2.4,2.5);hang('glasses-closeup',L,'n',5.5,2.4,2.5);
+
+    /* ----- doorway portals: bronze-lined openings, a stone surround and a large lit sign above each door ----- */
+    var DH=4,SY=4.95,SW=5.0,SH=1.3;
+    function portal(side,at,w,dh,top,big){
+      var p=onWall(L,side,at),nx=NV[p.n][0],nz=NV[p.n][1],face=side==='w'?X1+.15:side==='e'?X2-.15:side==='s'?Z1-.15:Z2+.15,alongX=side==='n'||side==='s',hw=w/2,d=.25,sw=.45,topY=big?SY+SH/2+.22:dh+.45;
+      function bxA(a1,a2,y1,y2,o1,o2,b){var f1=face+(alongX?nz:nx)*o1,f2=face+(alongX?nz:nx)*o2;if(alongX)b.bx(at+a1,at+a2,y1,y2,f1,f2,0,6);else b.bx(f1,f2,y1,y2,at+a1,at+a2,0,6)}
+      bxA(-hw-sw,-hw,0,topY,0,d,stoneB);bxA(hw,hw+sw,0,topY,0,d,stoneB);bxA(-hw-sw,hw+sw,topY,topY+.3,0,d,stoneB);
+      bxA(-hw,-hw+.05,0,dh,-.3,d,bronzeB);bxA(hw-.05,hw,0,dh,-.3,d,bronzeB);bxA(-hw,hw,dh-.05,dh,-.3,d,bronzeB);
+      if(alongX){col(at-hw-sw,at-hw,face,face+nz*d);col(at+hw,at+hw+sw,face,face+nz*d)}else{col(face,face+nx*d,at-hw-sw,at-hw);col(face,face+nx*d,at+hw,at+hw+sw)}
+      if(!big)return;
+      bxA(-hw,hw,dh,topY,0,.08,darkB);
+      var s=archText(w+.6,SH,function(c,W,Hh){c.fillStyle='#d6d2ca';c.font='600 '+Math.round(Hh*.13)+'px Inter';sp(c,top,W/2,Hh*.28,Math.round(Hh*.05));
+        c.fillStyle='#fbf8f2';c.font='500 '+Math.round(Hh*.42)+'px "Bodoni Moda"';sp(c,big,W/2,Hh*.8,Math.round(Hh*.04))},420);
+      var sx=alongX?at:face+nx*.09,sz=alongX?face+nz*.09:at;place(s,sx,SY,sz,p.n);
+      var lx=alongX?at:face+nx*.12,lz=alongX?face+nz*.12:at;
+      if(alongX)lampB.bx(at-hw+.1,at+hw-.1,topY-.03,topY,face+nz*.06,face+nz*.1);else lampB.bx(face+nx*.06,face+nx*.1,topY-.03,topY,at-hw+.1,at+hw-.1);
+      washB.quad(w,1.8,lx,topY-.9,lz,0,ROT[p.n],archCol(WARM,.22));
+    }
+    portal('w',-13,4,DH,'ROOM','ABOUT');portal('e',-13,4,DH,'ROOM','PROCESS');portal('n',-11,4,DH,'READING ROOM','LIBRARY');portal('n',11,4,DH,'THE MUSEUM','SHOP');
+    ['flourish','becoming','freedom'].forEach(function(s){var c=chap(s),pos=s==='flourish'?['w',-27]:s==='freedom'?['e',-27]:['n',0];
+      if(!c){portal(pos[0],pos[1],4,DH);return}
+      portal(pos[0],pos[1],4,DH,'CHAPTER '+c.num,c.title.toUpperCase());
+      var dp=onWall(L,pos[0],pos[1]);glowB.quad(pos[0]==='n'?4.6:2.2,pos[0]==='n'?2.2:4.6,dp.x+NV[dp.n][0]*.6,.02,dp.z+NV[dp.n][1]*.6,-Math.PI/2,0,archCol(PUR,.45))});
+    portal('s',0,6,5.2);
+
+    /* ----- wayfinding totem near the entrance (derived from the plan) ----- */
+    var dirs=[];(L.doors||[]).forEach(function(d){if(d.s==='s')return;var px=d.s==='w'?X1-6:d.s==='e'?X2+6:d.at,pz=d.s==='n'?Z2-6:d.at;
+      var r=ROOMS.filter(function(q){return !q.cor&&px>=q.x1&&px<=q.x2&&pz<=q.z1&&pz>=q.z2})[0];if(r&&(!r.chapter||r.c))dirs.push([d.s,r.name])});
+    var ord={w:0,n:1,e:2},arrow={w:'←',n:'↑',e:'→'};dirs.sort(function(a,b){return ord[a[0]]-ord[b[0]]});
+    var TX=-4.8,TZ=-9.4,TH=2.3,TW=1.15;
+    darkB.bx(TX-TW/2,TX+TW/2,0,TH,TZ-.14,TZ+.14);
+    var tt=archText(TW-.12,TH-.2,function(c,W,Hh){c.fillStyle='#0c0c0d';c.fillRect(0,0,W,Hh);c.fillStyle='#b49be0';c.fillRect(W*.1,Hh*.07,W*.12,4);
+      c.fillStyle='#d6d2ca';c.font='600 '+Math.round(W*.055)+'px Inter';sp(c,'GALLERIES',W*.1,Hh*.13,Math.round(W*.02),'left');
+      dirs.forEach(function(d,i){var y=Hh*(.24+i*.1);c.fillStyle='#fbf8f2';c.font='500 '+Math.round(W*.085)+'px Inter';c.textAlign='left';c.fillText(arrow[d[0]],W*.1,y);
+        c.font='400 '+Math.round(W*.07)+'px "Bodoni Moda"';var nm=d[1].replace(' · ',' ');c.fillText(nm.length>24?nm.slice(0,23)+'…':nm,W*.24,y)})},400);
+    tt.position.set(TX,TH/2+.05,TZ+.145);scene.add(tt);
+    col(TX-TW/2,TX+TW/2,TZ-.14,TZ+.14);
+
+    /* ----- start a conversation, visitor information and the desk ----- */
+    panel(L,'s',-8.6,2.7,4.4,2.6,function(c){c.fillStyle='#f4f1ea';c.font='400 74px "Bodoni Moda"';sp(c,'START A',40,130,10,'left');sp(c,'CONVERSATION.',40,225,10,'left');c.fillStyle='#bdbbb6';c.font='400 30px Inter';['General inquiries','Retail partnerships','Press and media','Collaborations','Order support'].forEach(function(t,i){c.fillText('—  '+t,44,310+i*42)})},{act:openContact,verb:'Write',label:'Start a conversation'});
+    panel(L,'s',8.6,3.2,4.2,1.3,function(c,W){c.fillStyle='#a3a29e';c.font='500 34px Inter';sp(c,'VISITOR',W/2,80,14);c.fillStyle='#f4f1ea';c.font='400 104px "Bodoni Moda"';sp(c,'INFORMATION',W/2,210,12)});
+    darkB.bx(6.6,10.6,0,1.05,-8.7,-7.7);stoneB.bx(6.55,10.65,1.05,1.1,-8.75,-7.65,0,6);lampB.bx(6.7,10.5,.06,.08,-8.72,-8.7);
+    col(6.6,10.6,-8.7,-7.7);glowB.quad(4,2,8.6,.02,-9,-Math.PI/2,0,archCol(PUR,.3));
+    addInter(8.6,-8.7,'nz',3.4,'Ask','Information · FAQ · Newsletter',function(){openInfo('faq')});
+
+    beams.mesh(A.beam);stoneB.mesh(A.clad);darkB.mesh(A.dark);bronzeB.mesh(A.bronze);lampB.mesh(MAT.lamp);inlay.mesh(A.brass);
+    glowB.mesh(A.glowV);washB.mesh(A.washV);spotB.mesh(A.spotV);
+  }
 
 /* ---- 40-about.js ---- */
   /* ===== about =====
