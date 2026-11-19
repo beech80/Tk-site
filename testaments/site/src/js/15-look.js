@@ -180,6 +180,8 @@
     /* lobby: purple floor-slot uplight at the monument, cool skylight boost */
     var slot=new T.Mesh(new T.BoxGeometry(1.4,.012,.05),new T.MeshBasicMaterial({}));slot.material.color.setRGB(1.5,.75,2.6);slot.position.set(0,.006,-18.95);scene.add(slot);
     scene.traverse(function(o){if(o.isMesh&&o.geometry&&o.geometry.type==='CircleGeometry'&&o.geometry.parameters.radius===4.2&&o.material&&o.material.isMeshBasicMaterial)o.material.color.setRGB(.75,.86,1.15)});
+    /* the lobby's original constant-opacity shaft reads as a glass tube; the view-dependent shaft below replaces it */
+    scene.traverse(function(o){if(o.isMesh&&o.geometry&&o.geometry.type==='CylinderGeometry'&&o.geometry.parameters.openEnded&&Math.abs(o.geometry.parameters.radiusTop-4.1)<.01&&o.material&&o.material.blending===T.AdditiveBlending)o.visible=false});
     glows.push({c:[0,9.9,-20],u:[1,0,0],v:[0,0,1],w:12,h:12,k:k(0xb8c6e6,.18)});
     /* entrance: warm interior light spilling onto the plaza */
     glows.push({c:[0,.03,2.6],u:[1,0,0],v:[0,0,1],w:9,h:7,k:k(0xffe6c4,.32)});
@@ -200,7 +202,7 @@
     for(i=0;i<DN;i++){var a=Math.random()*Math.PI*2,rr=Math.sqrt(Math.random())*5.4;dp[i*3]=Math.cos(a)*rr;dp[i*3+1]=.4+Math.random()*9;dp[i*3+2]=-20+Math.sin(a)*rr;ds[i]=Math.random()}
     var dg=new T.BufferGeometry();dg.setAttribute('position',new T.BufferAttribute(dp,3));dg.setAttribute('aSeed',new T.BufferAttribute(ds,1));
     LK.dust=new T.Points(dg,new T.ShaderMaterial({transparent:true,depthWrite:false,blending:T.AdditiveBlending,fog:false,uniforms:{uT:{value:0},uPx:{value:600}},
-      vertexShader:'attribute float aSeed;uniform float uT;uniform float uPx;varying float vA;void main(){vec3 p=position;float s=aSeed*6.2831;\np+=vec3(sin(uT*.07+s)*.45,sin(uT*.05+s*1.7)*.35+mod(uT*.012+aSeed*9.0,1.0)*-.0,cos(uT*.06+s*2.3)*.45);\nvec4 mv=modelViewMatrix*vec4(p,1.0);gl_Position=projectionMatrix*mv;float r=length(p.xz-vec2(0.0,-20.0));\nvA=(.02+.98*(1.0-smoothstep(3.4,4.6,r)))*(.4+.6*fract(aSeed*7.3))*smoothstep(.2,1.5,p.y)*smoothstep(-.5,-3.0,mv.z);\ngl_PointSize=clamp(.028*uPx/-mv.z,1.0,6.0);}',
+      vertexShader:'attribute float aSeed;uniform float uT;uniform float uPx;varying float vA;void main(){vec3 p=position;float s=aSeed*6.2831;\np+=vec3(sin(uT*.07+s)*.45,sin(uT*.05+s*1.7)*.35,cos(uT*.06+s*2.3)*.45);\nvec4 mv=modelViewMatrix*vec4(p,1.0);gl_Position=projectionMatrix*mv;float r=length(p.xz-vec2(0.0,-20.0));\nvA=(.02+.98*(1.0-smoothstep(3.4,4.6,r)))*(.4+.6*fract(aSeed*7.3))*smoothstep(.2,1.5,p.y)*smoothstep(-.5,-3.0,mv.z);\ngl_PointSize=clamp(.028*uPx/-mv.z,1.0,6.0);}',
       fragmentShader:'varying float vA;void main(){vec2 d=gl_PointCoord-.5;float a=smoothstep(.5,.1,length(d));gl_FragColor=vec4(vec3(1.0,.96,.9)*.32*a*vA,1.0);\n'+LK_TONE+'}'}));
     LK.dust.frustumCulled=false;LK.dust.renderOrder=4;scene.add(LK.dust);
 
@@ -209,8 +211,7 @@
     LK.sky=new T.Mesh(new T.SphereGeometry(150,32,16),new T.ShaderMaterial({side:T.BackSide,depthWrite:false,fog:false,uniforms:{uMoon:{value:md}},
       vertexShader:'varying vec3 vD;void main(){vD=position;vec4 p=projectionMatrix*modelViewMatrix*vec4(position,1.0);gl_Position=p.xyww;}',
       fragmentShader:'uniform vec3 uMoon;varying vec3 vD;float h(vec2 p){return fract(sin(dot(p,vec2(12.9898,78.233)))*43758.5453);}\nvoid main(){vec3 d=normalize(vD);float y=d.y;\nvec3 zen=vec3(.0016,.0021,.0048),mid=vec3(.006,.0068,.0135),hor=vec3(.024,.02,.03);\nvec3 c=mix(hor,mid,smoothstep(-.02,.18,y));c=mix(c,zen,smoothstep(.15,.75,y));\nc+=vec3(.022,.014,.03)*exp(-abs(y)*14.0);\nfloat m=dot(d,uMoon);c+=vec3(.9,.95,1.05)*smoothstep(.99955,.9997,m)*2.2+vec3(.05,.058,.075)*pow(max(m,0.0),220.0)+vec3(.01,.012,.018)*pow(max(m,0.0),14.0);\nc+=(h(gl_FragCoord.xy)-.5)/900.0;gl_FragColor=vec4(max(c,0.0),1.0);\n'+LK_TONE+'}'}));
-    LK.sky.renderOrder=-1;LK.sky.frustumCulled=false;LK.sky.material.depthTest=true;LK.sky.onBeforeRender=function(){};
-    LK.sky.renderOrder=1000;scene.add(LK.sky);
+    LK.sky.frustumCulled=false;LK.sky.renderOrder=1000;scene.add(LK.sky);
     LK.moon=new T.DirectionalLight(0xa9b8dd,0);LK.moon.position.copy(md).multiplyScalar(60);scene.add(LK.moon);scene.add(LK.moon.target);
 
     /* key light on the monument (medium/high); shadows only on high */
@@ -270,7 +271,7 @@
   function lookBlur(a,b,px){var u=LK.mBlur.uniforms;u.tSrc.value=a.texture;u.uDir.value.set(px/a.width,0);lookPass(LK.mBlur,b);u.tSrc.value=b.texture;u.uDir.value.set(0,px/b.height);lookPass(LK.mBlur,a)}
   function lookRender(){
     var tier=lookTier();
-    if(tier!==LK.tier||LK.post===null){LK.tier=tier}
+    LK.tier=tier;
     if(LK.hdr===null){try{lookPostInit()}catch(e){LK.broken=true}}
     var want=!LK.broken&&LK.hdr&&tier!=='low';
     if(want!==LK.post){LK.post=want;R.toneMapping=want?T.NoToneMapping:T.ACESFilmicToneMapping;LK.w=0}
@@ -285,7 +286,7 @@
       if(hi){b.tSrc.value=LK.b1.texture;b.uTx.value.set(1/LK.b1.width,1/LK.b1.height);b.uThr.value=-1;lookPass(LK.mBright,LK.b2);lookBlur(LK.b2,LK.b2b,1);lookBlur(LK.b2,LK.b2b,2)}
       var f=LK.mFinal.uniforms;f.tScene.value=LK.rt.texture;f.tB1.value=LK.b1.texture;f.tB2.value=hi?LK.b2.texture:null;
       f.uB1.value=hi?.22:.28;f.uB2.value=hi?.3:0;f.uExp.value=R.toneMappingExposure;f.uVig.value=hi?.26:.2;f.uGrain.value=hi&&!S.reduced?.012:0;f.uCA.value=hi?.006:0;f.uT.value=S.reduced?0:LK.t;
-      var asp=w/h;f.uAsp.value.set(asp>1?1:asp,asp>1?1/asp:1).multiplyScalar(1.414);f.uAsp.value.set(Math.sqrt(asp)*1.0,1/Math.sqrt(asp)*1.0);
+      var asp=w/h;f.uAsp.value.set(Math.sqrt(asp),1/Math.sqrt(asp));
       lookPass(LK.mFinal,null);
     }catch(e){console.warn('look: post disabled',e);LK.broken=true;LK.post=false;R.toneMapping=T.ACESFilmicToneMapping;R.setRenderTarget(null);R.render(scene,cam)}
   }

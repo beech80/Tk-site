@@ -59,10 +59,11 @@ kbd{display:inline-grid;place-items:center;min-width:22px;height:22px;padding:0 
 .load.failed{gap:12px}.failmsg{max-width:44ch;color:#e3e1dc;line-height:1.7;margin-top:18px;font-size:16.5px}.failmail{font-size:14px;color:#b8b6b1;margin-top:10px}.failmail span{user-select:all;color:#fff}
 .launch{font-size:13px;color:#b8b6b1;letter-spacing:.04em}
 .mark{font-family:var(--display);font-weight:400;font-size:clamp(34px,6vw,64px);letter-spacing:.16em;margin-right:-.16em}
-.mark.big{font-size:clamp(44px,9vw,124px)}
+.mark.big{font-size:clamp(34px,6.4vw,76px)}
 .bar{width:min(260px,60vw);height:1px;background:rgba(255,255,255,.18);position:relative;margin-top:22px}
 .bar i{position:absolute;left:0;top:0;height:1px;width:0;background:var(--violet);transition:width .3s}
-.intro{z-index:5;background:linear-gradient(180deg,rgba(5,5,7,.6),rgba(5,5,7,.1) 40%,rgba(5,5,7,.78));padding-top:calc(env(safe-area-inset-top,0px) + 40px)}
+.intro{z-index:5;place-content:end center;gap:14px;background:linear-gradient(180deg,rgba(5,5,7,.35) 0%,rgba(5,5,7,0) 30%,rgba(5,5,7,.55) 55%,rgba(5,5,7,.92) 100%);padding:calc(env(safe-area-inset-top,0px) + 40px) 20px calc(env(safe-area-inset-bottom,0px) + clamp(28px,6vh,64px))}
+.intro .row{margin-top:10px}
 .intro .q{font-family:var(--display);font-style:italic;font-size:clamp(18px,2vw,26px);color:#e7e5e0;max-width:30ch}
 .row{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin-top:14px}
 .check{display:flex;gap:10px;align-items:center;font-size:14px;color:#d6d4cf;cursor:pointer;min-height:40px}
@@ -93,7 +94,7 @@ kbd{display:inline-grid;place-items:center;min-width:22px;height:22px;padding:0 
 .keys span{display:flex;align-items:center;gap:2px}
 .keys kbd{margin-right:3px}
 .keys.gone{opacity:0}
-.lookhint{position:absolute;left:50%;top:calc(50% + 34px);transform:translateX(-50%);font-size:13px;color:#e8e6e1;background:rgba(10,10,12,.55);padding:8px 14px;border-radius:999px;white-space:nowrap}
+.lookhint{position:absolute;left:50%;top:calc(50% + 84px);transform:translateX(-50%);font-size:13px;color:#e8e6e1;background:rgba(10,10,12,.55);padding:8px 14px;border-radius:999px;white-space:nowrap}
 .roomcard{position:absolute;left:0;right:0;top:30%;display:grid;justify-items:center;gap:8px;text-align:center;opacity:0;transform:translateY(6px);transition:opacity .9s ease,transform .9s ease;padding:0 24px;text-shadow:0 2px 18px rgba(0,0,0,.8)}
 .roomcard.on{opacity:1;transform:none}
 .roomcard .k{font-size:12px;letter-spacing:.24em;text-transform:uppercase;color:#cdb9ef}
@@ -106,7 +107,7 @@ kbd{display:inline-grid;place-items:center;min-width:22px;height:22px;padding:0 
 .joy.live{opacity:1}
 .joy i{position:absolute;left:50%;top:50%;width:50px;height:50px;margin:-25px 0 0 -25px;border-radius:50%;background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.55)}
 .act{position:absolute;right:var(--sr);bottom:calc(var(--sb) + 30px);min-width:104px;height:60px;padding:0 22px;border-radius:999px;border:1px solid rgba(200,180,240,.85);background:rgba(110,66,163,.42);color:#fff;font-size:15px;font-weight:500;box-shadow:0 0 22px rgba(110,66,163,.45);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
-@media (pointer:coarse){.keys,.lookhint,.prompt kbd{display:none}.prompt{padding:8px 16px}.toast{bottom:auto;top:calc(env(safe-area-inset-top,0px) + 190px)}}
+@media (pointer:coarse){.keys,.lookhint,.prompt kbd,.skiphint kbd{display:none}.prompt{padding:8px 16px}.toast{bottom:auto;top:calc(env(safe-area-inset-top,0px) + 190px)}}
 @media (max-width:600px){.where{position:static}.room{position:absolute;left:var(--sl);right:calc(var(--sr) + 108px);top:calc(var(--st) + 50px);font-size:13px;text-shadow:0 1px 8px rgba(0,0,0,.8)}.word{font-size:15px;letter-spacing:.16em;line-height:40px}.chip{padding:0 14px}.mini{width:96px;height:96px}.roomcard{top:24%}}
 @media (max-height:500px){.mini{width:84px;height:84px;top:calc(var(--st) + 48px)}.roomcard{top:18%}.act{bottom:calc(var(--sb) + 10px)}}
 
@@ -191,6 +192,7 @@ kbd{display:inline-grid;place-items:center;min-width:22px;height:22px;padding:0 
 .list button:hover{color:var(--violet)}
 .list small{color:#a3a29e;font-size:12.5px;flex:none}
 .list button.here{color:#d9cbf3}
+.list button.sub{padding-left:18px;font-size:14.5px;color:#c9c7c2;min-height:42px}
 .howto{display:grid;grid-template-columns:auto minmax(0,1fr);gap:14px 22px;margin:26px 0 30px;font-size:16px;align-items:baseline}
 .howto dt{white-space:nowrap;color:#fff;font-weight:500;font-size:14px}
 .howto dd{margin:0;color:#d6d4cf;line-height:1.5}

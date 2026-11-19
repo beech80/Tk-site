@@ -25,10 +25,11 @@
     var parts=String(rm.name).split(' · ');$('rcK').textContent=parts.length>1?parts[0]:(rm.chapter?'':'TESTAMENTS');$('rcN').textContent=parts.length>1?parts.slice(1).join(' · '):rm.name;
     var rc=$('roomCard');rc.classList.add('on');clearTimeout(rcT);rcT=setTimeout(function(){rc.classList.remove('on')},2600);
   }
-  var keysShown=false,keysT;
-  function uiStart(){if(!keysShown&&!coarse){keysShown=true;$('keysLegend').classList.remove('gone');keysT=setTimeout(function(){$('keysLegend').classList.add('gone')},9000)}
+  var keysShown=false,keysLeft=0;
+  HOOKS.frame.push(function(dt,raw){if(keysLeft>0&&mode==='play'){keysLeft-=Math.min(raw,.1);if(keysLeft<=0)$('keysLegend').classList.add('gone')}});
+  function uiStart(){if(!keysShown&&!coarse){keysShown=true;$('keysLegend').classList.remove('gone');keysLeft=10}
     if(!store('t.onboard'))setTimeout(function(){if(mode==='play')openWelcome()},S.reduced?50:600)}
-  function uiMoved(){if(keysShown&&!$('keysLegend').classList.contains('gone')){clearTimeout(keysT);keysT=setTimeout(function(){$('keysLegend').classList.add('gone')},4000)}}
+  function uiMoved(){if(keysLeft>4)keysLeft=4}
   function openWelcome(){
     var rows=coarse?[['Left thumb','Walk. The control appears where you touch.'],['Right side','Drag to look around.'],['Tap','Open a photograph or panel, or tap the floor to walk there.'],['Map','Tap the round map to see every room.']]
       :[['<kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd>','Walk. Hold <kbd>Shift</kbd> to walk faster.'],['Mouse','Look around. Click the view first.'],['<kbd>E</kbd> or click','Open what you are facing.'],['<kbd>M</kbd>','The gallery map.'],['<kbd>Esc</kbd>','Menu and settings.']];
@@ -139,7 +140,7 @@
       svg+='<text x="'+cx+'" y="'+cy+'" font-size="'+f.toFixed(2)+'">'+esc(mapName(r))+'</text>'+(sub?'<text class="s" x="'+cx+'" y="'+(cy+f*1.25).toFixed(2)+'" font-size="'+(f*.75).toFixed(2)+'">'+esc(sub)+'</text>':'')});
     svg+='<text x="0" y="7" font-size="'+fs.toFixed(2)+'">Entrance</text><g id="mapDot"><circle r="'+(fs*.55).toFixed(2)+'" fill="#b49be0"/><circle r="'+(fs*1.1).toFixed(2)+'" fill="none" stroke="#b49be0" stroke-width=".25" opacity=".6"/><path d="M0 '+(-fs*1.6).toFixed(2)+' L'+(-fs*.5).toFixed(2)+' '+(-fs*.7).toFixed(2)+' L'+(fs*.5).toFixed(2)+' '+(-fs*.7).toFixed(2)+' Z" fill="#b49be0"/></g><text id="mapHere" class="here" font-size="'+(fs*.8).toFixed(2)+'">You are here</text>';
     var list=[['lobby',RM.lobby.name]];ROOMS.forEach(function(r){if(r.id!=='lobby'&&!r.cor&&SPAWN[r.id])list.push([r.id,r.name])});list.push(['entrance','Entrance']);
-    openOv('map','<span class="lbl kick">Floor plan</span><h2>Gallery Map</h2><div class="mapgrid"><svg id="mapSvg" viewBox="'+[x0,z0,VW,z1-z0].map(function(v){return v.toFixed(1)}).join(' ')+'" role="img" aria-label="Floor plan of the museum. Choose a room in the list to walk there.">'+svg+'</svg><ul class="list">'+list.map(function(l){var h=l[0]===here;return '<li><button type="button" data-go="'+l[0]+'"'+(h?' class="here" aria-current="location"':'')+'>'+esc(l[1])+'<small>'+(h?'You are here':'Go')+'</small></button></li>'}).join('')+'<li><button type="button" data-info>Visitor information<small>FAQ · Policies</small></button></li><li><button type="button" data-contact>Contact<small>Write to us</small></button></li></ul></div>');
+    openOv('map','<span class="lbl kick">Floor plan</span><h2>Gallery Map</h2><div class="mapgrid"><svg id="mapSvg" viewBox="'+[x0,z0,VW,z1-z0].map(function(v){return v.toFixed(1)}).join(' ')+'" role="img" aria-label="Floor plan of the museum. Choose a room in the list to walk there.">'+svg+'</svg><ul class="list">'+list.map(function(l){var h=l[0]===here,pp=String(l[1]).split(' · '),sub=pp.length>2;return '<li><button type="button" data-go="'+l[0]+'"'+(h?' aria-current="location"':'')+' class="'+(h?'here ':'')+(sub?'sub':'')+'"'+(sub?' aria-label="'+esc(l[1])+'"':'')+'>'+esc(sub?pp.slice(2).join(' · '):l[1])+'<small>'+(h?'You are here':'Go')+'</small></button></li>'}).join('')+'<li><button type="button" data-info>Visitor information<small>FAQ · Policies</small></button></li><li><button type="button" data-contact>Contact<small>Write to us</small></button></li></ul></div>');
     $('ovIn').querySelectorAll('[data-go]').forEach(function(b){b.addEventListener('click',function(){travel(b.getAttribute('data-go'))})});
     $('ovIn').querySelector('[data-info]').addEventListener('click',function(){openInfo('faq')});$('ovIn').querySelector('[data-contact]').addEventListener('click',openContact);dot();
   }

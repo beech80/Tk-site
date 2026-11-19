@@ -27,12 +27,12 @@
       for(var i=0;i<2;i++)for(var j=0;j<4;j++){var t=210+rn()*30|0;c.fillStyle='rgb('+t+','+(t-3)+','+(t-8)+')';c.fillRect(i*512+2,j*256+2,508,252);
         var g=c.createLinearGradient(0,j*256,0,j*256+256);g.addColorStop(0,'rgba(255,255,255,.05)');g.addColorStop(1,'rgba(0,0,0,.07)');c.fillStyle=g;c.fillRect(i*512+2,j*256+2,508,252)}
       for(var k=0;k<9000;k++){c.fillStyle='rgba('+(rn()<.5?'0,0,0':'255,255,255')+','+(rn()*.07)+')';c.fillRect(rn()*W,rn()*H,1+rn()*2,1+rn()*2)}}));
-    ARCH.clad=new T.MeshStandardMaterial({color:0x34312e,map:clad,bumpMap:clad,bumpScale:.025,roughness:.82});
+    ARCH.clad=new T.MeshStandardMaterial({color:0x1f1d1b,map:clad,bumpMap:clad,bumpScale:.025,roughness:.82});
     /* forecourt paving: 1.2 x 0.6 m pavers, running bond, 4.8 m tile */
     var pave=archRep(ctex(1024,1024,function(c,W,H){var rn=archRng(5);c.fillStyle='#000';c.fillRect(0,0,W,H);
       for(var j=0;j<8;j++)for(var i=-1;i<4;i++){var x=i*256+(j%2?128:0),t=150+rn()*50|0;c.fillStyle='rgb('+t+','+(t-2)+','+(t-6)+')';c.fillRect(x+2,j*128+2,252,124);if(x<0)c.fillRect(x+2+W,j*128+2,252,124)}
       for(var k=0;k<14000;k++){c.fillStyle='rgba('+(rn()<.5?'0,0,0':'255,255,255')+','+(rn()*.08)+')';c.fillRect(rn()*W,rn()*H,1+rn()*2,1+rn()*2)}}));
-    ARCH.pave=new T.MeshStandardMaterial({color:0x2c2b29,map:pave,bumpMap:pave,bumpScale:.02,roughness:.55,metalness:.1});
+    ARCH.pave=new T.MeshStandardMaterial({color:0x1c1b1a,map:pave,bumpMap:pave,bumpScale:.02,roughness:.55,metalness:.1});
     /* lawn / gravel ground, 8 m tile */
     var gr=archRep(ctex(512,512,function(c,W,H){var rn=archRng(3);c.fillStyle='#808080';c.fillRect(0,0,W,H);for(var k=0;k<16000;k++){c.fillStyle='rgba('+(rn()<.5?'0,0,0':'255,255,255')+','+(rn()*.18)+')';c.fillRect(rn()*W,rn()*H,1+rn()*2,1+rn()*2)}}));
     ARCH.ground=new T.MeshStandardMaterial({color:0x111112,map:gr,roughness:.97});
@@ -41,7 +41,7 @@
     ARCH.soffit=new T.MeshStandardMaterial({color:0x6a625a,roughness:.9});
     ARCH.water=new T.MeshStandardMaterial({color:0x07080b,roughness:.06,metalness:.4,transparent:true,opacity:.42,depthWrite:false});
     /* tree canopy: vertex colour (brightness) also scales the purple emissive -> lit from below */
-    ARCH.canopy=new T.MeshStandardMaterial({color:0x4a3d5a,emissive:0x6e42a3,emissiveIntensity:.55,roughness:1,flatShading:true,vertexColors:true});
+    ARCH.canopy=new T.MeshStandardMaterial({color:0x231d2b,emissive:0x6e42a3,emissiveIntensity:.3,roughness:1,flatShading:true,vertexColors:true});
     ARCH.canopy.onBeforeCompile=function(s){s.fragmentShader=s.fragmentShader.replace('#include <emissivemap_fragment>','#include <emissivemap_fragment>\n#ifdef USE_COLOR\ntotalEmissiveRadiance*=vColor*vColor;\n#endif')};
     /* additive light planes, coloured per vertex (colour x brightness) so one material serves many */
     function add(map){return new T.MeshBasicMaterial({map:map,vertexColors:true,transparent:true,blending:T.AdditiveBlending,depthWrite:false,fog:true})}
@@ -77,7 +77,7 @@
     lamp.bx(-PX,PX,.085,.095,PZ+.01,PZ+.03);lamp.bx(-PX-.5,PX+.5,.035,.045,PZ+.51,PZ+.53);
     glowB.quad(2*PX+2,.9,0,.06,PZ+.7,-Math.PI/2,0,archCol(WARM,.35));
     /* linear path lights set into the ground */
-    [-1,1].forEach(function(s){lamp.bx(s*3.12-.025,s*3.12+.025,.0,.018,PZ+1.2,32);glowB.quad(1.1,32-PZ,s*3.12,.02,(PZ+33)/2,-Math.PI/2,0,archCol(WARM,.28))});
+    [-1,1].forEach(function(s){lamp.bx(s*3.12-.025,s*3.12+.025,.0,.018,PZ+1.2,32);glowB.quad(1.1,32-PZ,s*3.12,.02,(PZ+33)/2,-Math.PI/2,0,archCol(WARM,.16))});
 
     /* ----- reflecting pools ----- */
     pools.forEach(function(p){var c=.35,h=.3;
@@ -128,12 +128,11 @@
     bronze.bx(-3.06,-3,0,5.2,-.5,.5);bronze.bx(3,3.06,0,5.2,-.5,.5);bronze.bx(-3.06,3.06,5.14,5.24,-.5,.5);bronze.bx(-3.06,3.06,0,.1,-.5,.5);
 
     /* ----- lettering: TESTAMENTS above the portal (lit, with halo); tagline cut into the portal lintel ----- */
-    var sign=archText(13.6,1.9,function(c,W,H){c.fillStyle='#fbf7ef';c.font='400 '+Math.round(H*.8)+'px "Bodoni Moda"';sp(c,'TESTAMENTS',W/2,H*.8,Math.round(H*.13))},300);
+    var sign=archText(13.6,1.9,function(c,W,H){c.fillStyle='#fbf7ef';c.font='500 '+Math.round(H*.8)+'px "Bodoni Moda"';sp(c,'TESTAMENTS',W/2,H*.8,Math.round(H*.13))},300);
     sign.position.set(0,12.15,FZ+.02);scene.add(sign);refl.push(sign);
-    var halo=glow(17,4.2,0xfff0dc,.16);halo.position.set(0,12.1,FZ+.01);scene.add(halo);
+    var halo=glow(15,2.6,0xfff0dc,.1);halo.position.set(0,12.1,FZ+.01);scene.add(halo);
     var sub=archText(6.4,.5,function(c,W,H){c.fillStyle='#e9e4da';c.font='500 '+Math.round(H*.56)+'px Inter';sp(c,'UNDERSTAND THE WHY.',W/2,H*.72,Math.round(H*.3))},500);
     sub.position.set(0,PH+.6,FZ+.81);scene.add(sub);refl.push(sub);
-    spotB.quad(14,5,0,12.9,FZ+.015,0,0,archCol(0xfff0dc,.22));
 
     /* ----- doors (slide into the wall; doorL/doorR/doorCol drive the core loop) ----- */
     doorL=box(3,5.2,.1,MAT.glass,-1.5,2.6,0);doorR=box(3,5.2,.1,MAT.glass,1.5,2.6,0);
@@ -145,7 +144,7 @@
     /* the vestibule behind the glass: a luminous ceiling and washed walls, visibly warm from the plaza */
     var lc=new T.Mesh(new T.PlaneGeometry(5.6,5.4),new T.MeshBasicMaterial({map:ctex(256,256,function(c,W,H){c.fillStyle='#3a3026';c.fillRect(0,0,W,H);var g=c.createRadialGradient(W/2,H/2,0,W/2,H/2,W*.6);g.addColorStop(0,'#fff1dc');g.addColorStop(1,'#e8cfa8');c.fillStyle=g;c.fillRect(10,10,W-20,H-20);c.fillStyle='rgba(0,0,0,.35)';for(var i=1;i<4;i++){c.fillRect(i*W/4-1,10,2,H-20);c.fillRect(10,i*H/4-1,W-20,2)}})}));
     lc.rotation.x=Math.PI/2;lc.position.set(0,5.17,-3);scene.add(lc);
-    [-1,1].forEach(function(s){spotB.quad(5.6,5,s*2.84,2.6,-3,0,-s*Math.PI/2,archCol(WARM,.5))});
+    [-1,1].forEach(function(s){spotB.quad(5.6,5,s*2.84,2.6,-3,0,-s*Math.PI/2,archCol(WARM,.22))});
     glowB.quad(5.4,5.6,0,.02,-3,-Math.PI/2,0,archCol(WARM,.4));
     var fw=new T.PointLight(0xffe2c0,1.6,24,2);fw.position.set(0,5.6,5.5);scene.add(fw);
 
@@ -153,13 +152,13 @@
     var trunks=new ArchB(),cans=new ArchB();
     function tree(x,z,s){var ht=2.6*s,ry=rn()*6.28;
       trunks.add(new T.CylinderGeometry(.08*s,.17*s,ht+.6*s,7),new T.Matrix4().setPosition(x,(ht+.6*s)/2,z));
-      [[.9,.5],[-.7,.62]].forEach(function(b,i){var a=ry+i*2.6,m=new T.Matrix4().makeRotationFromEuler(new T.Euler(Math.sin(a)*b[0],0,Math.cos(a)*b[0]));m.setPosition(x+Math.cos(a)*.35*s,ht*.82,z+Math.sin(a)*.35*s);trunks.add(new T.CylinderGeometry(.04*s,.08*s,1.6*s,5),m)});
+      [[.55,.5],[-.5,.62]].forEach(function(b,i){var a=ry+i*2.6,m=new T.Matrix4().makeRotationFromEuler(new T.Euler(Math.sin(a)*b[0],0,-Math.cos(a)*b[0]));m.setPosition(x+Math.cos(a)*.2*s,ht*.95,z+Math.sin(a)*.2*s);trunks.add(new T.CylinderGeometry(.03*s,.07*s,1.1*s,5),m)});
       var cy=ht+1.1*s,n=7;
-      for(var i=0;i<n;i++){var a=ry+i/n*6.28,rr=i?1.05*s:0,r=(i?.85+rn()*.35:1.35)*s,g=new T.IcosahedronGeometry(r,1),pa=g.attributes.position;
+      for(var i=0;i<n;i++){var a=ry+i/n*6.28,rr=i?.95*s:0,r=(i?.7+rn()*.3:1.15)*s,g=new T.IcosahedronGeometry(r,1),pa=g.attributes.position;
         for(var k=0;k<pa.count;k++){var vx=pa.getX(k),vy=pa.getY(k),vz=pa.getZ(k),nz=1+.16*Math.sin(vx*4.1+vz*2.7+i)*Math.cos(vy*3.3-vz*1.9);pa.setXYZ(k,vx*nz,vy*nz*.78,vz*nz)}
         var bx=x+Math.cos(a)*rr,by=cy+(i?(rn()-.35)*.8*s:.25*s),bz=z+Math.sin(a)*rr;
         cans.add(g,new T.Matrix4().setPosition(bx,by,bz),function(px,py){var b=Math.max(.18,Math.min(1,1.25-(py-ht)/(2.6*s)));return [b,b,b]})}
-      glowB.quad(5*s,5*s,x,.03,z,-Math.PI/2,0,archCol(PUR,.55));lamp.bx(x+.5*s-.1,x+.5*s+.1,0,.04,z+.5*s-.1,z+.5*s+.1);
+      glowB.quad(4*s,4*s,x,.03,z,-Math.PI/2,0,archCol(PUR,.3));lamp.bx(x+.45*s-.05,x+.45*s+.05,0,.03,z-.05,z+.05);
       col(x-.3,x+.3,z-.3,z+.3)}
     [[-14,15.5,1],[14,15.5,1],[-14,22,1.1],[14,22,1.1],[-14,28.5,.95],[14,28.5,.95],[-19,18.5,1.15],[19,18.5,1.15],[-19,26,1],[19,26,1],[-21,5.5,1.2],[21,5.5,1.2],[-26,11,1.1],[26,11,1.1],[-25,22,1.25],[25,22,1.25],[-28,30,1.1],[28,30,1.1]].forEach(function(t){tree(t[0],t[1],t[2])});
     trunks.mesh(MAT.trunk);var canM=cans.mesh(A.canopy);refl.push(canM);
@@ -168,8 +167,8 @@
     [-1,1].forEach(function(s){var x1=s*8.2,x2=s*13.6;stone.bx(x1,x2,0,.6,7.9,9.3,0,6);dark.bx(x1,x2,.6,.62,7.95,9.25);
       col(Math.min(x1,x2),Math.max(x1,x2),7.9,9.3);
       [17,25].forEach(function(z){stone.bx(s*12.6-.3,s*12.6+.3,.08,.46,z-1.2,z+1.2,0,6);dark.bx(s*12.6-.22,s*12.6+.22,0,.08,z-1.1,z+1.1);col(s*12.6-.3,s*12.6+.3,z-1.2,z+1.2)})});
-    var shr=new ArchB();[-1,1].forEach(function(s){for(var i=0;i<6;i++){var g=new T.IcosahedronGeometry(.5,1);shr.add(g,new T.Matrix4().makeScale(1.15,.55,1.1).setPosition(s*(8.9+i*.85),.82,8.6),[.75,.75,.75])}
-      glowB.quad(6,2.2,s*10.9,.12,8.6,-Math.PI/2,0,archCol(PUR,.3))});
+    var shr=new ArchB();[-1,1].forEach(function(s){for(var i=0;i<6;i++){var g=new T.IcosahedronGeometry(.5,1);shr.add(g,new T.Matrix4().makeScale(1.15,.55,1.1).setPosition(s*(8.9+i*.85),.82,8.6),[.5,.5,.5])}
+      glowB.quad(6,2.2,s*10.9,.12,8.6,-Math.PI/2,0,archCol(PUR,.18))});
     shr.mesh(A.canopy);
 
     /* ----- plaza edge: low stone wall that explains the boundary ----- */
