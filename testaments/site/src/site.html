@@ -678,7 +678,7 @@ var STOCKISTS = [];   // confirmed partners only: {name, address}
     var SCAL=ctex(256,256,function(c,W,H){c.save();c.translate(W/2,-H*.08);c.scale(.55,1.15);var g=c.createRadialGradient(0,0,0,0,0,H*.95);g.addColorStop(0,'rgba(255,255,255,1)');g.addColorStop(.25,'rgba(255,255,255,.62)');g.addColorStop(.6,'rgba(255,255,255,.2)');g.addColorStop(1,'rgba(255,255,255,0)');c.fillStyle=g;c.fillRect(-W*2,0,W*4,H*2);c.restore();
       var f=c.createLinearGradient(0,0,W,0);f.addColorStop(0,'rgba(0,0,0,1)');f.addColorStop(.18,'rgba(0,0,0,0)');f.addColorStop(.82,'rgba(0,0,0,0)');f.addColorStop(1,'rgba(0,0,0,1)');c.globalCompositeOperation='destination-out';c.fillStyle=f;c.fillRect(0,0,W,H)});
     SCAL.encoding=T.LinearEncoding;
-    ROOMS.forEach(function(r){if(r.cor||r.id==='vestibule')return;var wh=!!r.white,H=Math.min(r.h*.8,r.id==='lobby'?6.5:4.6),sp=r.id==='lobby'?3.4:2.7,kk=k(0xffeedd,wh?.075:.15),o=.155;
+    ROOMS.forEach(function(r){if(r.cor||r.id==='vestibule'||r.dark)return;var wh=!!r.white,H=Math.min(r.h*.8,r.id==='lobby'?6.5:4.6),sp=r.id==='lobby'?3.4:2.7,kk=k(0xffeedd,wh?.075:.15),o=.155;
       [['s',r.x1,r.x2],['n',r.x1,r.x2],['w',r.z2,r.z1],['e',r.z2,r.z1]].forEach(function(sd){var s=sd[0];if(r.open&&r.open.indexOf(s)>=0)return;
         var a=sd[1],b=sd[2],len=b-a,n=Math.max(1,Math.round(len/sp)),step=len/n;
         for(var i=0;i<n;i++){var at=a+step*(i+.5),bad=(r.doors||[]).some(function(d){return d.s===s&&Math.abs(d.at-at)<(d.w||4)/2+.9});if(bad)continue;
@@ -768,7 +768,7 @@ var STOCKISTS = [];   // confirmed partners only: {name, address}
   function lookTargets(w,h){
     ['rt','b1','b1b','b2','b2b'].forEach(function(k){if(LK[k]){LK[k].dispose();LK[k]=null}});
     var hi=LK.tier==='high',o={type:T.HalfFloatType,format:T.RGBAFormat,minFilter:T.LinearFilter,magFilter:T.LinearFilter,depthBuffer:false,stencilBuffer:false,generateMipmaps:false};
-    var mo={type:T.HalfFloatType,format:T.RGBAFormat,minFilter:T.LinearFilter,magFilter:T.LinearFilter,depthBuffer:true,stencilBuffer:false,generateMipmaps:false};
+    var mo={type:T.HalfFloatType,format:T.RGBAFormat,minFilter:T.LinearFilter,magFilter:T.LinearFilter,depthBuffer:true,stencilBuffer:true,generateMipmaps:false};
     if(R.capabilities.isWebGL2&&T.WebGLMultisampleRenderTarget){LK.rt=new T.WebGLMultisampleRenderTarget(w,h,mo);LK.rt.samples=hi?4:(coarse?0:4)}else LK.rt=new T.WebGLRenderTarget(w,h,mo);
     var d1=hi?2:4,w1=Math.max(1,Math.round(w/d1)),h1=Math.max(1,Math.round(h/d1));
     LK.b1=new T.WebGLRenderTarget(w1,h1,o);LK.b1b=new T.WebGLRenderTarget(w1,h1,o);
@@ -1056,7 +1056,7 @@ var STOCKISTS = [];   // confirmed partners only: {name, address}
     mgr.onError=function(u){loadTxt('A photograph could not load: '+u.split('/').pop())};
     mgr.onLoad=function(){if(ready)return;ready=true;$('load').hidden=true;resize();start();if(gateDone)afterGate()};
     GLOW=ctex(256,256,function(c){var g=c.createRadialGradient(128,128,0,128,128,128);g.addColorStop(0,'rgba(255,255,255,1)');g.addColorStop(.35,'rgba(255,255,255,.45)');g.addColorStop(1,'rgba(255,255,255,0)');c.fillStyle=g;c.fillRect(0,0,256,256)});
-    SPOT=ctex(256,256,function(c){c.save();c.translate(128,0);c.scale(.62,1);var g=c.createRadialGradient(0,10,0,0,10,250);g.addColorStop(0,'rgba(255,255,255,.75)');g.addColorStop(.45,'rgba(255,255,255,.22)');g.addColorStop(1,'rgba(255,255,255,0)');c.fillStyle=g;c.fillRect(-300,0,600,256);c.restore()});
+    SPOT=ctex(256,256,function(c){c.save();c.translate(128,0);c.scale(.62,1);var g=c.createRadialGradient(0,10,0,0,10,250);g.addColorStop(0,'rgba(255,255,255,.75)');g.addColorStop(.45,'rgba(255,255,255,.22)');g.addColorStop(1,'rgba(255,255,255,0)');c.fillStyle=g;c.fillRect(-300,0,600,256);c.restore();c.globalCompositeOperation='destination-in';var fd=c.createLinearGradient(0,0,0,256);fd.addColorStop(0,'rgba(0,0,0,0)');fd.addColorStop(.18,'rgba(0,0,0,1)');fd.addColorStop(.8,'rgba(0,0,0,1)');fd.addColorStop(1,'rgba(0,0,0,0)');c.fillStyle=fd;c.fillRect(0,0,256,256);c.globalCompositeOperation='source-over'});
     MAT.stone=new T.MeshStandardMaterial({color:0x1d1c1b,roughness:.92});
     MAT.wall=new T.MeshStandardMaterial({color:0x121212,roughness:.95});
     MAT.whiteWall=new T.MeshStandardMaterial({color:0xcfcac1,roughness:.95});
@@ -1568,7 +1568,7 @@ var STOCKISTS = [];   // confirmed partners only: {name, address}
         var vit=prMesh(g,new T.BoxGeometry(.7,.5,.7),new T.MeshStandardMaterial({color:0x222228,roughness:.05,metalness:.5,transparent:true,opacity:.18,depthWrite:false}),cx,1.25,cz);
         col(cx-.45,cx+.45,cz-.45,cz+.45)}
       scene.add(g);floorGlow(cx,cz,3.2,2.4,0xfff1dc,.16);
-      addInter(cx,cz-dir*.9,null,2.6,'Read',s[0]+' · '+s[1],function(){openProcess(i)},g);
+      addInter(cx,cz,null,2.8,'Read',s[0]+' · '+s[1],function(){openProcess(i)},g);
     });
     exOnWall(Pr,'e',-13,3.1,10.4,3.6,function(x,W,H){exBg(x,W,H);var L=W*.07;exK(x,'The Process',L,H*.16,H*.05);
       exT(x,'BEFORE THE PAGE,',L-H*.01,H*.42,H*.135,null,'left',H*.015);exT(x,'THERE IS A CONVERSATION.',L-H*.01,H*.63,H*.135,null,'left',H*.015);
@@ -1640,7 +1640,7 @@ var STOCKISTS = [];   // confirmed partners only: {name, address}
     exAccent(r,'u1',-6,1.2,tone);
     exSignL(r,'u1',-2.4,3.1,6.4,4.2,function(x,W,H){exBg(x,W,H,'#0e0d0d');var L=W*.08;
       exK(x,'Chapter '+c.num,L,H*.17,H*.042);
-      exT(x,c.title.toUpperCase(),L-H*.01,H*.43,H*.24,null,'left',H*.03);
+      var tt=c.title.toUpperCase(),ts=H*.24;x.font='400 '+Math.round(ts)+'px "Bodoni Moda"';var tw=x.measureText(tt).width+H*.03*(tt.length-1);if(tw>W*.84)ts*=W*.84/tw;exT(x,tt,L-H*.01,H*.43,ts,null,'left',ts*.125);
       exI(x,who(c),L,H*.57,H*.075,'#e6e1d8');
       exRule(x,L,H*.65,H*.09,H*.008);
       if(c.intro)exW(x,c.intro,L,H*.75,W*.82,H*.042,H*.062,'400 '+Math.round(H*.042)+'px Inter','#d9d5cd');
@@ -1681,7 +1681,7 @@ var STOCKISTS = [];   // confirmed partners only: {name, address}
     var parts=[['01','The Beginning','v1',35.4],['02','Turning Points','v1',41.6],['03','The Present','v0',34.6],['04','Reflection','v0',38.9]];
     parts.forEach(function(s){exSignL(r,s[2],s[3],2.5,3.6,2.4,function(x,W,H){exBg(x,W,H);var L=W*.1;
         exT(x,s[0],L,H*.3,H*.16,EX.vio);exT(x,s[1],L,H*.58,H*.15);exRule(x,L,H*.68,H*.07,H*.008,'#6b6760');exK(x,'On release',L,H*.84,H*.06)},
-      {act:function(){toast(s[1]+': this part of the conversation is published with the chapter.')},label:s[0]+' · '+s[1],r:4})});
+      {act:function(){toast(s[1]+': this part of the conversation is published with the chapter.')},label:s[0]+' · '+s[1],r:5.5})});
     exAccent(r,'u1',-9,7.5,tone);
     var hs=exHand(r.wing);
     [['17','What would you tell the world?',hs>0?-4.65:3.15],['18','What would you title your chapter?',hs>0?3.15:-4.65]].forEach(function(q){
@@ -2162,7 +2162,7 @@ var STOCKISTS = [];   // confirmed partners only: {name, address}
     var x0=BOUNDS.x1-2,x1=BOUNDS.x2+2,z0=BOUNDS.z2-2,z1=14,VW=x1-x0,fs=Math.max(1.6,VW/46),here=roomAt(P.x,P.z).id,svg='';
     svg+='<rect class="plaza" data-go="entrance" x="'+(BOUNDS.x1+10)+'" y="0.6" width="'+(BOUNDS.x2-BOUNDS.x1-20)+'" height="11"><title>Entrance</title></rect><line x1="'+BOUNDS.x1+'" y1="0" x2="'+BOUNDS.x2+'" y2="0" stroke="rgba(255,255,255,.35)" stroke-width=".3"/>';
     ROOMS.forEach(function(r){if(r.chapter&&!r.c)return;var go=!r.cor&&SPAWN[r.id];svg+='<rect class="'+(r.cor||r.id==='vestibule'?'cor':'rm'+(r.id===here?' cur':''))+'" '+(go?'data-go="'+r.id+'" tabindex="-1"':'')+' x="'+r.x1+'" y="'+r.z2+'" width="'+(r.x2-r.x1)+'" height="'+(r.z1-r.z2)+'">'+(r.name?'<title>'+esc(r.name)+'</title>':'')+'</rect>'});
-    ROOMS.forEach(function(r){if(r.cor||r.id==='vestibule'||(r.chapter&&!r.c))return;var cx=(r.x1+r.x2)/2,cy=(r.z1+r.z2)/2,w=r.x2-r.x1,f=Math.min(fs,w/7),sub=r.c?'Chapter '+r.c.num:'';if(r.id==='lobby'){cy=r.z1-4.5}
+    ROOMS.forEach(function(r){if(r.cor||r.id==='vestibule'||(r.chapter&&!r.c)||(r.chapter&&r.id!==r.chapter))return;var cx=(r.x1+r.x2)/2,cy=(r.z1+r.z2)/2,w=r.x2-r.x1,f=Math.min(fs,w/7),sub=r.c?'Chapter '+r.c.num:'';if(r.id==='lobby'){cy=r.z1-4.5}
       svg+='<text x="'+cx+'" y="'+cy+'" font-size="'+f.toFixed(2)+'">'+esc(mapName(r))+'</text>'+(sub?'<text class="s" x="'+cx+'" y="'+(cy+f*1.25).toFixed(2)+'" font-size="'+(f*.75).toFixed(2)+'">'+esc(sub)+'</text>':'')});
     svg+='<text x="0" y="7" font-size="'+fs.toFixed(2)+'">Entrance</text><g id="mapDot"><circle r="'+(fs*.55).toFixed(2)+'" fill="#b49be0"/><circle r="'+(fs*1.1).toFixed(2)+'" fill="none" stroke="#b49be0" stroke-width=".25" opacity=".6"/><path d="M0 '+(-fs*1.6).toFixed(2)+' L'+(-fs*.5).toFixed(2)+' '+(-fs*.7).toFixed(2)+' L'+(fs*.5).toFixed(2)+' '+(-fs*.7).toFixed(2)+' Z" fill="#b49be0"/></g><text id="mapHere" class="here" font-size="'+(fs*.8).toFixed(2)+'">You are here</text>';
     var list=[['lobby',RM.lobby.name]];ROOMS.forEach(function(r){if(r.id!=='lobby'&&!r.cor&&SPAWN[r.id])list.push([r.id,r.name])});list.push(['entrance','Entrance']);

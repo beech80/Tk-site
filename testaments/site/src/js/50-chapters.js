@@ -61,7 +61,7 @@
     exAccent(r,'u1',-6,1.2,tone);
     exSignL(r,'u1',-2.4,3.1,6.4,4.2,function(x,W,H){exBg(x,W,H,'#0e0d0d');var L=W*.08;
       exK(x,'Chapter '+c.num,L,H*.17,H*.042);
-      exT(x,c.title.toUpperCase(),L-H*.01,H*.43,H*.24,null,'left',H*.03);
+      var tt=c.title.toUpperCase(),ts=H*.24;x.font='400 '+Math.round(ts)+'px "Bodoni Moda"';var tw=x.measureText(tt).width+H*.03*(tt.length-1);if(tw>W*.84)ts*=W*.84/tw;exT(x,tt,L-H*.01,H*.43,ts,null,'left',ts*.125);
       exI(x,who(c),L,H*.57,H*.075,'#e6e1d8');
       exRule(x,L,H*.65,H*.09,H*.008);
       if(c.intro)exW(x,c.intro,L,H*.75,W*.82,H*.042,H*.062,'400 '+Math.round(H*.042)+'px Inter','#d9d5cd');
@@ -102,7 +102,7 @@
     var parts=[['01','The Beginning','v1',35.4],['02','Turning Points','v1',41.6],['03','The Present','v0',34.6],['04','Reflection','v0',38.9]];
     parts.forEach(function(s){exSignL(r,s[2],s[3],2.5,3.6,2.4,function(x,W,H){exBg(x,W,H);var L=W*.1;
         exT(x,s[0],L,H*.3,H*.16,EX.vio);exT(x,s[1],L,H*.58,H*.15);exRule(x,L,H*.68,H*.07,H*.008,'#6b6760');exK(x,'On release',L,H*.84,H*.06)},
-      {act:function(){toast(s[1]+': this part of the conversation is published with the chapter.')},label:s[0]+' · '+s[1],r:4})});
+      {act:function(){toast(s[1]+': this part of the conversation is published with the chapter.')},label:s[0]+' · '+s[1],r:5.5})});
     exAccent(r,'u1',-9,7.5,tone);
     var hs=exHand(r.wing);
     [['17','What would you tell the world?',hs>0?-4.65:3.15],['18','What would you title your chapter?',hs>0?3.15:-4.65]].forEach(function(q){

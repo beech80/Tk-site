@@ -36,7 +36,7 @@
         var vit=prMesh(g,new T.BoxGeometry(.7,.5,.7),new T.MeshStandardMaterial({color:0x222228,roughness:.05,metalness:.5,transparent:true,opacity:.18,depthWrite:false}),cx,1.25,cz);
         col(cx-.45,cx+.45,cz-.45,cz+.45)}
       scene.add(g);floorGlow(cx,cz,3.2,2.4,0xfff1dc,.16);
-      addInter(cx,cz-dir*.9,null,2.6,'Read',s[0]+' · '+s[1],function(){openProcess(i)},g);
+      addInter(cx,cz,null,2.8,'Read',s[0]+' · '+s[1],function(){openProcess(i)},g);
     });
     exOnWall(Pr,'e',-13,3.1,10.4,3.6,function(x,W,H){exBg(x,W,H);var L=W*.07;exK(x,'The Process',L,H*.16,H*.05);
       exT(x,'BEFORE THE PAGE,',L-H*.01,H*.42,H*.135,null,'left',H*.015);exT(x,'THERE IS A CONVERSATION.',L-H*.01,H*.63,H*.135,null,'left',H*.015);
