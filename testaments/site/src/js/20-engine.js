@@ -10,7 +10,8 @@
 
   function webgl(){try{var c=document.createElement('canvas');return !!(window.WebGLRenderingContext&&(c.getContext('webgl')||c.getContext('experimental-webgl')))}catch(e){return false}}
   function loadTxt(t){$('loadTxt').textContent=t}
-  function fail(msg){$('load').hidden=false;$('load').innerHTML='<p class="mark">TESTAMENTS</p><p style="max-width:44ch;color:#cfcdc8;line-height:1.7;margin-top:14px">'+esc(msg)+'</p>'+(SITE.contactEmail?'<p class="lbl" style="margin-top:20px;color:#bdbbb6;user-select:all">'+esc(SITE.contactEmail)+'</p>':'')}
+  function fail(msg){var l=$('load');l.hidden=false;l.classList.add('failed');l.innerHTML='<p class="mark">TESTAMENTS</p><p class="loadtag">Understand the Why.</p><p class="failmsg">'+esc(msg)+'</p><div class="row"><button class="btn" type="button" id="failFilm">Watch the film</button><button class="btn" type="button" id="failRetry">Try again</button></div>'+(SITE.contactEmail?'<p class="failmail">Questions: <span>'+esc(SITE.contactEmail)+'</span></p>':'');
+    $('failRetry').addEventListener('click',function(){location.reload()});$('failFilm').addEventListener('click',function(){var v=$('filmVid');$('film').hidden=false;try{v.play().catch(function(){})}catch(e){}$('filmClose').focus()})}
   function boot(){
     if(!webgl()){fail('TESTAMENTS is a museum you walk through in 3D, and this browser can’t display it. Please try a recent version of Chrome, Safari, Firefox or Edge.');return}
     var s=document.createElement('script');s.src='https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js';
@@ -35,7 +36,11 @@
   function slab(x1,z1,x2,z2,y,mat,down){var m=new T.Mesh(new T.PlaneGeometry(Math.abs(x2-x1),Math.abs(z2-z1)),mat);m.rotation.x=down?Math.PI/2:-Math.PI/2;m.position.set((x1+x2)/2,y,(z1+z2)/2);scene.add(m);return m}
   function place(o,x,y,z,n){o.position.set(x,y,z);o.rotation.y=ROT[n];scene.add(o);return o}
   function onWall(r,side,along){var o=.16;if(side==='w')return {x:r.x1+o,z:along,n:'px'};if(side==='e')return {x:r.x2-o,z:along,n:'nx'};if(side==='s')return {x:along,z:r.z1-o,n:'nz'};return {x:along,z:r.z2+o,n:'pz'}}
-  function addInter(x,z,n,r,verb,label,act){var v=n?NV[n]:[undefined,undefined];inter.push({x:x,z:z,nx:v[0],nz:v[1],r:r,verb:verb,label:label,act:act})}
+  /* addInter(x,z,n,radius,verb,label,act[,hl]) -> the entry (set entry.off=true to disable it).
+     hl (optional) shapes the purple highlight shown when it is targeted:
+       a THREE.Object3D (outlined by its bounding box), or {y,w,h[,x,z]} a frame of w x h metres centred at height y
+       (on the wall when n is given, else turned to the visitor), or {r} a floor ring of radius r. Default: a floor ring. */
+  function addInter(x,z,n,r,verb,label,act,hl){var v=n?NV[n]:[undefined,undefined],o={x:x,z:z,nx:v[0],nz:v[1],r:r,verb:verb,label:label,act:act,hl:hl||null};inter.push(o);return o}
 
   /* ---------- rooms ---------- */
   function buildRoom(r){
@@ -65,19 +70,19 @@
     var i=PHOTOS.indexOf(p)+1,dark=!!r.white;
     var lab=plane(.46,.2,ctex(460,200,function(c){c.fillStyle=dark?'#1a1a1a':'#efede8';c.font='500 34px Inter';sp(c,'PL. '+i,0,60,6,'left');c.fillStyle=dark?'#55534f':'#a3a29e';c.font='400 26px Inter';c.fillText('TESTAMENTS',0,120);c.fillText('photography',0,160)}));
     lab.position.set(w/2+.42,-h/2+.1,.01);g.add(lab);
-    place(g,pos.x,y,pos.z,pos.n);addInter(pos.x,pos.z,pos.n,3.6,'View','View photograph',function(){openPhoto(id)});
+    place(g,pos.x,y,pos.z,pos.n);addInter(pos.x,pos.z,pos.n,3.6,'View','View photograph',function(){openPhoto(id)},{y:y,w:w+.14,h:h+.14});
   }
   function emptyFrame(r,side,along,y,w,h,c){
     var pos=onWall(r,side,along),g=new T.Group();var fr=new T.Mesh(new T.BoxGeometry(w+.14,h+.14,.06),MAT.frame);fr.position.z=.03;g.add(fr);
     var t=plane(w,h,ctex(512,Math.round(512*h/w),function(cx,W,H){cx.fillStyle='#111';cx.fillRect(0,0,W,H);cx.strokeStyle='rgba(255,255,255,.18)';cx.lineWidth=2;cx.strokeRect(24,24,W-48,H-48);cx.fillStyle='#bdbbb6';cx.font='500 22px Inter';sp(cx,'PLATE',W/2,H/2-14,8);cx.fillStyle='#8e8c88';cx.font='400 20px Inter';sp(cx,'ON RELEASE',W/2,H/2+22,6)}),true);
     t.position.z=.065;g.add(t);var s=spot(w*2.4,h*2.5,.5);s.position.set(0,h*.42,.008);g.add(s);
-    place(g,pos.x,y,pos.z,pos.n);addInter(pos.x,pos.z,pos.n,3.4,'View','Plate · on release',function(){toast('Photographs for '+c.title+' will hang here when the chapter is published.')});
+    place(g,pos.x,y,pos.z,pos.n);addInter(pos.x,pos.z,pos.n,3.4,'View','Plate · on release',function(){toast('Photographs for '+c.title+' will hang here when the chapter is published.')},{y:y,w:w+.14,h:h+.14});
   }
   function panel(r,side,along,y,w,h,fn,opts){
     opts=opts||{};var pos=onWall(r,side,along),pxw=Math.round(w*200),pxh=Math.round(h*200);
     var m=plane(w,h,ctex(pxw,pxh,fn));place(m,pos.x+NV[pos.n][0]*.01,y,pos.z+NV[pos.n][1]*.01,pos.n);
     if(opts.light!==false){var s=spot(w*1.5,h*1.9,r.white?.25:.5);place(s,pos.x+NV[pos.n][0]*.005,y+h*.25,pos.z+NV[pos.n][1]*.005,pos.n)}
-    if(opts.act)addInter(pos.x,pos.z,pos.n,opts.r||4.5,opts.verb||'Read',opts.label||'Read',opts.act);
+    if(opts.act)m.inter=addInter(pos.x,pos.z,pos.n,opts.r||4.5,opts.verb||'Read',opts.label||'Read',opts.act,opts.hl||{y:y,w:w,h:h});
     return m;
   }
 
