@@ -10,8 +10,8 @@
     var Pr=RM.process,st=[['n',22.6],['n',29],['n',35.4],['s',25.6],['s',32.4]];
     PROC.forEach(function(s,i){var a=st[i],side=a[0],at=a[1],dir=side==='n'?1:-1,wz=side==='n'?Pr.z2:Pr.z1,p=photo(s[3]),h=p.h>p.w?1.9:1.4;
       /* photograph left, wall text right (as seen facing the wall) */
-      var off=dir===1?-1:1;hang(s[3],Pr,side,at+off*1.25,2.55,h);
-      exOnWall(Pr,side,at-off*1.25,2.45,2.3,1.6,function(x,W,H){exBg(x,W,H);var L=W*.09;exT(x,s[0],L,H*.27,H*.17,EX.vio);exT(x,s[1],L,H*.5,H*.14);exRule(x,L,H*.58,H*.07,H*.008,'#6b6760');
+      var off=dir===1?-1:1,pw=h*p.w/p.h;hang(s[3],Pr,side,at+off*(.5+pw/2),2.55,h);
+      exOnWall(Pr,side,at-off*1.65,2.45,2.3,1.6,function(x,W,H){exBg(x,W,H);var L=W*.09;exT(x,s[0],L,H*.27,H*.17,EX.vio);exT(x,s[1],L,H*.5,H*.14);exRule(x,L,H*.58,H*.07,H*.008,'#6b6760');
         exW(x,s[2],L,H*.72,W*.84,H*.062,H*.088,'400 '+Math.round(H*.062)+'px Inter','#d6d2ca')},{act:function(){openProcess(i)},label:s[0]+' · '+s[1],r:4.5});
       /* the installation, 2 m out from the wall */
       var g=new T.Group(),cz=wz+dir*2.3,cx=at;g.position.set(0,0,0);
@@ -38,8 +38,8 @@
       scene.add(g);floorGlow(cx,cz,3.2,2.4,0xfff1dc,.16);
       addInter(cx,cz-dir*.9,null,2.6,'Read',s[0]+' · '+s[1],function(){openProcess(i)},g);
     });
-    exOnWall(Pr,'e',-13,3.1,9,3.6,function(x,W,H){exBg(x,W,H);var L=W*.07;exK(x,'The Process',L,H*.16,H*.05);
-      exT(x,'BEFORE THE PAGE,',L-H*.01,H*.42,H*.16,null,'left',H*.02);exT(x,'THERE IS A CONVERSATION.',L-H*.01,H*.63,H*.16,null,'left',H*.02);
+    exOnWall(Pr,'e',-13,3.1,10.4,3.6,function(x,W,H){exBg(x,W,H);var L=W*.07;exK(x,'The Process',L,H*.16,H*.05);
+      exT(x,'BEFORE THE PAGE,',L-H*.01,H*.42,H*.135,null,'left',H*.015);exT(x,'THERE IS A CONVERSATION.',L-H*.01,H*.63,H*.135,null,'left',H*.015);
       exRule(x,L,H*.72,H*.08,H*.01);exK(x,'Five stages  ·  01 – 05',L,H*.86,H*.045,EX.vio)},{act:function(){openProcess(-1)},label:'How a chapter is made',r:9});
     box(3,.46,.7,MAT.bench,29,.23,-13);col(27.5,30.5,-13.4,-12.6);
   }

@@ -26,7 +26,7 @@
   /* place a sign on a room wall (world side + along), with an optional tinted wash and interaction */
   function exOnWall(r,side,along,y,w,h,fn,o){
     o=o||{};var pos=onWall(r,side,along),n=NV[pos.n],m=exSign(w,h,fn);place(m,pos.x+n[0]*.045,y,pos.z+n[1]*.045,pos.n);
-    if(o.wash!==false){var s=spot(w*1.6,h*2,o.washOp||(r.white?.22:.42),o.tint);place(s,pos.x+n[0]*.006,y+h*.2,pos.z+n[1]*.006,pos.n)}
+    if(o.wash){var s=spot(w*1.6,h*2,o.washOp||(r.white?.22:.42),o.tint);place(s,pos.x+n[0]*.006,y+h*.2,pos.z+n[1]*.006,pos.n)}
     if(o.act)m.inter=addInter(pos.x,pos.z,pos.n,o.r||4.5,o.verb||'Read',o.label||'Read',o.act,{y:y,w:w,h:h});
     return m}
   /* local-frame versions: w is 'u0','u1','v0','v1', a is the local coordinate along that wall */
@@ -41,7 +41,8 @@
   /* accent wall: a thin tinted skin over a stretch of a wall (local a1..a2) */
   function exAccent(r,w,a1,a2,tone){var W=r.wing,s=wingSide(W,w),b1=wingAlong(W,w,a1),b2=wingAlong(W,w,a2),len=Math.abs(b2-b1),mid=(b1+b2)/2,pos=onWall(r,s,mid),n=NV[pos.n];
     var m=new T.Mesh(new T.PlaneGeometry(len,r.h),new T.MeshStandardMaterial({color:tone.acc,roughness:.92}));place(m,pos.x-n[0]*.008,r.h/2,pos.z-n[1]*.008,pos.n);
-    var s2=spot(len*1.05,r.h*1.1,.07,tone.light);place(s2,pos.x-n[0]*.004,r.h*.52,pos.z-n[1]*.004,pos.n);return m}
+    return m}
+  function exHand(W){return W.f[0]*W.l[1]-W.f[1]*W.l[0]}   /* +1: v grows to the visitor's right when facing f */
   function exNext(c){var i=CH.indexOf(c);return CH[i+1]||null}
   function exPlateMsg(c){return function(){toast('This part of '+c.title+' opens when the chapter is published.')}}
 
@@ -91,7 +92,7 @@
     /* singles */
     [['v1',17],['v1',24.5],['v0',26.6]].forEach(function(s){var q=next();if(q)exHangL(q.id,r,s[0],s[1],2.3,sz(q));else exPlateL(r,s[0],s[1],2.3,1.6,2,c)});
     /* section title, beside the entrance */
-    exSignL(r,'v0',13.6,2.3,2.4,1.1,function(x,W,H){exBg(x,W,H);exK(x,'I',W*.08,H*.3,H*.11,EX.vio);exT(x,'The Photography',W*.08,H*.66,H*.24);exK(x,'TESTAMENTS photography',W*.08,H*.88,H*.085)},{washOp:.3});
+    exSignL(r,'v0',13.9,2.4,3.0,1.3,function(x,W,H){exBg(x,W,H);var L=W*.08;exK(x,'I',L,H*.24,H*.09,EX.vio);exT(x,'The Photography',L,H*.6,H*.2);exK(x,'TESTAMENTS photography',L,H*.84,H*.07)});
     /* a bench facing the diptych */
     exBox(r,3,.46,.7,MAT.bench,20.5,.23,-.4,true);
   }
@@ -103,12 +104,13 @@
         exT(x,s[0],L,H*.3,H*.16,EX.vio);exT(x,s[1],L,H*.58,H*.15);exRule(x,L,H*.68,H*.07,H*.008,'#6b6760');exK(x,'On release',L,H*.84,H*.06)},
       {act:function(){toast(s[1]+': this part of the conversation is published with the chapter.')},label:s[0]+' · '+s[1],r:4})});
     exAccent(r,'u1',-9,7.5,tone);
-    [['17','What would you tell the world?',-4.2],['18','What would you title your chapter?',3.6]].forEach(function(q){
+    var hs=exHand(r.wing);
+    [['17','What would you tell the world?',hs>0?-4.65:3.15],['18','What would you title your chapter?',hs>0?3.15:-4.65]].forEach(function(q){
       exSignL(r,'u1',q[2],2.9,6.2,3.7,function(x,W,H){exBg(x,W,H,'#0e0d0d');var L=W*.08;
         exK(x,'05 · Signature Questions · Q'+q[0],L,H*.17,H*.042,EX.vio);
         exW(x,q[1],L,H*.42,W*.84,H*.15,H*.19);
         exRule(x,L,H*.74,H*.08,H*.008,'#6b6760');
-        exI(x,'The answer, on release.',L,H*.87,H*.065,'#cdc8bf')},
+        exI(x,'The answer, on release.',L,H*.88,H*.08,'#d9d4cb')},
         {act:function(){toast('Question '+q[0]+'. '+who(c)+'’s answer is published with the chapter.')},label:'Question '+q[0],r:7,tint:tone.light})});
     exSignL(r,'u0',-4.2,2.8,5,2.2,function(x,W,H){exBg(x,W,H);var L=W*.08;exK(x,'II',L,H*.22,H*.08,EX.vio);exT(x,'The Story',L,H*.5,H*.2);exI(x,'Eighteen questions in five parts.',L,H*.72,H*.075,'#d9d5cd');exK(x,'Answers on release',L,H*.88,H*.055)});
     exBox(r,3,.46,.7,MAT.bench,38.6,.23,-.8,true);
@@ -154,7 +156,7 @@
       exT(x,c.num,Wd/2,H*.5,H*.2,EX.ink,'center');exRule(x,Wd/2-Wd*.06,H*.56,Wd*.12,H*.004);exT(x,c.title.toUpperCase(),Wd/2,H*.67,H*.075,null,'center',H*.012);exI(x,who(c),Wd/2,H*.73,H*.032,'#d6d1c8','center');
       exK(x,'Chapter '+c.num+'  ·  '+edState(c),Wd/2,H*.9,H*.025,'#a9a49b','center')},{act:function(){openProduct(c)},verb:'Own',label:'The print edition · '+edState(c),r:4});
     /* over the alcove */
-    exSignL(r,'v0',37,3.85,2.4,.55,function(x,Wd,H){exBg(x,Wd,H);exK(x,'III · The Conversation',Wd/2,H*.62,H*.3,null,'center')},{wash:false});
+    exSignL(r,'v0',37,3.9,3.2,.55,function(x,Wd,H){exBg(x,Wd,H);exK(x,'III · The Conversation',Wd/2,H*.64,H*.26,null,'center')});
     /* F · exit */
     var nx=exNext(c);
     exSignL(r,'u0',-18.8,2.3,3.8,1.9,function(x,Wd,H){exBg(x,Wd,H);var L=Wd*.09;exK(x,'Exit',L,H*.22,H*.075,EX.vio);exT(x,'The Lobby',L,H*.55,H*.22);exK(x,'Return  →',L,H*.8,H*.07)},

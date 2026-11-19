@@ -43,7 +43,7 @@
     {k:'-t3',u:[41.7,45.3],v:[-10.2,-9],open:['v0','v1']},
     {k:'-magazine',part:'magazine',name:'The Magazine',u:[27,46],v:[-22,-10.2],h:5,doors:[['v1',43.5,3.6],['v0',37,2.6,3.2]],spawn:[43.5,-12.4,'-l']},
     {k:'-t4',u:[35.7,38.3],v:[-23.2,-22],h:3.2,open:['v0','v1']},
-    {k:'-conversation',part:'film',name:'The Conversation',u:[33,41],v:[-29.5,-23.2],h:4,doors:[['v1',37,2.6,3.2]],spawn:[37,-24.3,'-l']}
+    {k:'-conversation',part:'film',dark:1,name:'The Conversation',u:[33,41],v:[-29.5,-23.2],h:4,doors:[['v1',37,2.6,3.2]],spawn:[37,-24.3,'-l']}
   ];
   /* local frame helpers (also used by 50-chapters.js) */
   function wingN(W,w){return w==='u0'?[-W.f[0],-W.f[1]]:w==='u1'?W.f:w==='v0'?[-W.l[0],-W.l[1]]:W.l}
@@ -64,7 +64,7 @@
       WING_PARTS.forEach(function(P,i){
         if(!c&&i>0)return;                       /* a slot whose chapter is hidden keeps only its first room */
         var r=wingRect(W,P.u,P.v);r.id=slug+P.k;r.h=P.h||4;r.chapter=slug;r.wing=W;r.lu=P.u;r.lv=P.v;
-        if(P.part){r.part=P.part;r.partName=P.name}else r.cor=1;
+        if(P.part){r.part=P.part;r.partName=P.name;if(P.dark)r.dark=1}else r.cor=1;
         if(P.open)r.open=P.open.map(function(w){return wingSide(W,w)});
         if(P.doors)r.doors=P.doors.map(function(d){return {s:wingSide(W,d[0]),at:wingAlong(W,d[0],d[1]),w:d[2],h:d[3]}});
         if(i===0&&W.via)r.doors[0].w=3.6;
