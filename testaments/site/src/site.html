@@ -75,7 +75,7 @@ p{margin:0}
 
 /* ============ NAV ============ */
 body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:41;background:var(--black)}
-.nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:40;background:rgba(8,8,8,.86);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:1px solid var(--border)}
+.nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:40;background:rgba(8,8,8,.97);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:1px solid var(--border)}
 .nav .wrap{display:flex;align-items:center;justify-content:space-between;gap:24px;height:68px}
 .wordmark{font-family:var(--display);font-weight:500;font-size:20px;letter-spacing:.24em;text-decoration:none;white-space:nowrap;font-variation-settings:"opsz" 60}
 .nav ul{list-style:none;margin:0;padding:0;display:flex;gap:clamp(14px,2vw,30px)}
@@ -221,6 +221,60 @@ figcaption b{font-weight:500;letter-spacing:.24em;text-transform:uppercase}
 .formmsg.ok{color:var(--violet)}
 .iv .formmsg.ok{color:var(--purple)}
 
+/* ============ THE GALLERY WALK ============ */
+.walk{position:relative;background:#e9e6e0;height:600vh}
+.walk-sticky{position:sticky;top:calc(env(safe-area-inset-top,0px) + 68px);height:calc(100svh - 68px - env(safe-area-inset-top,0px));min-height:420px;overflow:hidden;container-type:size;color:var(--black)}
+.hall{position:absolute;inset:0;background:
+  linear-gradient(180deg,#cfcbc4 0%,#ebe8e2 14%,#f1eee9 48%,#e4e0d9 77.6%,#57544f 77.8%,#8f8b84 78.4%,#c2beb7 86%,#ada9a2 100%)}
+.hall::after{content:"";position:absolute;left:0;right:0;top:0;height:3.2%;background:#2a2927}
+.track{position:absolute;inset:0 auto 0 0;display:flex;align-items:stretch;padding-left:62cqw;padding-right:40cqw;will-change:transform}
+.track::after{content:"";position:absolute;left:0;right:0;top:78%;bottom:0;background:repeating-linear-gradient(90deg,transparent 0 calc(24cqh - 1px),rgba(40,38,35,.16) calc(24cqh - 1px) 24cqh);pointer-events:none}
+.ex{flex:none;position:relative;height:100%;margin-right:30cqh}
+.ex::before{content:"";position:absolute;left:50%;top:3.2%;width:120cqh;transform:translateX(-50%);height:70%;background:radial-gradient(ellipse 34% 62% at 50% 0%,rgba(255,248,232,.85),rgba(255,248,232,0) 100%);opacity:.55;transition:opacity .8s;pointer-events:none}
+.ex.near::before{opacity:1}
+.ex .lamp{position:absolute;left:50%;top:3.2%;width:2.6cqh;height:2cqh;margin-left:-1.3cqh;background:#111;border-radius:0 0 40% 40%}
+.ex .frame{position:absolute;left:0;top:40%;transform:translateY(-52%);background:#111;padding:1.3cqh;box-shadow:0 2.6cqh 4cqh -1.6cqh rgba(0,0,0,.45),0 .3cqh .4cqh rgba(0,0,0,.3);cursor:zoom-in;display:block;border:0}
+.ex .frame img{display:block;height:100%;width:100%;object-fit:cover}
+.ex .frame .mat{display:block;background:#fbfaf7;padding:3cqh;height:100%;box-sizing:border-box}
+.ex .frame:hover{box-shadow:0 2.6cqh 4cqh -1.6cqh rgba(0,0,0,.45),0 0 0 .5cqh var(--purple)}
+.ex .wl{position:absolute;top:56%;width:22cqh;font-size:max(10px,1.5cqh);line-height:1.45;color:#3c3a36;opacity:.55;transition:opacity .8s}
+.ex.near .wl{opacity:1}
+.ex .wl b{display:block;font-weight:500;letter-spacing:.24em;text-transform:uppercase;font-size:max(9px,1.3cqh);color:var(--black);margin-bottom:.8cqh}
+.ex.text{display:grid;align-content:center;padding-bottom:22%}
+.ex.text p{font-family:var(--display);font-size:clamp(20px,5.4cqh,64px);line-height:1.12;max-width:16ch;color:#1a1918}
+.ex.text .lbl{color:#55534f;margin-bottom:2.4cqh;display:block}
+.ex.title h3{font-family:var(--display);font-weight:400;font-size:clamp(40px,12cqh,150px);line-height:.9;letter-spacing:.02em}
+.ex.door{width:30cqh}
+.ex.door::before{opacity:.3}
+.door a{position:absolute;left:0;right:0;bottom:22%;height:54cqh;display:block;text-decoration:none;background:linear-gradient(180deg,#050505 0%,#0b0a0d 70%,#1a1222 100%);box-shadow:inset 0 0 0 1.2cqh #2b2a28,inset 0 -6cqh 8cqh -4cqh rgba(110,66,163,.55);color:#fff;overflow:hidden}
+.door a::after{content:"";position:absolute;left:18%;right:18%;bottom:0;height:16%;background:radial-gradient(ellipse at 50% 100%,rgba(180,155,224,.5),transparent 70%);transition:opacity .6s;opacity:.6}
+.door a:hover::after,.ex.door.near a::after{opacity:1}
+.door .lintel{position:absolute;left:-4cqh;right:-4cqh;bottom:calc(22% + 57cqh);text-align:center}
+.door .lintel b{display:block;font-size:max(9px,1.3cqh);font-weight:500;letter-spacing:.3em;text-transform:uppercase;color:#55534f}
+.door .lintel span{display:block;font-family:var(--display);font-size:clamp(18px,4.4cqh,48px);letter-spacing:.08em;text-transform:uppercase;margin-top:.6cqh}
+.door .enterlbl{position:absolute;left:0;right:0;top:44%;text-align:center;font-size:max(9px,1.3cqh);letter-spacing:.3em;text-transform:uppercase;color:#d8cdea}
+.door .st{position:absolute;left:0;right:0;bottom:-6cqh;text-align:center;font-size:max(9px,1.3cqh);letter-spacing:.24em;text-transform:uppercase;color:#3c3a36}
+.visitor{position:absolute;left:30%;bottom:19.4%;height:42cqh;width:15cqh;pointer-events:none;z-index:3}
+@media (max-width:640px){.visitor{left:12%}}
+.visitor .fig{height:100%;width:100%;overflow:visible;transition:transform .35s ease}
+.visitor.back .fig{transform:scaleX(-1)}
+.visitor .shadow{position:absolute;left:5%;right:-10%;bottom:-1.4cqh;height:3cqh;background:radial-gradient(ellipse at 50% 50%,rgba(0,0,0,.35),transparent 70%)}
+.fig .leg,.fig .arm{transform-box:view-box}
+.fig .leg{transform-origin:31px 95px}.fig .arm{transform-origin:31.5px 35px}
+.visitor.walking .leg.f{animation:swing .9s ease-in-out infinite}
+.visitor.walking .leg.b{animation:swing .9s ease-in-out -.45s infinite}
+.visitor.walking .arm.f{animation:swingA .9s ease-in-out infinite}
+.visitor.walking .arm.b{animation:swingA .9s ease-in-out -.45s infinite}
+.visitor.walking .body{animation:bob .45s ease-in-out infinite}
+@keyframes swing{0%,100%{transform:rotate(22deg)}50%{transform:rotate(-22deg)}}
+@keyframes swingA{0%,100%{transform:rotate(-20deg)}50%{transform:rotate(20deg)}}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-1.6px)}}
+@media (prefers-reduced-motion:reduce){.visitor.walking .leg,.visitor.walking .arm,.visitor.walking .body{animation:none}}
+.walk-ui{position:absolute;left:max(20px,env(safe-area-inset-left,0px));right:max(20px,env(safe-area-inset-right,0px));bottom:4.5%;display:flex;align-items:center;gap:18px;z-index:4;color:#2a2927}
+.walk-bar{flex:1;height:1px;background:rgba(8,8,8,.2);position:relative}
+.walk-bar i{position:absolute;left:0;top:-1px;height:3px;width:0;background:var(--purple)}
+@media (max-width:640px){#walkHint{display:none}}
+
 /* ============ ABOUT ============ */
 .manifesto{font-family:var(--display);font-size:clamp(22px,2.3vw,32px);line-height:1.42;display:grid;gap:1.1em;max-width:36ch}
 .mv{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0;border-top:1px solid var(--hair)}
@@ -262,7 +316,7 @@ figcaption b{font-weight:500;letter-spacing:.24em;text-transform:uppercase}
 @media (max-width:860px){.chap-hero{grid-template-columns:minmax(0,1fr)}}
 .chap-hero .ecover{max-width:440px}
 .chap-hero .vnum{font-family:var(--display);font-size:clamp(20px,2vw,26px);color:var(--violet)}
-.chap-hero h1{font-size:clamp(64px,11vw,170px);letter-spacing:.03em;text-transform:uppercase;margin:14px 0 6px}
+.chap-hero h1{font-size:clamp(52px,8.2vw,128px);overflow-wrap:anywhere;letter-spacing:.03em;text-transform:uppercase;margin:14px 0 6px}
 .chap-hero .who{font-family:var(--display);font-style:italic;font-size:clamp(24px,2.6vw,36px)}
 .empty{border:1px dashed var(--border);padding:clamp(28px,4vw,48px);display:grid;gap:10px;max-width:760px}
 .iv .empty{border-color:#b9b6b0}
@@ -412,7 +466,7 @@ footer .base{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px 
         <li><a href="#reader">Reader</a></li>
         <li><a href="#shop">Shop</a></li>
         <li><a href="#process">The Process</a></li>
-        <li><a href="#submit">Submit</a></li>
+        <li><a href="#gallery">Gallery</a></li>
         <li><a href="#contact">Contact</a></li>
       </ul>
     </nav>
@@ -424,12 +478,12 @@ footer .base{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px 
   <div class="head"><span class="wordmark">TESTAMENTS</span><button class="menu-btn" id="menuClose" type="button" style="display:block">Close</button></div>
   <ol>
     <li><a href="#home"><span>00</span>Home</a></li>
-    <li><a href="#about"><span>01</span>About</a></li>
-    <li><a href="#chapters"><span>02</span>Chapters</a></li>
-    <li><a href="#reader"><span>03</span>Reader</a></li>
-    <li><a href="#shop"><span>04</span>Shop</a></li>
-    <li><a href="#process"><span>05</span>The Process</a></li>
-    <li><a href="#submit"><span>06</span>Submit Your Story</a></li>
+    <li><a href="#gallery"><span>01</span>The Gallery</a></li>
+    <li><a href="#about"><span>02</span>About</a></li>
+    <li><a href="#chapters"><span>03</span>Chapters</a></li>
+    <li><a href="#reader"><span>04</span>Reader</a></li>
+    <li><a href="#shop"><span>05</span>Shop</a></li>
+    <li><a href="#process"><span>06</span>The Process</a></li>
     <li><a href="#contact"><span>07</span>Contact</a></li>
   </ol>
   <div class="small"><a href="#newsletter">Newsletter</a><a href="#faq">FAQ</a><a href="#stockists">Stockists</a><a href="#shipping">Shipping</a><a href="#privacy">Privacy</a><a href="#terms">Terms</a><a href="#accessibility">Accessibility</a></div>
@@ -455,6 +509,35 @@ footer .base{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px 
       </div>
     </div>
   </div>
+
+  <section class="walk" id="walk" aria-labelledby="walkH">
+    <div class="walk-sticky">
+      <div class="hall" aria-hidden="true"></div>
+      <div class="track" id="track"></div>
+      <div class="visitor" id="visitor" aria-hidden="true">
+        <svg viewBox="0 0 60 170" class="fig">
+          <g class="body">
+            <g class="arm b"><rect x="28" y="32" width="7" height="54" rx="3.5" fill="#050505"/></g>
+            <g class="leg b"><rect x="27" y="92" width="8.5" height="68" rx="4" fill="#050505"/><path d="M27 156H41C44 156 45 160 43 161H27Z" fill="#050505"/></g>
+            <rect x="28.5" y="21" width="7" height="10" fill="#111"/>
+            <ellipse cx="32" cy="13.5" rx="9" ry="10.8" fill="#121212"/>
+            <path d="M23 12C23 4 30 1 36 2C41 3 43 8 41 13C38 9 31 9 23 12Z" fill="#000"/>
+            <g class="leg f"><rect x="27.5" y="92" width="8.5" height="68" rx="4" fill="#161616"/><path d="M27.5 156H41.5C44.5 156 45.5 160 43.5 161H27.5Z" fill="#0c0c0c"/></g>
+            <path d="M23 31C26 28 38 28 41 31L44 104C37 107 27 107 20 104Z" fill="#121212"/>
+            <path d="M41 31L44 104C42 105 40 105.5 38 106L36 31Z" fill="#2a2927" opacity=".55"/>
+            <g class="arm f"><rect x="28" y="32" width="7" height="54" rx="3.5" fill="#1a1a1a"/></g>
+          </g>
+        </svg>
+        <span class="shadow"></span>
+      </div>
+      <div class="walk-ui">
+        <h2 class="sr" id="walkH">The Gallery</h2>
+        <span class="lbl" id="walkHint">Scroll to walk through the gallery</span>
+        <span class="walk-bar"><i id="walkBar"></i></span>
+        <span class="lbl" id="walkRoom">Entrance</span>
+      </div>
+    </div>
+  </section>
 
   <section class="room k gut" aria-labelledby="featH">
     <div class="wrap feat" id="featured"></div>
@@ -512,16 +595,6 @@ footer .base{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px 
         <div class="ctas"><a class="btn solid" href="#shop">Visit the Shop</a><a class="tlink" href="#newsletter">Be told when it opens</a></div>
         <p class="muted" style="font-size:12px;margin-top:24px">The cover above is a format study made with TESTAMENTS photography. Final covers are still to be confirmed.</p>
       </div>
-    </div>
-  </section>
-
-  <section class="room ch gut" aria-labelledby="archH">
-    <div class="wrap">
-      <div style="display:flex;justify-content:space-between;align-items:end;gap:20px;flex-wrap:wrap;margin-bottom:36px">
-        <div><span class="lbl muted">From the archive</span><h2 id="archH" style="font-size:clamp(36px,4.4vw,64px);margin-top:16px">Photographs</h2></div>
-        <span class="lbl muted">Select to view full screen</span>
-      </div>
-      <div class="strip" id="homeStrip"></div>
     </div>
   </section>
 
@@ -669,36 +742,6 @@ footer .base{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px 
   <div class="k gut" style="padding-bottom:clamp(60px,8vw,120px)"><div class="wrap" id="stages"></div></div>
 </section>
 
-<!-- ======================= SUBMIT ======================= -->
-<section class="view" data-view="submit">
-  <div class="k gut phead"><div class="wrap">
-    <span class="lbl muted">Submit your story</span>
-    <h1>EVERY STORY BEGINS SOMEWHERE.</h1>
-    <p class="lede muted">You don’t need to be famous to have a story worth telling. TESTAMENTS is interested in the experiences, perspectives, and journeys that make us human.</p>
-  </div></div>
-  <section class="room iv gut">
-    <div class="wrap">
-      <div class="notice" style="margin-bottom:56px">Being interviewed and photographed for TESTAMENTS is free. There is no fee to apply or to be featured. Submitting does not guarantee selection or publication. We read every submission and will contact you only if there is a fit.</div>
-      <form class="js-form" data-form="submit" novalidate>
-        <div class="formgrid">
-          <div class="field"><label for="sName">Name</label><input id="sName" name="name" autocomplete="name" required><span class="err"></span></div>
-          <div class="field"><label for="sEmail">Email</label><input id="sEmail" name="email" type="email" autocomplete="email" required><span class="err"></span></div>
-          <div class="field"><label for="sPhone">Phone <small>optional</small></label><input id="sPhone" name="phone" type="tel" autocomplete="tel"><span class="err"></span></div>
-          <div class="field"><label for="sLoc">General location</label><input id="sLoc" name="location" placeholder="City, region" required><span class="err"></span></div>
-          <div class="field full"><label for="sIntro">A short introduction</label><textarea id="sIntro" name="introduction" maxlength="1500" required></textarea><span class="err"></span></div>
-          <div class="field full"><label for="sWhy">Why do you want to share your story?</label><textarea id="sWhy" name="why" maxlength="1500" required></textarea><span class="err"></span></div>
-          <div class="field"><label for="sSocial">Social profile <small>optional</small></label><input id="sSocial" name="social" type="url" placeholder="https://"><span class="err"></span></div>
-          <div class="field"><label for="sLink">Portfolio or reference link <small>optional</small></label><input id="sLink" name="link" type="url" placeholder="https://"><span class="err"></span></div>
-          <div class="field full"><label class="consent" style="font-size:14px;letter-spacing:0;text-transform:none;font-weight:400"><input type="checkbox" name="consent" id="sConsent" required><span>I agree to be contacted by TESTAMENTS about this submission. My details are used only to review it, as described in the <a href="#privacy" style="color:var(--purple)">privacy policy</a>.</span></label><span class="err"></span></div>
-        </div>
-        <input class="hp" type="text" name="company" tabindex="-1" autocomplete="off" aria-hidden="true">
-        <div style="margin-top:36px"><button class="btn solid" type="submit">Send submission</button></div>
-        <p class="formmsg" role="status"></p>
-      </form>
-    </div>
-  </section>
-</section>
-
 <!-- ======================= CONTACT ======================= -->
 <section class="view" data-view="contact">
   <div class="k gut phead"><div class="wrap">
@@ -716,7 +759,7 @@ footer .base{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px 
           <div class="field full"><label for="cTopic">Subject</label>
             <select id="cTopic" name="topic" required>
               <option value="">Choose a subject</option>
-              <option>General inquiries</option><option>Editorial submissions</option><option>Retail partnerships</option><option>Press and media</option><option>Collaborations</option><option>Order support</option>
+              <option>General inquiries</option><option>Retail partnerships</option><option>Press and media</option><option>Collaborations</option><option>Order support</option>
             </select><span class="err"></span></div>
           <div class="field"><label for="cName">Name</label><input id="cName" name="name" autocomplete="name" required><span class="err"></span></div>
           <div class="field"><label for="cEmail">Email</label><input id="cEmail" name="email" type="email" autocomplete="email" required><span class="err"></span></div>
@@ -754,8 +797,7 @@ footer .base{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px 
   <section class="room iv gut"><div class="wrap narrow faq">
     <details><summary>What is TESTAMENTS?</summary><p>An independent magazine that tells the stories behind people through personal interviews, intimate conversations and cinematic photography. Each chapter focuses on one person, or occasionally two.</p></details>
     <details><summary>Who can be featured?</summary><p>Anyone. A person’s place in TESTAMENTS isn’t decided by wealth, popularity, status or following. Ordinary people have extraordinary stories too.</p></details>
-    <details><summary>Does it cost anything to be featured?</summary><p>No. Interviews and photography for featured subjects are free, and there is no fee to submit.</p></details>
-    <details><summary>Does submitting guarantee I’ll be featured?</summary><p>No. Every submission is read, but submitting does not guarantee selection or publication.</p></details>
+    <details><summary>Does it cost anything to be featured?</summary><p>No. Interviews and photography for featured subjects are free.</p></details>
     <details><summary>When does TESTAMENTS launch?</summary><p id="faqLaunch"></p></details>
     <details><summary>How often are new chapters released?</summary><p>The plan is one new chapter each month.</p></details>
     <details><summary>Can I buy a printed copy?</summary><p>Printed editions of about twenty-four pages are planned in small runs. They aren’t on sale yet; prices and availability will be announced when each edition opens. Join the newsletter to hear first.</p></details>
@@ -774,7 +816,7 @@ footer .base{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px 
   <div class="k gut phead"><div class="wrap"><span class="lbl muted">Policy</span><h1>Privacy</h1></div></div>
   <section class="room iv gut"><div class="wrap prose">
     <span class="draft">Draft for review before launch</span>
-    <h2>What we collect</h2><p>We collect only what you choose to send us: your email address if you subscribe to the newsletter; the details you enter in the Submit Your Story or contact forms; and, once the shop opens, what’s needed to fulfil an order, such as your name and shipping address.</p>
+    <h2>What we collect</h2><p>We collect only what you choose to send us: your email address if you subscribe to the newsletter; the details you enter in the contact form; and, once the shop opens, what’s needed to fulfil an order, such as your name and shipping address.</p>
     <h2>How we use it</h2><p>To reply to you, to review story submissions, to send the newsletter you asked for, and to deliver orders. We don’t sell your information.</p>
     <h2>Payments</h2><p>Payments will be handled by a third-party payment provider. TESTAMENTS will never see or store your full card details.</p>
     <h2>Your choices</h2><p>You can unsubscribe from the newsletter at any time using the link in every email, and you can ask us to see or delete the information we hold about you by using the contact page.</p>
@@ -814,7 +856,7 @@ footer .base{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px 
     <div class="fgrid">
       <div><div class="fm">TESTAMENTS</div><p class="why">Understand the Why.</p></div>
       <nav aria-label="Footer"><ul>
-        <li><a href="#home">Home</a></li><li><a href="#about">About</a></li><li><a href="#chapters">Chapters</a></li><li><a href="#shop">Shop</a></li><li><a href="#process">The Process</a></li><li><a href="#submit">Submit Your Story</a></li><li><a href="#contact">Contact</a></li>
+        <li><a href="#home">Home</a></li><li><a href="#about">About</a></li><li><a href="#chapters">Chapters</a></li><li><a href="#shop">Shop</a></li><li><a href="#process">The Process</a></li><li><a href="#gallery">The Gallery</a></li><li><a href="#contact">Contact</a></li>
       </ul></nav>
       <div><ul>
         <li><a href="#newsletter">Newsletter</a></li><li><a href="#faq">FAQ</a></li><li><a href="#stockists">Stockists</a></li><li><a href="#privacy">Privacy Policy</a></li><li><a href="#terms">Terms</a></li><li><a href="#shipping">Shipping and Returns</a></li><li><a href="#accessibility">Accessibility</a></li>
@@ -845,7 +887,7 @@ var SITE = {
   contactEmail: null,                // e.g. 'hello@testaments.press' once it exists
   social: [],                        // e.g. [{label:'Instagram', url:'https://instagram.com/...'}]
   forms: {                           // POST endpoints (e.g. Formspree, Basin, your API). null = not connected yet.
-    submit: null, contact: null, newsletter: null
+    contact: null, newsletter: null
   },
   featured: 'flourish'
 };
@@ -927,8 +969,7 @@ var STOCKISTS = [];   // {name, address, url, map, editions:['001']} — confirm
   function figHTML(p,i,ratio){
     return '<figure><div class="ph" data-lb="'+p.id+'" tabindex="0" role="button" aria-label="View photograph '+(i+1)+' full screen"'+(ratio?' style="aspect-ratio:'+ratio+'"':'')+'><img src="'+src(p.id)+'" alt="'+esc(p.alt)+'" loading="lazy" decoding="async" width="'+p.w+'" height="'+p.h+'"></div><figcaption><b>Pl. '+(i+1)+'</b><span>TESTAMENTS photography</span></figcaption></figure>';
   }
-  $('#homeStrip').innerHTML=PHOTOS.map(function(p,i){return figHTML(p,i)}).join('');
-  $('#archive').innerHTML=PHOTOS.map(function(p,i){return figHTML(p,i,p.w+'/'+p.h)}).join('');
+    $('#archive').innerHTML=PHOTOS.map(function(p,i){return figHTML(p,i,p.w+'/'+p.h)}).join('');
   document.addEventListener('click',function(e){var t=e.target.closest('[data-lb]');if(t)openLB(t.getAttribute('data-lb'))});
   document.addEventListener('keydown',function(e){var t=e.target.closest&&e.target.closest('[data-lb]');if(t&&(e.key==='Enter'||e.key===' ')){e.preventDefault();openLB(t.getAttribute('data-lb'))}});
 
@@ -954,6 +995,47 @@ var STOCKISTS = [];   // {name, address, url, map, editions:['001']} — confirm
   $('#shopGrid').innerHTML=visible.map(function(c){return '<a href="#edition-'+c.slug+'">'+cover(c,true)+'<div><span class="lbl muted">Print edition · Chapter '+c.num+'</span><h3 style="margin-top:8px">'+esc(c.title)+'</h3></div><div class="row"><span>'+(c.edition.price!=null?money(c.edition):'Price to be announced')+'</span><span class="status">'+esc(editionState(c))+'</span></div></a>'}).join('');
   function money(e){return new Intl.NumberFormat('en-US',{style:'currency',currency:e.currency||'USD'}).format(e.price)}
   function editionState(c){var s=c.edition.state;return s==='available'?(c.edition.stock===0?'Sold out':'Available'):s==='preorder'?'Preorder':s==='sold-out'?'Sold out':'Coming soon'}
+
+  /* ---------- the gallery walk ---------- */
+  (function(){
+    var track=$('#track'),walk=$('#walk'),vis=$('#visitor'),bar=$('#walkBar'),roomLbl=$('#walkRoom');
+    var dims={'wall-upward':[60,40],'guitar-tree':[30,45],'reach':[30,45],'mural-wide':[78,44],'mural-portrait':[54,36],'mural-walk':[54,36],'railroad':[40,40],'resonator':[54,36],'glasses-closeup':[54,36]};
+    function plate(id,mat){var p=photo(id),d=dims[id],i=PHOTOS.indexOf(p);
+      return '<div class="ex" data-room="'+(i+1)+'" style="width:'+(d[0]+26)+'cqh"><span class="lamp"></span><button class="frame" type="button" data-lb="'+id+'" aria-label="View plate '+(i+1)+' full screen" style="width:'+d[0]+'cqh;height:'+d[1]+'cqh">'+(mat?'<span class="mat"><img src="'+src(id)+'" alt="'+esc(p.alt)+'" loading="lazy"></span>':'<img src="'+src(id)+'" alt="'+esc(p.alt)+'" loading="lazy">')+'</button><p class="wl" style="left:'+(d[0]+4)+'cqh"><b>Pl. '+(i+1)+'</b>'+esc(p.alt)+'<br><i>TESTAMENTS photography</i></p></div>'}
+    function text(t,l){return '<div class="ex text" style="width:60cqh"><span class="lamp"></span><div><span class="lbl">'+(l||'')+'</span><p>'+t+'</p></div></div>'}
+    function door(c){return '<div class="ex door" data-room="Chapter '+c.num+'"><span class="lamp"></span><div class="lintel"><b>Chapter '+c.num+'</b><span>'+esc(c.title)+'</span></div><a href="#chapter-'+c.slug+'" aria-label="Enter Chapter '+c.num+', '+esc(c.title)+'"><span class="enterlbl">Enter</span></a><span class="st">'+esc(who(c))+' · '+esc(STATUS[c.status])+'</span></div>'}
+    var ch=visible;
+    var html='<div class="ex text title" style="width:72cqh" data-room="Entrance"><div><span class="lbl">TESTAMENTS · The Gallery</span><h3>Walk<br>through.</h3><p style="font-size:clamp(14px,2.4cqh,22px);font-family:var(--sans);max-width:30ch;margin-top:3cqh;color:#3c3a36">Scroll to walk the gallery. Select any photograph to see it full size, or step through a doorway into a chapter.</p></div></div>';
+    html+=plate('wall-upward')+text('Every person carries a story.','Room I')+plate('guitar-tree',1)+plate('reach',1);
+    if(ch[0])html+=door(ch[0]);
+    html+=plate('mural-wide')+text('A photograph captures a moment. A conversation reveals a journey.','Room II')+plate('mural-portrait')+plate('mural-walk');
+    if(ch[1])html+=door(ch[1]);
+    html+=plate('railroad',1)+plate('resonator')+text('Behind every face is a history worth hearing.','Room III')+plate('glasses-closeup');
+    if(ch[2])html+=door(ch[2]);
+    ch.slice(3).forEach(function(c){html+=door(c)});
+    html+='<div class="ex text" style="width:80cqh" data-room="Exit"><div><span class="lbl">Exit</span><p style="font-size:clamp(28px,8cqh,96px);font-style:italic">Every Chapter Matters.</p><a class="tlink" href="#chapters" style="display:inline-block;margin-top:3cqh">The Chapters</a></div></div>';
+    track.innerHTML=html;
+    var exs=$$('.ex',track),dist=1,lastY=0,timer=null,x=0;
+    function measure(){var st=walk.querySelector('.walk-sticky');dist=Math.max(1,track.scrollWidth-st.clientWidth);walk.style.height=(dist+st.clientHeight)+'px';update()}
+    function update(){
+      if(current!=='home')return;
+      var st=walk.querySelector('.walk-sticky'),top=walk.getBoundingClientRect().top-st.offsetTop;
+      var range=walk.offsetHeight-st.clientHeight, p=Math.min(1,Math.max(0,-(walk.getBoundingClientRect().top-(parseFloat(getComputedStyle(st).top)||0))/range));
+      x=p*dist;track.style.transform='translateX('+(-x)+'px)';bar.style.width=(p*100)+'%';
+      var fx=vis.offsetLeft+vis.offsetWidth/2,best=null,bd=1e9;
+      exs.forEach(function(e){var c=e.offsetLeft-x+e.offsetWidth/2,d=Math.abs(c-fx);var near=d<Math.max(e.offsetWidth*.6,st.clientWidth*.18);e.classList.toggle('near',near);if(d<bd){bd=d;best=e}});
+      if(best){var r=best.getAttribute('data-room');if(r)roomLbl.textContent=isNaN(r)?r:('Plate '+r+' of '+PHOTOS.length)}
+    }
+    window.addEventListener('scroll',function(){
+      var y=window.scrollY,rect=walk.getBoundingClientRect();
+      if(rect.top<window.innerHeight&&rect.bottom>0&&y!==lastY){vis.classList.add('walking');vis.classList.toggle('back',y<lastY);clearTimeout(timer);timer=setTimeout(function(){vis.classList.remove('walking')},160)}
+      lastY=y;update();
+    },{passive:true});
+    window.addEventListener('resize',measure);
+    window.__walkMeasure=measure;
+    $$('img',track).forEach(function(im){im.addEventListener('load',update)});
+    setTimeout(measure,0);
+  })();
 
   /* chapter detail */
   function renderChapter(c){
@@ -1035,7 +1117,7 @@ var STOCKISTS = [];   // {name, address, url, map, editions:['001']} — confirm
       });
       var msg=form.querySelector('.formmsg');
       if(!ok){msg.className='formmsg err';msg.textContent='Please check the highlighted fields.';first.focus();return}
-      send(form.dataset.form,form,msg,form.dataset.form==='submit'?'Thank you. Your story has been received. We’ll be in touch if there is a fit.':'Thank you. Your message has been sent.');
+      send(form.dataset.form,form,msg,'Thank you. Your message has been sent.');
     });
   });
   $$('.js-news').forEach(function(form){
@@ -1115,7 +1197,7 @@ var STOCKISTS = [];   // {name, address, url, map, editions:['001']} — confirm
   menu.addEventListener('click',function(e){if(e.target.closest('a'))closeMenu()});
 
   /* ---------- router ---------- */
-  var TITLES={home:'TESTAMENTS · Understand the Why.',about:'About · TESTAMENTS',chapters:'Chapters · TESTAMENTS',reader:'Reader · TESTAMENTS',shop:'Shop · TESTAMENTS',process:'The Process · TESTAMENTS',submit:'Submit Your Story · TESTAMENTS',contact:'Contact · TESTAMENTS',newsletter:'The Next Chapter · TESTAMENTS',faq:'FAQ · TESTAMENTS',stockists:'Stockists · TESTAMENTS',privacy:'Privacy · TESTAMENTS',terms:'Terms · TESTAMENTS',shipping:'Shipping and Returns · TESTAMENTS',accessibility:'Accessibility · TESTAMENTS'};
+  var TITLES={home:'TESTAMENTS · Understand the Why.',about:'About · TESTAMENTS',chapters:'Chapters · TESTAMENTS',reader:'Reader · TESTAMENTS',shop:'Shop · TESTAMENTS',process:'The Process · TESTAMENTS',gallery:'The Gallery · TESTAMENTS',contact:'Contact · TESTAMENTS',newsletter:'The Next Chapter · TESTAMENTS',faq:'FAQ · TESTAMENTS',stockists:'Stockists · TESTAMENTS',privacy:'Privacy · TESTAMENTS',terms:'Terms · TESTAMENTS',shipping:'Shipping and Returns · TESTAMENTS',accessibility:'Accessibility · TESTAMENTS'};
   var current=null;
   function route(){
     var h=(location.hash||'#home').slice(1), view=h, slug=null;
@@ -1123,14 +1205,16 @@ var STOCKISTS = [];   // {name, address, url, map, editions:['001']} — confirm
     if(m){view=m[1];slug=m[2]}
     if(view==='main'){return}
     if(!TITLES[view]&&!m)view='home';
+    var toWalk=false;if(view==='gallery'){view='home';toWalk=true}
     if(m){var c=bySlug(slug);if(!c){view='chapters'}else if(view==='chapter')renderChapter(c);else renderEdition(c)}
     var prev=current;current=view;
     $$('.view').forEach(function(v){v.classList.toggle('active',v.dataset.view===view)});
     if(TITLES[view])document.title=TITLES[view];
-    var navKey=view==='chapter'?'chapters':view==='edition'?'shop':view;
+    var navKey=toWalk?'gallery':view==='chapter'?'chapters':view==='edition'?'shop':view;
     $$('.nav ul a').forEach(function(a){a.toggleAttribute('aria-current',a.getAttribute('href')==='#'+navKey);if(a.hasAttribute('aria-current'))a.setAttribute('aria-current','page')});
-    if(prev!==null){window.scrollTo(0,0);var h1=$('.view.active h1');if(h1){h1.tabIndex=-1;h1.focus({preventScroll:true})}}
+    if(prev!==null&&!toWalk){window.scrollTo(0,0);var h1=$('.view.active h1');if(h1){h1.tabIndex=-1;h1.focus({preventScroll:true})}}
     if(view==='reader')requestAnimationFrame(renderReader);
+    if(view==='home'&&window.__walkMeasure){requestAnimationFrame(function(){window.__walkMeasure();if(toWalk){var w=$('#walk');window.scrollTo(0,w.getBoundingClientRect().top+window.scrollY-68)}})}
   }
   window.addEventListener('hashchange',route);
   route();

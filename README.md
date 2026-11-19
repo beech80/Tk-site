@@ -14,7 +14,7 @@ Before going live, replace the placeholder email (`hello@talkingthroughtwenties.
 
 ## TESTAMENTS — website (testaments.press)
 
-`testaments/site/` is the TESTAMENTS website: an intro film you enter through, then Home, About, Chapters, chapter pages, a page-turning reader, Shop and edition pages, The Process, Submit Your Story, Contact, Newsletter, FAQ, Stockists and the policy pages.
+`testaments/site/` is the TESTAMENTS website: an intro film you enter through, then a walk-through gallery on the home page, About, Chapters, chapter pages, a page-turning reader, Shop and edition pages, The Process, Contact, Newsletter, FAQ, Stockists and the policy pages.
 
 - Edit `testaments/site/src/site.html` and run `testaments/site/build.sh` to rebuild `index.html`. Deploy the whole `testaments/site/` folder (it holds `assets/`, `robots.txt` and `sitemap.xml`).
 - Chapters, statuses, prices, the launch date, contact email, social links and form endpoints are all in the CONTENT block at the top of the script in `src/site.html`.
