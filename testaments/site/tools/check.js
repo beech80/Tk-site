@@ -9,7 +9,7 @@ const out=process.argv[3]||'/tmp';const W=+(process.argv[4]||1280),H=+(process.a
 const p=await b.newPage({viewport:{width:W,height:H}});
 if(process.env.THREE_JS)await p.route('**/three.min.js',r=>r.fulfill({path:process.env.THREE_JS,contentType:'application/javascript'}));
 const errs=[];p.on('pageerror',e=>errs.push('PAGEERROR '+e.message));p.on('console',m=>{if(m.type()==='error')errs.push('CONSOLE '+m.text())});
-await p.goto('http://localhost:8765/index.html#lobby');await p.click('#enterBtn');
+await p.addInitScript(()=>{try{localStorage.setItem('t.onboard','1')}catch(e){}});await p.goto('http://localhost:8765/index.html#lobby');await p.evaluate(()=>document.getElementById('enterBtn').click());
 await p.waitForFunction(()=>window.Museum&&Museum.state().mode==='play',null,{timeout:180000});
 for(const [n,x,z,y] of spots){await p.evaluate(a=>Museum.set(a[0],a[1],a[2]),[x,z,y]);await p.waitForTimeout(1500);const st=await p.evaluate(()=>Museum.state());console.log(n,JSON.stringify(st));await p.screenshot({path:out+'/'+n+'.png'});}
 console.log(errs.length?errs.join('\n'):'no errors');await b.close();})().catch(e=>{console.error('CHECK FAILED',e.message);process.exit(1)});
