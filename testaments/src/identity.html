@@ -33,6 +33,10 @@ body{margin:0;background:var(--black);color:var(--white);font-family:var(--body)
 .room.i{background:var(--ivory);color:var(--black)}
 .room.w{background:var(--wall);color:var(--black)}
 .room.c{background:var(--charcoal);color:var(--white)}
+.room.s{background:radial-gradient(ellipse 90% 70% at 20% 0%,#d9d6d0 0%,#bdbab4 55%,#a6a39d 100%);color:var(--black)}
+.s .eyebrow{color:#45453f}
+.s .rh p.lede,.s .sp-head p,.s .cv-cap p{color:#262624}
+.s .scale-note{color:#45453f}
 h1,h2,h3{font-family:var(--display);font-weight:400;text-wrap:balance;margin:0}
 p{margin:0}
 .eyebrow{font-family:var(--sans);font-size:11px;font-weight:500;letter-spacing:.24em;text-transform:uppercase}
@@ -57,8 +61,9 @@ a{color:inherit}
 .hero .mark{font-family:var(--display);font-weight:500;font-size:min(11.2vw,150px);letter-spacing:.1em;margin-right:-.1em;line-height:1;text-align:center;margin-top:clamp(56px,10vw,140px);font-variation-settings:"opsz" 96}
 .hero .tag{display:flex;justify-content:center;align-items:center;gap:18px;margin-top:clamp(18px,2.6vw,32px);font-family:var(--display);font-style:italic;font-size:clamp(18px,2vw,26px)}
 .hero .tag i{display:block;width:clamp(28px,6vw,72px);height:1px;background:var(--stone)}
-.hero .cols{display:flex;justify-content:space-between;position:absolute;inset:0;pointer-events:none;padding-inline:max(16px,3vw)}
-.hero .cols svg{height:100%;width:auto;opacity:.16}
+.hero-bg{position:absolute;inset:0;pointer-events:none;opacity:.62}
+.hero-bg svg{width:100%;height:100%;display:block}
+.hero-fade{position:absolute;inset:0;pointer-events:none;background:linear-gradient(180deg,rgba(9,9,9,.7) 0%,rgba(9,9,9,.15) 30%,rgba(9,9,9,.35) 55%,#090909 88%)}
 .hero-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:32px;margin-top:clamp(56px,9vw,120px);border-top:1px solid var(--hair-k);padding-top:28px;position:relative}
 .hero-grid p{color:#cfcdc8;font-size:17px}
 .hero-grid ol{list-style:none;margin:0;padding:0;font-family:var(--sans);font-size:13px;letter-spacing:.06em;display:grid;gap:8px}
@@ -109,8 +114,10 @@ a{color:inherit}
 /* Every page/cover is a size container. --mm and --pt resolve against it, so 1mm on paper = 1 --mm here. */
 .cover{container-type:inline-size;--mm:calc(100cqw / 230);--pt:calc(100cqw / 230 * .3528)}
 .spread{container-type:inline-size;--mm:calc(100cqw / 460);--pt:calc(100cqw / 460 * .3528)}
-.cv{position:relative;aspect-ratio:23/30;overflow:hidden;box-shadow:0 1px 2px rgba(0,0,0,.18),0 18px 40px -18px rgba(0,0,0,.45)}
-.sheet{display:grid;grid-template-columns:1fr 1fr;aspect-ratio:46/30;position:relative;box-shadow:0 2px 3px rgba(0,0,0,.3),0 30px 60px -30px rgba(0,0,0,.7)}
+.cv{position:relative;aspect-ratio:23/30;overflow:hidden}
+.cover{filter:drop-shadow(14px 20px 7px rgba(0,0,0,.30)) drop-shadow(0 1px 1px rgba(0,0,0,.25))}
+.sheet{display:grid;grid-template-columns:1fr 1fr;aspect-ratio:46/30;position:relative;box-shadow:-1px 0 0 #e9e7e2,-2px 1px 0 #b9b7b1,-3px 1px 0 #e4e2dd,-4px 2px 0 #aeaca6,1px 0 0 #e9e7e2,2px 1px 0 #b9b7b1,3px 1px 0 #e4e2dd,4px 2px 0 #aeaca6}
+.spread{filter:drop-shadow(18px 24px 8px rgba(0,0,0,.32))}
 .sheet::after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(90deg,transparent 46%,rgba(0,0,0,.06) 49.4%,rgba(0,0,0,.16) 50%,rgba(255,255,255,.04) 50.4%,transparent 54%)}
 .pg{position:relative;overflow:hidden;background:var(--ivory);color:var(--black)}
 .pg.k{background:var(--black);color:var(--white)}
@@ -138,6 +145,11 @@ a{color:inherit}
 .pltag{position:absolute;z-index:2;font:500 calc(var(--pt)*5.5)/1 var(--sans);letter-spacing:.24em;text-transform:uppercase;color:rgba(255,255,255,.5);border:1px solid rgba(255,255,255,.25);padding:calc(var(--pt)*3) calc(var(--pt)*4)}
 .plate.hk .pltag{color:rgba(9,9,9,.5);border-color:rgba(9,9,9,.25)}
 
+.stoa{position:absolute;inset:0;pointer-events:none;background:repeating-linear-gradient(116deg,transparent 0 calc(var(--mm)*18),rgba(255,255,255,.045) calc(var(--mm)*18) calc(var(--mm)*36));filter:blur(calc(var(--mm)*.6))}
+.stoa.faint{background:repeating-linear-gradient(116deg,transparent 0 calc(var(--mm)*22),rgba(255,255,255,.035) calc(var(--mm)*22) calc(var(--mm)*44))}
+.texture{display:grid;grid-template-columns:minmax(0,3fr) minmax(0,2fr);gap:clamp(24px,4vw,56px);align-items:end}
+.texture .tx{position:relative;aspect-ratio:16/10;overflow:hidden}
+@media (max-width:820px){.texture{grid-template-columns:minmax(0,1fr)}}
 /* placeholder marking (toggle) */
 .show-ph .ph{outline:1px dashed rgba(160,160,160,.9);outline-offset:2px;background-image:linear-gradient(rgba(165,165,165,.12),rgba(165,165,165,.12))}
 
@@ -249,13 +261,13 @@ footer p{font-family:var(--display);font-style:italic;font-size:20px;margin-top:
 <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
   <defs>
     <linearGradient id="litL" x1="0" x2="1" y1="0" y2="0">
-      <stop offset="0" stop-color="#c9c8c4"/><stop offset=".28" stop-color="#7b7a77"/><stop offset=".62" stop-color="#262626"/><stop offset="1" stop-color="#0e0e0e"/>
+      <stop offset="0" stop-color="#e4e2dd"/><stop offset=".2" stop-color="#a7a6a2"/><stop offset=".42" stop-color="#3a3a39"/><stop offset=".6" stop-color="#0c0c0c"/><stop offset="1" stop-color="#050505"/>
     </linearGradient>
     <linearGradient id="litR" x1="1" x2="0" y1="0" y2="0">
-      <stop offset="0" stop-color="#c9c8c4"/><stop offset=".28" stop-color="#7b7a77"/><stop offset=".62" stop-color="#262626"/><stop offset="1" stop-color="#0e0e0e"/>
+      <stop offset="0" stop-color="#e4e2dd"/><stop offset=".2" stop-color="#a7a6a2"/><stop offset=".42" stop-color="#3a3a39"/><stop offset=".6" stop-color="#0c0c0c"/><stop offset="1" stop-color="#050505"/>
     </linearGradient>
     <linearGradient id="hkFig" x1="0" x2="1">
-      <stop offset="0" stop-color="#8d8b87"/><stop offset=".45" stop-color="#4a4947"/><stop offset="1" stop-color="#232322"/>
+      <stop offset="0" stop-color="#7d7c78"/><stop offset=".22" stop-color="#2a2a29"/><stop offset="1" stop-color="#070707"/>
     </linearGradient>
     <radialGradient id="dark" cx=".38" cy=".34" r=".8">
       <stop offset="0" stop-color="#3a3a39"/><stop offset=".55" stop-color="#151515"/><stop offset="1" stop-color="#070707"/>
@@ -272,15 +284,126 @@ footer p{font-family:var(--display);font-style:italic;font-size:20px;margin-top:
     <linearGradient id="floor" x1="0" x2="0" y1="0" y2="1">
       <stop offset="0" stop-color="#5a5a58" stop-opacity=".9"/><stop offset="1" stop-color="#1a1a1a" stop-opacity="0"/>
     </linearGradient>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f4f3f0"/><stop offset=".5" stop-color="#cfcdc9"/><stop offset="1" stop-color="#8d8c88"/></linearGradient>
+    <linearGradient id="floorLit" x1="0" y1="0" x2=".3" y2="1"><stop offset="0" stop-color="#9f9e9a"/><stop offset="1" stop-color="#eeede9"/></linearGradient>
+    <linearGradient id="lintel" x1="0" x2="1"><stop offset="0" stop-color="#5e5d5a"/><stop offset="1" stop-color="#cfcec9"/></linearGradient>
+    <linearGradient id="colG" x1="0" x2="1"><stop offset="0" stop-color="#5f5e5b"/><stop offset=".35" stop-color="#a8a7a3"/><stop offset=".75" stop-color="#ecebe7"/><stop offset="1" stop-color="#f8f7f4"/></linearGradient>
+    <linearGradient id="wedge" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#d4d3cf"/><stop offset="1" stop-color="#8b8a86"/></linearGradient>
     <filter id="soft"><feGaussianBlur stdDeviation="1.4"/></filter>
     <filter id="bloom"><feGaussianBlur stdDeviation="6"/></filter>
-    <!-- a seated figure: head, neck, shoulders -->
+    <!-- a sitter in three-quarter profile, facing left -->
     <symbol id="sitter" viewBox="0 0 300 400">
-      <g>
-        <path d="M150 84C119 84 99 111 100 148C101 183 122 210 150 212C178 210 199 183 200 148C201 111 181 84 150 84Z"/>
-        <path d="M129 196C130 215 128 233 122 247H178C172 233 170 215 171 196Z"/>
-        <path d="M150 238C109 240 69 252 47 273C27 291 17 341 13 400H287C283 341 273 291 253 273C231 252 191 240 150 238Z"/>
-      </g>
+      <path d="M168 70C130 68 108 92 106 122C105 134 104 142 100 152L92 170C90 174 94 178 100 178C100 184 98 188 101 192C99 196 101 200 104 202C104 210 106 218 114 224C122 230 134 230 142 228L146 262C120 270 70 282 50 300C30 318 20 360 16 400H290C288 350 280 310 262 292C246 276 220 266 206 258L204 220C222 200 232 170 228 136C224 96 202 72 168 70Z"/>
+    </symbol>
+    <!-- a concrete interior with a wedge of hard sun, figure seated in shadow -->
+    <symbol id="interior" viewBox="0 0 300 400">
+      <rect width="300" height="400" fill="#1d1d1c"/>
+      <path d="M100 0V300M200 0V300M0 100H300M0 200H300" stroke="#0e0e0e" stroke-width="1.2"/>
+      <path d="M128 0H300V250L196 300H156Z" fill="url(#wedge)" filter="url(#soft)"/>
+      <path d="M100 0V300M200 0V300M100 100H300M100 200H300" stroke="#5c5b58" stroke-width=".8" opacity=".5"/>
+      <rect y="300" width="300" height="100" fill="#0e0e0e"/>
+      <path d="M156 300H196L272 400H206Z" fill="#7a7975" opacity=".75" filter="url(#soft)"/>
+      <use href="#sitter" x="96" y="150" width="150" height="200" fill="url(#litL)"/>
+      <rect x="40" y="276" width="150" height="40" fill="#141414"/>
+      <path d="M40 276H190" stroke="#4d4c49" stroke-width="1.2"/>
+    </symbol>
+    <!-- a colonnade in raking sun -->
+    <symbol id="colonnade" viewBox="0 0 300 400">
+<rect width="300" height="400" fill="url(#sky)"/>
+<g filter="url(#bloom)" fill="#3c3c3b"><ellipse cx="120" cy="150" rx="70" ry="48"/><ellipse cx="190" cy="132" rx="60" ry="40"/><ellipse cx="70" cy="170" rx="40" ry="26"/></g>
+<g filter="url(#soft)" fill="#252525" opacity=".8"><ellipse cx="140" cy="160" rx="40" ry="26"/><ellipse cx="205" cy="150" rx="30" ry="22"/></g>
+<path d="M0 188.8 L300 324.2 L300 400 L0 400Z" fill="url(#floorLit)"/>
+<path d="M34 168 L0 188.8 L0 400 L300 400 L300 431.2 Z" fill="url(#floorLit)"/>
+<path d="M276.1 431.2 L318.2 431.2 L168.3 420 L11.4 420Z" fill="#0b0b0b" opacity=".86"/>
+<path d="M213.7 363.3 L244.9 363.3 L81.0 420 L-24.8 420Z" fill="#0b0b0b" opacity=".86"/>
+<path d="M169.3 315.1 L192.8 315.1 L27.3 420 L-46.6 420Z" fill="#0b0b0b" opacity=".86"/>
+<path d="M136.2 279.1 L154.0 279.1 L-6.9 420 L-59.5 420Z" fill="#0b0b0b" opacity=".86"/>
+<path d="M110.7 251.3 L124.0 251.3 L-28.7 420 L-66.3 420Z" fill="#0b0b0b" opacity=".86"/>
+<path d="M91.5 230.5 L101.5 230.5 L-41.4 420 L-68.5 420Z" fill="#0b0b0b" opacity=".86"/>
+<path d="M76.6 214.3 L84.0 214.3 L-48.0 420 L-67.5 420Z" fill="#0b0b0b" opacity=".86"/>
+<path d="M65.1 201.8 L70.5 201.8 L-50.1 420 L-64.0 420Z" fill="#0b0b0b" opacity=".86"/>
+<path d="M55.9 191.8 L59.7 191.8 L-48.7 420 L-58.3 420Z" fill="#0b0b0b" opacity=".86"/>
+<path d="M0 303.1 H300" stroke="#000" stroke-opacity=".12" stroke-width=".6"/>
+<path d="M0 258.9 H300" stroke="#000" stroke-opacity=".12" stroke-width=".6"/>
+<path d="M0 236.5 H300" stroke="#000" stroke-opacity=".12" stroke-width=".6"/>
+<path d="M0 222.9 H300" stroke="#000" stroke-opacity=".12" stroke-width=".6"/>
+<path d="M0 213.9 H300" stroke="#000" stroke-opacity=".12" stroke-width=".6"/>
+<path d="M0 207.4 H300" stroke="#000" stroke-opacity=".12" stroke-width=".6"/>
+<path d="M0 202.5 H300" stroke="#000" stroke-opacity=".12" stroke-width=".6"/>
+<path d="M0 198.7 H300" stroke="#000" stroke-opacity=".12" stroke-width=".6"/>
+<path d="M34 168 L300 -88.1 L300 0 L0 0 L0 128.0 Z" fill="#0d0d0d"/>
+<path d="M261.3 -68.4 L315.8 0" stroke="#2a2a2a" stroke-width="3.6"/>
+<path d="M200.7 -5.3 L240.7 0" stroke="#2a2a2a" stroke-width="2.7"/>
+<path d="M159.0 38.0 L189.0 0" stroke="#2a2a2a" stroke-width="2.0"/>
+<path d="M126.6 71.7 L148.8 0" stroke="#2a2a2a" stroke-width="1.5"/>
+<path d="M103.4 95.8 L120.1 0" stroke="#2a2a2a" stroke-width="1.1"/>
+<path d="M86.1 113.8 L98.6 0" stroke="#2a2a2a" stroke-width="0.8"/>
+<path d="M72.5 128.0 L81.7 0" stroke="#2a2a2a" stroke-width="0.6"/>
+<path d="M61.8 139.1 L68.4 0" stroke="#2a2a2a" stroke-width="0.6"/>
+<path d="M34 165 L300 -88.1 L300 -68.1 L34 167 Z" fill="url(#lintel)"/>
+<rect x="55.9" y="146.7" width="3.8" height="45.1" fill="url(#colG)"/>
+<rect x="55.4" y="145.8" width="4.7" height="0.8" fill="#d9d8d4"/>
+<rect x="55.6" y="191.4" width="4.4" height="0.5" fill="#9a9995"/>
+<rect x="65.1" y="137.7" width="5.4" height="64.1" fill="url(#colG)"/>
+<rect x="64.4" y="136.5" width="6.7" height="1.2" fill="#d9d8d4"/>
+<rect x="64.6" y="201.1" width="6.3" height="0.6" fill="#9a9995"/>
+<rect x="76.6" y="126.5" width="7.4" height="87.8" fill="url(#colG)"/>
+<path d="M77.8 126.5 V214.3" stroke="#000" stroke-opacity=".18" stroke-width="0.20"/>
+<path d="M79.1 126.5 V214.3" stroke="#000" stroke-opacity=".18" stroke-width="0.20"/>
+<path d="M80.3 126.5 V214.3" stroke="#000" stroke-opacity=".18" stroke-width="0.20"/>
+<path d="M81.5 126.5 V214.3" stroke="#000" stroke-opacity=".18" stroke-width="0.20"/>
+<path d="M82.8 126.5 V214.3" stroke="#000" stroke-opacity=".18" stroke-width="0.20"/>
+<rect x="75.7" y="124.9" width="9.2" height="1.6" fill="#d9d8d4"/>
+<rect x="76.0" y="213.4" width="8.6" height="0.9" fill="#9a9995"/>
+<rect x="91.5" y="112.0" width="10.0" height="118.5" fill="url(#colG)"/>
+<path d="M93.2 112.0 V230.5" stroke="#000" stroke-opacity=".18" stroke-width="0.25"/>
+<path d="M94.8 112.0 V230.5" stroke="#000" stroke-opacity=".18" stroke-width="0.25"/>
+<path d="M96.5 112.0 V230.5" stroke="#000" stroke-opacity=".18" stroke-width="0.25"/>
+<path d="M98.2 112.0 V230.5" stroke="#000" stroke-opacity=".18" stroke-width="0.25"/>
+<path d="M99.8 112.0 V230.5" stroke="#000" stroke-opacity=".18" stroke-width="0.25"/>
+<rect x="90.3" y="109.8" width="12.4" height="2.2" fill="#d9d8d4"/>
+<rect x="90.7" y="229.3" width="11.6" height="1.2" fill="#9a9995"/>
+<rect x="110.7" y="93.3" width="13.3" height="158.0" fill="url(#colG)"/>
+<path d="M112.9 93.3 V251.3" stroke="#000" stroke-opacity=".18" stroke-width="0.33"/>
+<path d="M115.1 93.3 V251.3" stroke="#000" stroke-opacity=".18" stroke-width="0.33"/>
+<path d="M117.3 93.3 V251.3" stroke="#000" stroke-opacity=".18" stroke-width="0.33"/>
+<path d="M119.6 93.3 V251.3" stroke="#000" stroke-opacity=".18" stroke-width="0.33"/>
+<path d="M121.8 93.3 V251.3" stroke="#000" stroke-opacity=".18" stroke-width="0.33"/>
+<rect x="109.1" y="90.4" width="16.5" height="2.9" fill="#d9d8d4"/>
+<rect x="109.6" y="249.7" width="15.5" height="1.6" fill="#9a9995"/>
+<rect x="136.2" y="68.4" width="17.8" height="210.7" fill="url(#colG)"/>
+<path d="M139.2 68.4 V279.1" stroke="#000" stroke-opacity=".18" stroke-width="0.44"/>
+<path d="M142.1 68.4 V279.1" stroke="#000" stroke-opacity=".18" stroke-width="0.44"/>
+<path d="M145.1 68.4 V279.1" stroke="#000" stroke-opacity=".18" stroke-width="0.44"/>
+<path d="M148.1 68.4 V279.1" stroke="#000" stroke-opacity=".18" stroke-width="0.44"/>
+<path d="M151.0 68.4 V279.1" stroke="#000" stroke-opacity=".18" stroke-width="0.44"/>
+<rect x="134.1" y="64.5" width="22.0" height="3.9" fill="#d9d8d4"/>
+<rect x="134.8" y="277.0" width="20.6" height="2.1" fill="#9a9995"/>
+<rect x="169.3" y="36.2" width="23.5" height="278.8" fill="url(#colG)"/>
+<path d="M173.2 36.2 V315.1" stroke="#000" stroke-opacity=".18" stroke-width="0.59"/>
+<path d="M177.1 36.2 V315.1" stroke="#000" stroke-opacity=".18" stroke-width="0.59"/>
+<path d="M181.1 36.2 V315.1" stroke="#000" stroke-opacity=".18" stroke-width="0.59"/>
+<path d="M185.0 36.2 V315.1" stroke="#000" stroke-opacity=".18" stroke-width="0.59"/>
+<path d="M188.9 36.2 V315.1" stroke="#000" stroke-opacity=".18" stroke-width="0.59"/>
+<rect x="166.5" y="31.1" width="29.2" height="5.2" fill="#d9d8d4"/>
+<rect x="167.4" y="312.2" width="27.3" height="2.8" fill="#9a9995"/>
+<rect x="213.7" y="-7.0" width="31.2" height="370.3" fill="url(#colG)"/>
+<path d="M218.9 -7.0 V363.3" stroke="#000" stroke-opacity=".18" stroke-width="0.78"/>
+<path d="M224.1 -7.0 V363.3" stroke="#000" stroke-opacity=".18" stroke-width="0.78"/>
+<path d="M229.3 -7.0 V363.3" stroke="#000" stroke-opacity=".18" stroke-width="0.78"/>
+<path d="M234.5 -7.0 V363.3" stroke="#000" stroke-opacity=".18" stroke-width="0.78"/>
+<path d="M239.7 -7.0 V363.3" stroke="#000" stroke-opacity=".18" stroke-width="0.78"/>
+<rect x="209.9" y="-13.9" width="38.8" height="6.9" fill="#d9d8d4"/>
+<rect x="211.2" y="359.6" width="36.2" height="3.8" fill="#9a9995"/>
+<rect x="276.1" y="-67.8" width="42.1" height="498.9" fill="url(#colG)"/>
+<path d="M283.1 -67.8 V431.2" stroke="#000" stroke-opacity=".18" stroke-width="1.05"/>
+<path d="M290.1 -67.8 V431.2" stroke="#000" stroke-opacity=".18" stroke-width="1.05"/>
+<path d="M297.2 -67.8 V431.2" stroke="#000" stroke-opacity=".18" stroke-width="1.05"/>
+<path d="M304.2 -67.8 V431.2" stroke="#000" stroke-opacity=".18" stroke-width="1.05"/>
+<path d="M311.2 -67.8 V431.2" stroke="#000" stroke-opacity=".18" stroke-width="1.05"/>
+<rect x="271.1" y="-77.1" width="52.2" height="9.3" fill="#d9d8d4"/>
+<rect x="272.7" y="426.1" width="48.8" height="5.1" fill="#9a9995"/>
+
     </symbol>
     <!-- an empty room with one window -->
     <symbol id="room" viewBox="0 0 300 400">
@@ -324,10 +447,8 @@ footer p{font-family:var(--display);font-style:italic;font-size:20px;margin-top:
 
 <!-- ============ HERO ============ -->
 <header class="room k hero gut" id="top">
-  <div class="cols" aria-hidden="true">
-    <svg viewBox="0 0 60 400" preserveAspectRatio="xMidYMax meet" style="color:#fff"><use href="#column"/></svg>
-    <svg viewBox="0 0 60 400" preserveAspectRatio="xMidYMax meet" style="color:#fff"><use href="#column"/></svg>
-  </div>
+  <div class="plate hero-bg" aria-hidden="true"><svg viewBox="0 0 300 400" preserveAspectRatio="xMidYMid slice"><use href="#colonnade" width="300" height="400"/></svg></div>
+  <div class="hero-fade" aria-hidden="true"></div>
   <div class="wrap" style="position:relative">
     <div class="topbar">
       <span class="eyebrow">Design proposal · Phase I of II</span>
@@ -443,6 +564,12 @@ footer p{font-family:var(--display);font-style:italic;font-size:20px;margin-top:
             <span class="lab">Hairline 0.25 pt · double rule · plate number</span>
           </div>
         </div>
+        <div class="texture" style="margin-top:20px">
+          <div class="tx"><div class="plate" style="inset:0;--pt:1px;--mm:2px"><svg viewBox="0 60 300 250" preserveAspectRatio="xMidYMid slice"><use href="#colonnade" width="300" height="400"/></svg><span class="pltag" style="left:14px;top:14px">Placeholder plate</span></div></div>
+          <div><span class="lab" style="font-family:var(--sans);font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--stone)">The signature light</span>
+          <p style="font-family:var(--display);font-size:clamp(24px,2.4vw,32px);line-height:1.12;margin:14px 0 16px">Hard sun through a colonnade.</p>
+          <p class="note">This is the brand's one piece of atmosphere. In photography it is literal: each edition opens on the subject's own architecture in raking light. In layout it becomes faint diagonal bands of light across black Monument pages, at 4–7% white, never on ivory.</p></div>
+        </div>
         <p class="note" style="margin-top:20px;max-width:80ch">At most one architectural element per page, and never on a page that carries a portrait full bleed. The column appears as a line, never as rendered marble; the person is always the most solid thing on the page.</p>
       </div>
     </div>
@@ -450,7 +577,7 @@ footer p{font-family:var(--display);font-style:italic;font-size:20px;margin-top:
 </section>
 
 <!-- ============ II. COVERS ============ -->
-<section class="room w gut" id="covers">
+<section class="room s gut" id="covers">
   <div class="wrap">
     <div class="rh">
       <div><span class="eyebrow">Room II</span><div class="num">II</div></div>
@@ -485,9 +612,9 @@ footer p{font-family:var(--display);font-style:italic;font-size:20px;margin-top:
         <div class="cover"><div class="cv" style="background:var(--ivory);color:var(--black)">
           <div class="abs" style="left:0;right:0;top:calc(var(--mm)*18);text-align:center;font-family:var(--display);font-weight:500;font-size:calc(var(--mm)*13.5);letter-spacing:.16em;margin-right:-.16em;line-height:1;font-variation-settings:'opsz' 96">TESTAMENTS</div>
           <div class="abs p-lbl" style="left:0;right:0;top:calc(var(--mm)*35);text-align:center;color:var(--ink2)">Understand the Why.</div>
-          <div class="plate" style="left:calc(var(--mm)*50);width:calc(var(--mm)*130);top:calc(var(--mm)*56);height:calc(var(--mm)*166);box-shadow:0 0 0 calc(var(--mm)*.5) #090909">
-            <svg viewBox="25 30 250 320" preserveAspectRatio="xMidYMid slice"><rect width="300" height="400" fill="url(#darkR)"/><use href="#sitter" width="300" height="400" fill="url(#litR)"/></svg>
-            <span class="pltag" style="left:calc(var(--mm)*6);bottom:calc(var(--mm)*6)">Placeholder plate</span>
+          <div class="plate hk" style="left:calc(var(--mm)*50);width:calc(var(--mm)*130);top:calc(var(--mm)*56);height:calc(var(--mm)*166)">
+            <svg viewBox="25 40 250 320" preserveAspectRatio="xMidYMid slice"><rect width="300" height="400" fill="url(#paper)"/><use href="#sitter" x="30" y="10" width="300" height="400" fill="#000" opacity=".32" filter="url(#bloom)"/><use href="#sitter" width="300" height="400" fill="url(#litL)"/></svg>
+            <span class="pltag" style="left:calc(var(--mm)*6);bottom:calc(var(--mm)*6);color:rgba(255,255,255,.55)">Placeholder plate</span>
           </div>
           <div class="abs" style="left:calc(var(--mm)*50);top:calc(var(--mm)*234);width:calc(var(--mm)*90)">
             <div class="p-lbl" style="color:var(--ink2)">Chapter I · No. 01</div>
@@ -503,6 +630,7 @@ footer p{font-family:var(--display);font-style:italic;font-size:20px;margin-top:
       <!-- Cover C -->
       <figure style="margin:0">
         <div class="cover"><div class="cv" style="background:#090909;color:#fff">
+          <div class="stoa"></div>
           <svg class="abs" viewBox="0 0 60 400" preserveAspectRatio="none" style="left:calc(var(--mm)*12);top:calc(var(--mm)*50);width:calc(var(--mm)*14);height:calc(var(--mm)*200);color:#fff;opacity:.75"><use href="#column"/></svg>
           <svg class="abs" viewBox="0 0 60 400" preserveAspectRatio="none" style="right:calc(var(--mm)*12);top:calc(var(--mm)*50);width:calc(var(--mm)*14);height:calc(var(--mm)*200);color:#fff;opacity:.75"><use href="#column"/></svg>
           <div class="abs" style="left:calc(var(--mm)*12);right:calc(var(--mm)*12);top:calc(var(--mm)*44);height:1px;background:rgba(255,255,255,.75)"></div>
@@ -526,7 +654,7 @@ footer p{font-family:var(--display);font-style:italic;font-size:20px;margin-top:
 </section>
 
 <!-- ============ III. SPREADS ============ -->
-<section class="room c gut" id="spreads">
+<section class="room s gut" id="spreads">
   <div class="wrap">
     <div class="rh">
       <div><span class="eyebrow">Room III</span><div class="num">III</div></div>
@@ -540,32 +668,30 @@ footer p{font-family:var(--display);font-style:italic;font-size:20px;margin-top:
 
       <!-- Opener 2|3 -->
       <article>
-        <div class="sp-head"><div><span class="eyebrow">Pages 2–3 · Masters G + A</span><h3>The chapter opening</h3></div><p>A cinematic photograph faces the name. The name is set larger than anything else inside the magazine; it is the title of the exhibition.</p></div>
+        <div class="sp-head"><div><span class="eyebrow">Pages 2–3 · Masters A + G</span><h3>The chapter opening</h3></div><p>White space and one photograph in hard light. The name is lettered in spaced capitals, the way a gallery letters an artist's name on the wall, and the photograph does the shouting.</p></div>
         <div class="scroller"><div class="spread"><div class="sheet">
-          <div class="pg k verso">
-            <div class="plate" style="inset:0">
-              <svg viewBox="0 0 300 400" preserveAspectRatio="xMidYMid slice"><rect width="300" height="400" fill="url(#dark)"/><use href="#sitter" x="-30" y="20" width="300" height="400" fill="url(#litL)"/></svg>
-              <span class="pltag" style="left:calc(var(--mm)*12);top:calc(var(--mm)*12)">Placeholder plate</span>
+          <div class="pg wh verso">
+            <div class="abs p-lbl" style="left:calc(var(--mm)*26);top:calc(var(--mm)*22)">Testaments</div>
+            <div class="abs p-lbl" style="right:calc(var(--mm)*20);top:calc(var(--mm)*22)">Chapter I</div>
+            <div class="plate" style="left:0;top:calc(var(--mm)*74);width:calc(var(--mm)*30);height:calc(var(--mm)*40)"><svg viewBox="40 60 220 300" preserveAspectRatio="xMidYMid slice"><use href="#colonnade" width="300" height="400"/></svg></div>
+            <div class="abs p-cap" style="left:calc(var(--mm)*34);top:calc(var(--mm)*108);color:var(--ink2)">Pl. 0 · <span class="ph">The subject's place</span></div>
+            <svg class="abs" viewBox="0 0 120 44" style="left:calc(var(--mm)*26);top:calc(var(--mm)*140);width:calc(var(--mm)*16);height:auto;opacity:.8"><use href="#capital"/></svg>
+            <div class="abs ph" style="left:calc(var(--mm)*26);right:calc(var(--mm)*16);top:calc(var(--mm)*154);font-family:var(--display);font-weight:400;font-size:calc(var(--pt)*27);letter-spacing:.3em;line-height:1.1;text-transform:uppercase;font-variation-settings:'opsz' 60">Name of Subject</div>
+            <div class="abs ph" style="left:calc(var(--mm)*26);top:calc(var(--mm)*170);font-family:var(--display);font-style:italic;font-size:calc(var(--pt)*20);line-height:1.1">The Chapter Title</div>
+            <p class="abs ph" style="left:calc(var(--mm)*26);width:calc(var(--mm)*88);top:calc(var(--mm)*196);font-family:var(--body);font-style:italic;font-size:calc(var(--pt)*11.5);line-height:calc(var(--pt)*16)">Two or three sentences set the scene: who this person is, where we met them, and the question this chapter tries to answer. The standfirst is the editor's, never put in the subject's mouth.</p>
+            <div class="abs p-cap" style="left:calc(var(--mm)*130);top:calc(var(--mm)*198);display:grid;gap:calc(var(--pt)*3);color:var(--ink2)">
+              <span>Interview · <span class="ph" style="color:var(--black)">Interviewer's Name</span></span>
+              <span>Photographs · <span class="ph" style="color:var(--black)">Photographer's Name</span></span>
+              <span>Recorded · <span class="ph" style="color:var(--black)">Place, Month Year</span></span>
             </div>
-            <div class="abs p-cap" style="left:calc(var(--mm)*12);bottom:calc(var(--mm)*12);color:rgba(255,255,255,.8)"><b>Pl. 1</b><span class="ph">Name of Subject, at home. Place, Month Year.</span></div>
+            <div class="fol"><span class="n">2</span><span class="r">Testaments</span></div>
           </div>
-          <div class="pg recto">
-            <div class="abs vlab" style="right:calc(var(--mm)*12);top:calc(var(--mm)*22);color:var(--ink2)">Testaments · Chapter I</div>
-            <svg class="abs" viewBox="0 0 120 44" style="left:calc(var(--mm)*20);top:calc(var(--mm)*22);width:calc(var(--mm)*22);height:auto"><use href="#capital"/></svg>
-            <div class="abs p-lbl" style="left:calc(var(--mm)*20);top:calc(var(--mm)*35)">Chapter I</div>
-            <div class="abs ph" style="left:calc(var(--mm)*19);right:calc(var(--mm)*26);top:calc(var(--mm)*96);font-family:var(--display);font-size:calc(var(--pt)*64);line-height:.96;letter-spacing:-.01em">Name of Subject</div>
-            <div class="abs ph" style="left:calc(var(--mm)*20);right:calc(var(--mm)*26);top:calc(var(--mm)*150);font-family:var(--display);font-style:italic;font-size:calc(var(--pt)*22);line-height:1.1">The Chapter Title</div>
-            <div class="hair" style="left:calc(var(--mm)*20);width:calc(var(--mm)*24);top:calc(var(--mm)*172);height:1px"></div>
-            <p class="abs ph" style="left:calc(var(--mm)*20);width:calc(var(--mm)*112);top:calc(var(--mm)*180);font-family:var(--body);font-style:italic;font-size:calc(var(--pt)*14);line-height:calc(var(--pt)*19)">Two or three sentences set the scene: who this person is, where we met them, and the question this chapter tries to answer. This standfirst is written by the editor and never put in the subject’s mouth.</p>
-            <div class="abs p-cap" style="left:calc(var(--mm)*20);bottom:calc(var(--mm)*30);display:grid;grid-template-columns:auto auto;gap:calc(var(--pt)*2) calc(var(--mm)*6);color:var(--ink2)">
-              <span>Interview</span><span class="ph" style="color:var(--black)">Interviewer’s Name</span>
-              <span>Photographs</span><span class="ph" style="color:var(--black)">Photographer’s Name</span>
-              <span>Recorded</span><span class="ph" style="color:var(--black)">Place, Month Year</span>
-            </div>
-            <div class="fol"><span class="r">Chapter I</span><span class="n">3</span></div>
+          <div class="pg k recto">
+            <div class="plate" style="inset:0"><svg viewBox="0 0 300 400" preserveAspectRatio="xMidYMid slice"><use href="#interior" width="300" height="400"/></svg><span class="pltag" style="right:calc(var(--mm)*12);top:calc(var(--mm)*12)">Placeholder plate</span></div>
+            <div class="abs p-cap" style="right:calc(var(--mm)*12);bottom:calc(var(--mm)*12);text-align:right;color:rgba(255,255,255,.8)"><b>Pl. 1</b><span class="ph">Name of Subject, in the afternoon light. Place, Month Year.</span></div>
           </div>
         </div></div></div>
-        <p class="scale-note">Shown at reduced scale. In print the standfirst is 14 pt and the name 64 pt.</p>
+        <p class="scale-note">Shown at reduced scale. In print the name is 27 pt, tracked +300, and the standfirst 11.5 pt.</p>
       </article>
 
       <!-- Gallery + Archive 6|7 -->
@@ -574,7 +700,7 @@ footer p{font-family:var(--display);font-style:italic;font-size:20px;margin-top:
         <div class="scroller"><div class="spread"><div class="sheet">
           <div class="pg wh verso">
             <div class="plate hk" style="left:calc(var(--mm)*62);width:calc(var(--mm)*106);top:calc(var(--mm)*64);height:calc(var(--mm)*138)">
-              <svg viewBox="0 0 300 400" preserveAspectRatio="xMidYMid slice"><rect width="300" height="400" fill="url(#paper)"/><use href="#sitter" y="30" width="300" height="400" fill="url(#hkFig)"/></svg>
+              <svg viewBox="0 0 300 400" preserveAspectRatio="xMidYMid slice"><rect width="300" height="400" fill="url(#paper)"/><use href="#sitter" x="34" y="38" width="300" height="400" fill="#000" opacity=".3" filter="url(#bloom)"/><use href="#sitter" y="30" width="300" height="400" fill="url(#litL)"/></svg>
               <span class="pltag" style="left:calc(var(--mm)*5);top:calc(var(--mm)*5)">Placeholder plate</span>
             </div>
             <div class="abs p-cap" style="left:calc(var(--mm)*62);top:calc(var(--mm)*208);width:calc(var(--mm)*80);color:#3c3c3b"><b style="color:var(--black)">Pl. 3</b><span class="ph">Name of Subject, age seven. Place, Year.</span><br><span class="ph">Gelatin silver print, collection of the subject.</span></div>
@@ -625,13 +751,14 @@ footer p{font-family:var(--display);font-style:italic;font-size:20px;margin-top:
 
       <!-- Plate + Monument 8|9 -->
       <article>
-        <div class="sp-head"><div><span class="eyebrow">Pages 8–9 · Masters G + B</span><h3>The Monument page</h3></div><p>A section opens in near silence: a room with nobody in it on the left, then one sentence on black. The quotation is the largest type inside the magazine and the only thing on its page.</p></div>
+        <div class="sp-head"><div><span class="eyebrow">Pages 8–9 · Masters G + B</span><h3>The Monument page</h3></div><p>A section opens in near silence: architecture in hard sun on the left, then one sentence on black, crossed by the faintest bands of the same light. The quotation is the largest type inside the magazine and the only thing on its page.</p></div>
         <div class="scroller"><div class="spread"><div class="sheet">
           <div class="pg k verso">
-            <div class="plate" style="inset:0"><svg viewBox="0 0 300 400" preserveAspectRatio="xMidYMid slice"><use href="#room" width="300" height="400"/></svg><span class="pltag" style="left:calc(var(--mm)*12);top:calc(var(--mm)*12)">Placeholder plate</span></div>
-            <div class="abs p-cap" style="left:calc(var(--mm)*12);bottom:calc(var(--mm)*12);color:rgba(255,255,255,.75)"><b>Pl. 6</b><span class="ph">The kitchen, early morning. Place, Year.</span></div>
+            <div class="plate" style="inset:0"><svg viewBox="0 0 300 400" preserveAspectRatio="xMidYMid slice"><use href="#colonnade" width="300" height="400"/></svg><span class="pltag" style="left:calc(var(--mm)*12);top:calc(var(--mm)*12)">Placeholder plate</span></div>
+            <div class="abs p-cap" style="left:calc(var(--mm)*12);bottom:calc(var(--mm)*12);color:rgba(255,255,255,.75)"><b>Pl. 6</b><span class="ph">The colonnade at noon. Place, Year.</span></div>
           </div>
           <div class="pg k recto">
+            <div class="stoa faint"></div>
             <div class="abs p-lbl" style="left:calc(var(--mm)*20);top:calc(var(--mm)*22);color:var(--stone)">II · Turning Points</div>
             <div class="abs" style="left:calc(var(--mm)*16);top:calc(var(--mm)*70);font-family:var(--display);font-size:calc(var(--pt)*160);line-height:.6;color:var(--stone)">“</div>
             <p class="abs ph" style="left:calc(var(--mm)*20);right:calc(var(--mm)*26);top:calc(var(--mm)*102);font-family:var(--display);font-size:calc(var(--pt)*36);line-height:1.08;letter-spacing:-.005em;text-wrap:balance">The one sentence that turned the story sits here, alone, in the subject’s own words.</p>
@@ -646,7 +773,7 @@ footer p{font-family:var(--display);font-style:italic;font-size:20px;margin-top:
         <div class="sp-head"><div><span class="eyebrow">Pages 18–19 · Master F</span><h3>The Reflection page</h3></div><p>A portrait on one side, the subject’s longest unbroken answer on the other, divided by a single column drawn in hairline along the gutter. No questions on this page: it reads as a letter.</p></div>
         <div class="scroller"><div class="spread"><div class="sheet">
           <div class="pg k verso">
-            <div class="plate" style="inset:0"><svg viewBox="0 0 300 400" preserveAspectRatio="xMidYMid slice"><rect width="300" height="400" fill="url(#darkR)"/><use href="#sitter" x="40" y="10" width="300" height="400" fill="url(#litR)"/></svg><span class="pltag" style="left:calc(var(--mm)*12);top:calc(var(--mm)*12)">Placeholder plate</span></div>
+            <div class="plate" style="inset:0"><svg viewBox="0 0 300 400" preserveAspectRatio="xMidYMid slice"><rect width="300" height="400" fill="url(#darkR)"/><g transform="translate(300 0) scale(-1 1)"><use href="#sitter" x="20" y="10" width="300" height="400" fill="url(#litL)"/></g></svg><span class="pltag" style="left:calc(var(--mm)*12);top:calc(var(--mm)*12)">Placeholder plate</span></div>
             <div class="abs p-cap" style="left:calc(var(--mm)*12);bottom:calc(var(--mm)*12);color:rgba(255,255,255,.75)"><b>Pl. 11</b><span class="ph">Name of Subject. Place, Month Year.</span></div>
           </div>
           <div class="pg recto">
@@ -880,8 +1007,8 @@ footer p{font-family:var(--display);font-style:italic;font-size:20px;margin-top:
     FC:['Cover','k','Front cover'],
     IFC:['K','k','Edition statement'],
     1:['B','k','Opening artwork · capital, Chapter I'],
-    2:['G','p','Opening photograph'],
-    3:['A','i','Name, title, introduction'],
+    2:['A','i','Name, title, introduction'],
+    3:['G','p','Opening photograph'],
     4:['A','i','The rooms of this chapter'],
     5:['D','i','The Beginning opens'],
     6:['C','i','Gallery page'],
