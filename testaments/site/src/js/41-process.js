@@ -1,0 +1,11 @@
+  /* ===== process ===== */
+  var PROC=[['01','The Meeting','Getting to know the person beyond a surface-level introduction.','mural-portrait'],['02','The Conversation','Exploring experiences, memories, turning points, and reflections.','mural-walk'],['03','The Portrait','Photographing the subject in a way that reflects their personality and environment.','resonator'],['04','The Chapter','Bringing together dialogue, photography, and editorial design.','guitar-tree'],['05','The Testament','Preserving the story as a publication readers can experience and revisit.','reach']];
+  function buildProcess(){
+    var Pr=RM.process,at=[['n',22.6],['n',29],['n',35.4],['e',-10],['e',-16]];
+    PROC.forEach(function(s,i){var a=at[i],p=photo(s[3]),h=p.h>p.w?1.9:1.35;hang(s[3],Pr,a[0],a[1],3.65,h);
+      panel(Pr,a[0],a[1],1.45,2.6,1.15,function(c){c.fillStyle='#b49be0';c.font='400 90px "Bodoni Moda"';c.fillText(s[0],20,92);c.fillStyle='#f4f1ea';c.font='400 44px "Bodoni Moda"';c.fillText(s[1],150,80);c.fillStyle='#bdbbb6';c.font='400 21px Inter';wrap(c,s[2],20,150,470,30)},{light:false,act:function(){openProcess(i)},verb:'Read',label:s[0]+' · '+s[1],r:3.4})});
+    panel(Pr,'s',29,3.3,9,2.4,function(c){c.fillStyle='#a3a29e';c.font='500 32px Inter';sp(c,'THE PROCESS',60,90,12,'left');c.fillStyle='#f4f1ea';c.font='400 96px "Bodoni Moda"';sp(c,'BEFORE THE PAGE,',56,230,8,'left');sp(c,'THERE IS A CONVERSATION.',56,350,8,'left');c.fillStyle='#bdbbb6';c.font='400 28px Inter';c.fillText('Not every story moves through these stages in the same order or at the same pace.',60,430)},{act:function(){openProcess(-1)},label:'How a chapter is made',r:7});
+    var tg=new T.Group();[0,2.1,4.2].forEach(function(a){var leg=new T.Mesh(new T.CylinderGeometry(.02,.02,1.6,8),MAT.metal);leg.position.set(Math.cos(a)*.3,.75,Math.sin(a)*.3);leg.rotation.z=Math.cos(a)*.22;leg.rotation.x=-Math.sin(a)*.22;tg.add(leg)});
+    var body=new T.Mesh(new T.BoxGeometry(.32,.22,.18),MAT.frame);body.position.y=1.6;tg.add(body);var lens=new T.Mesh(new T.CylinderGeometry(.07,.08,.24,20),MAT.metal);lens.rotation.x=Math.PI/2;lens.position.set(0,1.6,-.2);tg.add(lens);
+    tg.position.set(29,0,-13.5);scene.add(tg);col(28.6,29.4,-13.9,-13.1);floorGlow(29,-13.5,3,3,0xfff1dc,.25);
+  }

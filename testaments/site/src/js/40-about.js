@@ -1,0 +1,13 @@
+  /* ===== about ===== */
+  function buildAbout(){
+    var A=RM.about,dk='#141414',md='#55534f';
+    panel(A,'n',-29,3.1,11,4.8,function(c){c.fillStyle=md;c.font='500 34px Inter';sp(c,'ABOUT TESTAMENTS',90,150,12,'left');c.fillStyle=dk;c.font='400 132px "Bodoni Moda"';sp(c,'THE STORY',84,320,10,'left');sp(c,'BEHIND THE STORY.',84,470,10,'left');c.fillStyle='#2f2e2b';c.font='400 38px Inter';var y=wrap(c,'Most of us encounter people in fragments. A photograph. A conversation. A first impression. A moment in time. But a person is more than the moment in which we meet them.',90,600,1500,56);c.fillStyle='#6E42A3';c.font='500 28px Inter';sp(c,'READ THE MANIFESTO',90,y+110,8,'left')},{act:aboutManifesto,label:'Read the manifesto',r:7});
+    panel(A,'w',-10.5,2.9,4.6,3,function(c){c.fillStyle=md;c.font='500 32px Inter';sp(c,'THE MISSION',60,110,12,'left');c.fillStyle=dk;c.font='400 54px "Bodoni Moda"';wrap(c,'To preserve personal stories through meaningful conversations, cinematic photography, and thoughtful editorial storytelling.',60,210,800,72)},{act:aboutMission,label:'The mission'});
+    panel(A,'w',-15.5,2.9,4.6,3,function(c){c.fillStyle=md;c.font='500 32px Inter';sp(c,'THE VISION',60,110,12,'left');c.fillStyle=dk;c.font='400 54px "Bodoni Moda"';wrap(c,'To build a lasting collection of human experiences that encourages understanding, reflection, and connection across different walks of life.',60,210,800,72)},{act:aboutMission,label:'The vision'});
+    var pos=onWall(A,'s',-35),g=new T.Group(),fr=new T.Mesh(new T.BoxGeometry(1.9,2.4,.06),MAT.frame);fr.position.z=.03;g.add(fr);
+    var inner=plane(1.76,2.26,ctex(352,452,function(c,W,H){c.fillStyle='#e9e6e0';c.fillRect(0,0,W,H);c.strokeStyle='#8e8c88';c.setLineDash([6,6]);c.strokeRect(20,20,W-40,H-40);c.fillStyle='#55534f';c.font='500 16px Inter';sp(c,'PORTRAIT',W/2,H/2-8,5);sp(c,'TO BE SUPPLIED',W/2,H/2+20,5)}),true);inner.position.z=.065;g.add(inner);place(g,pos.x,2.4,pos.z,pos.n);
+    panel(A,'s',-30.4,2.3,4.4,2.2,function(c){c.fillStyle=md;c.font='500 30px Inter';sp(c,'THE FOUNDER',40,90,12,'left');c.fillStyle=dk;c.font='400 92px "Bodoni Moda"';c.fillText('Matthew Beecher',40,215);c.fillStyle='#2f2e2b';c.font='500 26px Inter';sp(c,'PHOTOGRAPHER  ·  FILMMAKER  ·  STORYTELLER',40,285,6,'left');c.font='400 30px Inter';c.fillStyle=md;c.fillText('Creator of TESTAMENTS. Biography to be approved.',40,355)},{act:aboutFounder,label:'The founder'});
+    hang('mural-portrait',A,'s',-23.5,2.4,2);
+    box(3,.46,.7,MAT.bench,-29,.23,-13);col(-30.5,-27.5,-13.4,-12.6);
+    var al=new T.PointLight(0xfff4e6,1.5,24,2);al.position.set(-29,5.2,-13);scene.add(al);
+  }
