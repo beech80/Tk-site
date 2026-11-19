@@ -7,3 +7,7 @@ Brand website for Talking Through Twenties (@bloomwithquadia): Home, About, Expl
 - `assets/` holds the photos.
 
 Before going live, replace the placeholder email (`hello@talkingthroughtwenties.com`) and check the TikTok and Pinterest links in `src/page.html`, then run `./build.sh`.
+
+## TESTAMENTS — design system (Phase I)
+
+`testaments/` holds the visual identity proposal for TESTAMENTS magazine: identity, three cover directions, the five signature spreads drawn at print scale (230 × 300 mm), the 24-page flatplan, and type, grid, print and digital specifications. Edit `testaments/src/identity.html` and run `testaments/build.sh` to rebuild `testaments/index.html`. All names, quotations and photographs in it are placeholders.
