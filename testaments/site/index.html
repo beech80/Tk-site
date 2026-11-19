@@ -1440,7 +1440,7 @@ var STOCKISTS = [];   // confirmed partners only: {name, address}
 
   /* place a sign on a room wall (world side + along), with an optional tinted wash and interaction */
   function exOnWall(r,side,along,y,w,h,fn,o){
-    o=o||{};var pos=onWall(r,side,along),n=NV[pos.n],m=exSign(w,h,fn);place(m,pos.x+n[0]*.012,y,pos.z+n[1]*.012,pos.n);
+    o=o||{};var pos=onWall(r,side,along),n=NV[pos.n],m=exSign(w,h,fn);place(m,pos.x+n[0]*.045,y,pos.z+n[1]*.045,pos.n);
     if(o.wash!==false){var s=spot(w*1.6,h*2,o.washOp||(r.white?.22:.42),o.tint);place(s,pos.x+n[0]*.006,y+h*.2,pos.z+n[1]*.006,pos.n)}
     if(o.act)m.inter=addInter(pos.x,pos.z,pos.n,o.r||4.5,o.verb||'Read',o.label||'Read',o.act,{y:y,w:w,h:h});
     return m}
@@ -1455,8 +1455,8 @@ var STOCKISTS = [];   // confirmed partners only: {name, address}
   function exFace(o,d){o.rotation.y=Math.atan2(d[0],d[1]);return o}
   /* accent wall: a thin tinted skin over a stretch of a wall (local a1..a2) */
   function exAccent(r,w,a1,a2,tone){var W=r.wing,s=wingSide(W,w),b1=wingAlong(W,w,a1),b2=wingAlong(W,w,a2),len=Math.abs(b2-b1),mid=(b1+b2)/2,pos=onWall(r,s,mid),n=NV[pos.n];
-    var m=new T.Mesh(new T.PlaneGeometry(len,r.h),new T.MeshStandardMaterial({color:tone.acc,roughness:.92}));place(m,pos.x-n[0]*.005,r.h/2,pos.z-n[1]*.005,pos.n);
-    var s2=spot(len*1.05,r.h*1.1,.16,tone.light);place(s2,pos.x+n[0]*.002,r.h*.52,pos.z+n[1]*.002,pos.n);return m}
+    var m=new T.Mesh(new T.PlaneGeometry(len,r.h),new T.MeshStandardMaterial({color:tone.acc,roughness:.92}));place(m,pos.x-n[0]*.008,r.h/2,pos.z-n[1]*.008,pos.n);
+    var s2=spot(len*1.05,r.h*1.1,.07,tone.light);place(s2,pos.x-n[0]*.004,r.h*.52,pos.z-n[1]*.004,pos.n);return m}
   function exNext(c){var i=CH.indexOf(c);return CH[i+1]||null}
   function exPlateMsg(c){return function(){toast('This part of '+c.title+' opens when the chapter is published.')}}
 
