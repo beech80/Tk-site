@@ -1,7 +1,7 @@
 name: Publish TESTAMENTS
 on:
   push:
-    branches: [main]
+    branches: [main, claude/dreamy-hamilton-h3dmu8]
   workflow_dispatch:
 permissions:
   contents: read
