@@ -14,7 +14,7 @@
   var launch=new Date(SITE.launchDate+'T00:00:00'),launchTxt=launch.toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'}),days=Math.ceil((launch-new Date())/864e5),pre=days>0;
   $('gateLaunch').textContent=pre?'Launching '+launchTxt:'';$('introLaunch').textContent=pre?'Opening '+launchTxt+' · '+days+(days===1?' day':' days'):'';
 
-  var S={sens:1,speed:1,quality:'auto',reduced:window.matchMedia('(prefers-reduced-motion: reduce)').matches,skipIntro:false};
+  var S={sens:1,speed:1,quality:'auto',reduced:window.matchMedia('(prefers-reduced-motion: reduce)').matches,skipIntro:false,bob:true,smooth:true,invertY:false};
   try{var st=JSON.parse(store('t.museum')||'{}');for(var k in st)S[k]=st[k]}catch(e){}
   function save(){store('t.museum',JSON.stringify(S))}
 

@@ -60,7 +60,7 @@
     /* --- stepped rows: three upholstered benches on rising risers (one solid block for collision) --- */
     var fab=[],base=[],riser=[],rows=[{z:-52.6,y:0},{z:-50.4,y:.2},{z:-48.2,y:.4}],rw=8.2;
     rows.forEach(function(r){
-      if(r.y)libB(riser,rw+.4,r.y,2.2,cx,r.y/2,r.z+.05);
+      if(r.y)libB(riser,rw+.2,r.y,2.1,cx,r.y/2,r.z+.05);
       libB(base,rw-.3,.34,.46,cx,r.y+.17,r.z+.02);
       libB(fab,rw,.16,.62,cx,r.y+.42,r.z);
       libB(fab,rw,.52,.14,cx,r.y+.74,r.z+.3,0,-.12);
@@ -86,7 +86,7 @@
     var beamU={uT:{value:0}};
     var beam=new T.Mesh(bg,new T.ShaderMaterial({uniforms:beamU,transparent:true,depthWrite:false,blending:T.AdditiveBlending,side:T.DoubleSide,
       vertexShader:'attribute vec3 aT;varying vec3 vT;varying vec3 vP;void main(){vT=aT;vP=position;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}',
-      fragmentShader:'uniform float uT;varying vec3 vT;varying vec3 vP;void main(){float t=vT.y;float a=.055*(1.-t*.75)*smoothstep(0.,.08,t);float d=.85+.15*sin(vP.x*7.+vP.y*5.+uT*.6)*sin(vP.z*3.-uT*.4);gl_FragColor=vec4(vec3(.78,.8,.95)*a*d,1.);}'}));
+      fragmentShader:'uniform float uT;varying vec3 vT;varying vec3 vP;void main(){float t=vT.y;float e=min(min(vT.x,vT.z),1.-max(vT.x,vT.z));float a=.022*(1.-t*.8)*smoothstep(0.,.1,t);float d=.85+.15*sin(vP.x*7.+vP.y*5.+uT*.6)*sin(vP.z*3.-uT*.4);gl_FragColor=vec4(vec3(.78,.8,.95)*a*d,1.);}'}));
     beam.frustumCulled=false;scene.add(beam);
     if(!S.reduced)HOOKS.frame.push(function(dt){if(curRoom.id==='library')beamU.uT.value+=dt});
 
@@ -140,6 +140,8 @@
     var st=[];libB(st,.5,.5,.5,lx,.25,lz-.1);libMerge(st,M.marble);libLamp(lx,.5,lz-.1,.5);
     col(lx-1.65,lx+1.65,lz-.5,lz+.45);
     floorGlow(lx,lz,4.6,3.4,0xffe0b8,.16);
+    /* one soft warm fill over the reading lounge (the only real-time light in the room) */
+    var rl=new T.PointLight(0xffe6c8,.75,18,2);rl.position.set(-17,4.6,-42.5);scene.add(rl);
 
     /* the lectern with the open magazine */
     var lec=new T.Group(),lb=[];
@@ -174,8 +176,8 @@
       c.fillStyle='#d8d5cf';c.font='600 '+Math.round(H*.085)+'px Inter';sp(c,kick,W*.06,H*.3,Math.round(H*.03),'left');
       c.fillStyle='#f7f4ee';c.font=(big?'italic ':'')+'400 '+Math.round(H*(big?.2:.25))+'px "Bodoni Moda"';c.textAlign='left';c.fillText(title,W*.06,H*(small?.6:.66));
       if(small){c.fillStyle='#bdbab3';c.font='500 '+Math.round(H*.075)+'px Inter';sp(c,small.toUpperCase(),W*.06,H*.82,Math.round(H*.022),'left')}},ppm);
-    place(m,pos.x+NV[pos.n][0]*.02,y,pos.z+NV[pos.n][1]*.02,pos.n);
-    var bk=new T.Mesh(new T.BoxGeometry(w+.06,h+.06,.03),MAT.frame);place(bk,pos.x+NV[pos.n][0]*.004,y,pos.z+NV[pos.n][1]*.004,pos.n);
+    place(m,pos.x+NV[pos.n][0]*.1,y,pos.z+NV[pos.n][1]*.1,pos.n);
+    var bk=new T.Mesh(new T.BoxGeometry(w+.06,h+.06,.08),MAT.frame);place(bk,pos.x+NV[pos.n][0]*.055,y,pos.z+NV[pos.n][1]*.004,pos.n);
     var s=spot(w*1.5,h*2.2,.35);place(s,pos.x+NV[pos.n][0]*.006,y+h*.35,pos.z+NV[pos.n][1]*.006,pos.n);
     return m;
   }

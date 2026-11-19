@@ -3,9 +3,51 @@
      ====================================================================== */
   function pauseFor(){if(mode==='play'||mode==='ui')mode='ui';keys={};auto=null;suppress=true;if(document.pointerLockElement)try{document.exitPointerLock()}catch(e){}}
   function resume(){if(mode!=='ui')return;mode='play';ovKind=null;lookHint();canvas.focus({preventScroll:true})}
-  function openOv(kind,html,cls){pauseFor();ovKind=kind;$('ovIn').className='card '+(cls||'');$('ovIn').innerHTML='<button class="x" type="button" data-close>Close</button>'+html;$('ov').hidden=false;$('ov').scrollTop=0;var x=$('ovIn').querySelector('[data-close]');x.addEventListener('click',closeOv);setTimeout(function(){x.focus()},20)}
-  function closeOv(){$('ov').hidden=true;ovKind=null}
+  function openOv(kind,html,cls){pauseFor();ovKind=kind;$('ovIn').className='card '+(cls||'');$('ovIn').innerHTML='<button class="x" type="button" data-close>Close</button>'+html;$('ov').hidden=false;$('ov').scrollTop=0;var h2=$('ovIn').querySelector('h2');$('ov').setAttribute('aria-label',h2?h2.textContent:kind);$('lookhint').hidden=true;var x=$('ovIn').querySelector('[data-close]');x.addEventListener('click',closeOv);setTimeout(function(){x.focus()},20)}
+  function closeOv(){$('ov').hidden=true;ovKind=null;if(mode==='ui')canvas.focus({preventScroll:true})}
   $('ov').addEventListener('click',function(e){if(e.target===$('ov'))closeOv()});
+
+  /* ======================================================================
+     HUD: toasts, hints, room name, minimap, first-visit card
+     ====================================================================== */
+  var toastT,toastQ=[];
+  /* toast(text[,ms]) shows a short message at the edge of the view */
+  function toast(t,ms){var el=$('toast');if(el.classList.contains('on')&&el.textContent!==t){el.classList.remove('on');clearTimeout(toastT);setTimeout(function(){toastShow(t,ms)},220);return}toastShow(t,ms)}
+  function toastShow(t,ms){var el=$('toast');el.textContent=t;el.classList.add('on');clearTimeout(toastT);toastT=setTimeout(function(){el.classList.remove('on')},ms||Math.max(3200,t.length*60))}
+  /* hint(id,text): a toast shown once per visitor */
+  function hint(id,t,ms){if(store('t.hint.'+id))return false;store('t.hint.'+id,'1');setTimeout(function(){if(mode==='play')toast(t,ms||5200)},400);return true}
+  var rcT,roomT;
+  function uiRoom(rm,prev){
+    var el=$('room'),nm=rm.cor?null:(rm.name||'');
+    if(nm!==null&&el.textContent!==nm){el.classList.add('swap');clearTimeout(roomT);roomT=setTimeout(function(){el.textContent=nm;el.classList.remove('swap')},S.reduced?0:300)}
+    if(mode!=='play'||rm.cor||!rm.name||rm.id==='vestibule')return;
+    if(rm.id==='lobby')hint('map',coarse?'Tap the map in the corner to see every room.':'Press M for the gallery map. You can walk to any room from there.');
+    var parts=String(rm.name).split(' · ');$('rcK').textContent=parts.length>1?parts[0]:(rm.chapter?'':'TESTAMENTS');$('rcN').textContent=parts.length>1?parts.slice(1).join(' · '):rm.name;
+    var rc=$('roomCard');rc.classList.add('on');clearTimeout(rcT);rcT=setTimeout(function(){rc.classList.remove('on')},2600);
+  }
+  var keysShown=false,keysT;
+  function uiStart(){if(!keysShown&&!coarse){keysShown=true;$('keysLegend').classList.remove('gone');keysT=setTimeout(function(){$('keysLegend').classList.add('gone')},9000)}
+    if(!store('t.onboard'))setTimeout(function(){if(mode==='play')openWelcome()},S.reduced?50:600)}
+  function uiMoved(){if(keysShown&&!$('keysLegend').classList.contains('gone')){clearTimeout(keysT);keysT=setTimeout(function(){$('keysLegend').classList.add('gone')},4000)}}
+  function openWelcome(){
+    var rows=coarse?[['Left thumb','Walk. The control appears where you touch.'],['Right side','Drag to look around.'],['Tap','Open a photograph or panel, or tap the floor to walk there.'],['Map','Tap the round map to see every room.']]
+      :[['<kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd>','Walk. Hold <kbd>Shift</kbd> to walk faster.'],['Mouse','Look around. Click the view first.'],['<kbd>E</kbd> or click','Open what you are facing.'],['<kbd>M</kbd>','The gallery map.'],['<kbd>Esc</kbd>','Menu and settings.']];
+    openOv('welcome','<span class="lbl kick">How to visit</span><h2>Welcome to TESTAMENTS.</h2><p class="muted" style="max-width:44ch">Walk through the rooms at your own pace. Every photograph and panel can be opened.</p><dl class="howto">'+rows.map(function(r){return '<dt>'+r[0]+'</dt><dd>'+r[1]+'</dd>'}).join('')+'</dl><button class="btn solid" type="button" id="wBegin">Begin</button>','narrow');
+    store('t.onboard','1');$('wBegin').addEventListener('click',function(){closeOv();lockPointer()});setTimeout(function(){$('wBegin').focus()},30);
+  }
+  /* minimap: north up, a 40 m window around the visitor */
+  var mmCv=$('miniCv'),mmX=mmCv.getContext('2d'),mmAcc=1;
+  function mmResize(){var r=mmCv.getBoundingClientRect(),d=Math.min(2,window.devicePixelRatio||1);if(r.width){mmCv.width=Math.round(r.width*d);mmCv.height=Math.round(r.height*d)}mmAcc=1}
+  function mmDraw(){
+    var W=mmCv.width,H=mmCv.height;if(!W)return;var c=mmX,sc=W/48,d=W/132;c.setTransform(1,0,0,1,0,0);c.clearRect(0,0,W,H);
+    c.setTransform(sc,0,0,sc,W/2-P.x*sc,H/2-P.z*sc);c.lineWidth=1.1*d/sc;
+    c.fillStyle='rgba(255,255,255,.04)';c.fillRect(-3.2,0,6.4,32);c.strokeStyle='rgba(255,255,255,.28)';c.beginPath();c.moveTo(BOUNDS.x1,0);c.lineTo(-3,0);c.moveTo(3,0);c.lineTo(BOUNDS.x2,0);c.stroke();
+    ROOMS.forEach(function(r){var cur=r===curRoom;c.fillStyle=cur?'rgba(110,66,163,.32)':r.cor?'rgba(255,255,255,.03)':'rgba(255,255,255,.06)';c.fillRect(r.x1,r.z2,r.x2-r.x1,r.z1-r.z2);if(!r.cor){c.strokeStyle=cur?'rgba(200,180,240,.9)':'rgba(255,255,255,.32)';c.strokeRect(r.x1,r.z2,r.x2-r.x1,r.z1-r.z2)}});
+    c.setTransform(1,0,0,1,0,0);var cx=W/2,cy=H/2,a=-P.yaw-Math.PI/2,g=c.createRadialGradient(cx,cy,0,cx,cy,W*.3);g.addColorStop(0,'rgba(180,155,224,.55)');g.addColorStop(1,'rgba(180,155,224,0)');
+    c.fillStyle=g;c.beginPath();c.moveTo(cx,cy);c.arc(cx,cy,W*.3,a-.6,a+.6);c.closePath();c.fill();
+    c.fillStyle='#fff';c.beginPath();c.arc(cx,cy,3.2*d,0,Math.PI*2);c.fill();c.strokeStyle='rgba(110,66,163,.9)';c.lineWidth=1.5*d;c.stroke();
+  }
+  HOOKS.frame.push(function(dt){if($('hud').hidden)return;mmAcc+=dt;if(mmAcc<.06)return;mmAcc=0;if(!mmCv.width)mmResize();mmDraw()});
 
   function aboutManifesto(){openOv('text','<span class="lbl kick">About TESTAMENTS</span><h2>The story behind the story.</h2><div class="manifesto" style="margin-top:22px"><p>Most of us encounter people in fragments. A photograph. A conversation. A first impression. A moment in time.</p><p>But a person is more than the moment in which we meet them.</p><p>There are beginnings we never witnessed, struggles we never saw, decisions we never understood, and dreams we may never have imagined.</p><p>TESTAMENTS was created to explore what exists beneath the surface.</p></div><div class="prose" style="margin-top:30px"><h3>Our approach</h3><p>TESTAMENTS is built around genuine conversation rather than scripted answers. The editorial process moves from listening to observing, photographing and documenting, and then to shaping everything into a chapter that reads as one piece.</p><p>Photography is not decoration. It is another language through which the subject’s story is told. The goal is to photograph people honestly, in environments and moments that feel true to them.</p></div>','light')}
   function aboutMission(){openOv('text','<span class="lbl kick">About TESTAMENTS</span><h2>Mission &amp; vision</h2><dl class="meta" style="font-size:19px;font-family:var(--display);gap:18px 28px"><dt>The mission</dt><dd>To preserve personal stories through meaningful conversations, cinematic photography, and thoughtful editorial storytelling.</dd><dt>The vision</dt><dd>To build a lasting collection of human experiences that encourages understanding, reflection, and connection across different walks of life.</dd></dl><p style="font-family:var(--display);font-style:italic;font-size:30px;margin-top:20px">Understand the Why.</p>','light narrow')}
@@ -42,7 +84,7 @@
     var n=$('notify');if(n)n.addEventListener('click',function(){openInfo('news')});$('shipInfo').addEventListener('click',function(){openInfo('ship')});
     var q=$('qty');if(q){$('ovIn').querySelectorAll('[data-q]').forEach(function(b){b.addEventListener('click',function(){q.value=Math.max(1,(+q.value||1)+(+b.dataset.q))})});$('addCart').addEventListener('click',function(){CART.push({c:c,q:+q.value||1});updCart();openCart()})}
   }
-  function updCart(){var n=CART.reduce(function(a,b){return a+b.q},0);$('bCart').textContent=n?'Cart · '+n:'Cart';$('bCart').setAttribute('aria-label','Cart, '+n+' items')}
+  function updCart(){var n=CART.reduce(function(a,b){return a+b.q},0);$('bCart').textContent=n?'Cart · '+n:'Cart';$('bCart').hidden=!n;$('bCart').setAttribute('aria-label','Cart, '+n+' items')}
   function openCart(){openOv('cart',CART.length?'<span class="lbl kick">Your cart</span><h2>Cart</h2>'+CART.map(function(i){return '<p style="padding:12px 0;border-top:1px solid rgba(255,255,255,.14)">'+esc(i.c.title)+' × '+i.q+'</p>'}).join('')+'<p class="empty">Checkout is not connected yet. Nothing has been charged.</p>':'<span class="lbl kick">Your cart</span><h2>Your cart is empty.</h2><p class="muted" style="margin:12px 0 22px;max-width:44ch">Print editions open for ordering when each chapter is published. Walk to the Museum Shop to see them.</p><div style="display:flex;gap:12px;flex-wrap:wrap"><button class="btn solid" type="button" id="toShop">Walk to the shop</button><button class="btn" type="button" id="toNews">Be told first</button></div>','narrow');
     var a=$('toShop');if(a)a.addEventListener('click',function(){travel('shop')});var b=$('toNews');if(b)b.addEventListener('click',function(){openInfo('news')})}
   var INFO={
@@ -88,24 +130,28 @@
       if(!form.consent.checked){msg.className='msg err';msg.textContent='Please tick the box to agree to receive the newsletter.';form.consent.focus();return}
       send('newsletter',form,msg,'Thank you. Please check your inbox to confirm.')})});
   }
+  function mapName(r){if(r.short)return r.short;var pp=String(r.name||'').split(' · ');if(r.c)return pp.length>2?pp.slice(2).join(' · '):r.c.title;var m={library:'Reading Room',about:'About',shop:'Shop',process:'The Process',lobby:'Central Lobby'};return m[r.id]||String(r.name||'').split(' · ').pop()}
   function openMap(){
-    var svg='';ROOMS.forEach(function(r){if(r.id==='vestibule'||(r.chapter&&!r.c))return;svg+='<rect class="'+(r.cor?'cor':'rm')+'" '+(r.cor?'':'data-go="'+r.id+'"')+' x="'+r.x1+'" y="'+r.z2+'" width="'+(r.x2-r.x1)+'" height="'+(r.z1-r.z2)+'"><title>'+esc(r.name||'')+'</title></rect>'});
-    svg+='<rect class="cor" x="-3" y="-6" width="6" height="6"/><rect class="rm" data-go="entrance" x="-30" y="0" width="60" height="12"/>';
-    svg+='<circle cx="0" cy="-20" r="1.6" fill="none" stroke="rgba(180,155,224,.8)" stroke-width=".3"/>';
-    ROOMS.forEach(function(r){if(r.cor||r.id==='vestibule'||(r.chapter&&!r.c))return;var cx=(r.x1+r.x2)/2,cy=(r.z1+r.z2)/2,nm=r.c?r.c.title.toUpperCase():r.id==='library'?'Reading Room':r.id==='about'?'About':r.id==='shop'?'Shop':r.name,sub=r.c?'Ch. '+r.c.num:'';if(r.id==='lobby'){cy=r.z1-4;sub='Every Chapter Matters.'}svg+='<text x="'+cx+'" y="'+cy+'">'+esc(nm)+'</text>'+(sub?'<text class="s" x="'+cx+'" y="'+(cy+2.6)+'">'+esc(sub)+'</text>':'')});
-    svg+='<text x="0" y="7">ENTRANCE</text><g id="mapDot"><circle r="1.2" fill="#b49be0"/><circle r="2.4" fill="none" stroke="#b49be0" stroke-width=".25" opacity=".6"/><path d="M0 -3.4 L-1 -1.4 L1 -1.4 Z" fill="#b49be0"/></g>';
-    var list=[['lobby','Central Lobby'],['about','About TESTAMENTS'],['process','The Process']].concat(CH.map(function(c){return [c.slug,'Chapter '+c.num+' · '+c.title]})).concat([['library','Reading & Screening Room'],['shop','The Museum Shop'],['entrance','Entrance']]);
-    openOv('map','<span class="lbl kick">You are here</span><h2>Gallery Map</h2><div class="mapgrid"><svg id="mapSvg" viewBox="-47 -63 94 78" role="img" aria-label="Floor plan of the museum">'+svg+'</svg><ul class="list">'+list.map(function(l){return '<li><button type="button" data-go="'+l[0]+'">'+esc(l[1])+'<small>Walk there</small></button></li>'}).join('')+'<li><button type="button" data-info>Visitor information<small>FAQ · Policies</small></button></li><li><button type="button" data-contact>Contact<small>Lobby</small></button></li></ul></div>');
+    var x0=BOUNDS.x1-2,x1=BOUNDS.x2+2,z0=BOUNDS.z2-2,z1=14,VW=x1-x0,fs=Math.max(1.6,VW/46),here=roomAt(P.x,P.z).id,svg='';
+    svg+='<rect class="plaza" data-go="entrance" x="'+(BOUNDS.x1+10)+'" y="0.6" width="'+(BOUNDS.x2-BOUNDS.x1-20)+'" height="11"><title>Entrance</title></rect><line x1="'+BOUNDS.x1+'" y1="0" x2="'+BOUNDS.x2+'" y2="0" stroke="rgba(255,255,255,.35)" stroke-width=".3"/>';
+    ROOMS.forEach(function(r){if(r.chapter&&!r.c)return;var go=!r.cor&&SPAWN[r.id];svg+='<rect class="'+(r.cor||r.id==='vestibule'?'cor':'rm'+(r.id===here?' cur':''))+'" '+(go?'data-go="'+r.id+'" tabindex="-1"':'')+' x="'+r.x1+'" y="'+r.z2+'" width="'+(r.x2-r.x1)+'" height="'+(r.z1-r.z2)+'">'+(r.name?'<title>'+esc(r.name)+'</title>':'')+'</rect>'});
+    ROOMS.forEach(function(r){if(r.cor||r.id==='vestibule'||(r.chapter&&!r.c))return;var cx=(r.x1+r.x2)/2,cy=(r.z1+r.z2)/2,w=r.x2-r.x1,f=Math.min(fs,w/7),sub=r.c?'Chapter '+r.c.num:'';if(r.id==='lobby'){cy=r.z1-4.5}
+      svg+='<text x="'+cx+'" y="'+cy+'" font-size="'+f.toFixed(2)+'">'+esc(mapName(r))+'</text>'+(sub?'<text class="s" x="'+cx+'" y="'+(cy+f*1.25).toFixed(2)+'" font-size="'+(f*.75).toFixed(2)+'">'+esc(sub)+'</text>':'')});
+    svg+='<text x="0" y="7" font-size="'+fs.toFixed(2)+'">Entrance</text><g id="mapDot"><circle r="'+(fs*.55).toFixed(2)+'" fill="#b49be0"/><circle r="'+(fs*1.1).toFixed(2)+'" fill="none" stroke="#b49be0" stroke-width=".25" opacity=".6"/><path d="M0 '+(-fs*1.6).toFixed(2)+' L'+(-fs*.5).toFixed(2)+' '+(-fs*.7).toFixed(2)+' L'+(fs*.5).toFixed(2)+' '+(-fs*.7).toFixed(2)+' Z" fill="#b49be0"/></g><text id="mapHere" class="here" font-size="'+(fs*.8).toFixed(2)+'">You are here</text>';
+    var list=[['lobby',RM.lobby.name]];ROOMS.forEach(function(r){if(r.id!=='lobby'&&!r.cor&&SPAWN[r.id])list.push([r.id,r.name])});list.push(['entrance','Entrance']);
+    openOv('map','<span class="lbl kick">Floor plan</span><h2>Gallery Map</h2><div class="mapgrid"><svg id="mapSvg" viewBox="'+[x0,z0,VW,z1-z0].map(function(v){return v.toFixed(1)}).join(' ')+'" role="img" aria-label="Floor plan of the museum. Choose a room in the list to walk there.">'+svg+'</svg><ul class="list">'+list.map(function(l){var h=l[0]===here;return '<li><button type="button" data-go="'+l[0]+'"'+(h?' class="here" aria-current="location"':'')+'>'+esc(l[1])+'<small>'+(h?'You are here':'Go')+'</small></button></li>'}).join('')+'<li><button type="button" data-info>Visitor information<small>FAQ · Policies</small></button></li><li><button type="button" data-contact>Contact<small>Write to us</small></button></li></ul></div>');
     $('ovIn').querySelectorAll('[data-go]').forEach(function(b){b.addEventListener('click',function(){travel(b.getAttribute('data-go'))})});
     $('ovIn').querySelector('[data-info]').addEventListener('click',function(){openInfo('faq')});$('ovIn').querySelector('[data-contact]').addEventListener('click',openContact);dot();
   }
-  function dot(){var d=document.getElementById('mapDot');if(d)d.setAttribute('transform','translate('+P.x.toFixed(2)+' '+P.z.toFixed(2)+') rotate('+(-P.yaw*180/Math.PI).toFixed(1)+')')}
+  function dot(){var d=document.getElementById('mapDot');if(d)d.setAttribute('transform','translate('+P.x.toFixed(2)+' '+P.z.toFixed(2)+') rotate('+(-P.yaw*180/Math.PI).toFixed(1)+')');var h=document.getElementById('mapHere');if(h){var f=+h.getAttribute('font-size');h.setAttribute('x',P.x.toFixed(2));h.setAttribute('y',(P.z-f*2.3).toFixed(2))}}
   function openMenu(){
-    openOv('menu','<span class="lbl kick">Paused</span><h2>Menu</h2><div class="menu"><button type="button" data-m="resume">Resume</button><button type="button" data-m="map">Gallery map</button><button type="button" data-m="lobby">Return to the lobby</button><button type="button" data-m="entrance">Back to the entrance</button><button type="button" data-m="info">Visitor information</button><button type="button" data-m="contact">Contact</button><button type="button" data-m="film">Watch the film again</button></div>'+
-      '<p class="h3">Settings</p><div class="set"><label for="sSens">Look sensitivity</label><input type="range" id="sSens" min="0.3" max="2.5" step="0.1"><label for="sSpeed">Walking speed</label><input type="range" id="sSpeed" min="0.5" max="1.8" step="0.1"><label for="sQual">Graphics quality</label><select id="sQual"><option value="auto">Auto</option><option value="low">Low</option><option value="medium">Medium</option><option value="high">High</option></select><label for="sRed">Reduced motion</label><input type="checkbox" id="sRed"><label for="sSkip">Skip the entrance</label><input type="checkbox" id="sSkip"></div>'+
-      '<p class="h3">Controls</p><p class="help">Computer: <kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> or arrow keys to walk, <kbd>Shift</kbd> to walk faster, the mouse to look (click the view first), <kbd>E</kbd> to interact, <kbd>M</kbd> for the map, <kbd>Esc</kbd> for this menu. Double-click the floor to walk there.<br>Phone and tablet: the circle on the left walks, drag anywhere else to look, tap the floor to walk there, and use the button on the right to interact.</p>','narrow');
-    $('sSens').value=S.sens;$('sSpeed').value=S.speed;$('sQual').value=S.quality;$('sRed').checked=S.reduced;$('sSkip').checked=S.skipIntro;
-    $('sSens').addEventListener('input',function(){S.sens=+this.value;save()});$('sSpeed').addEventListener('input',function(){S.speed=+this.value;save()});$('sQual').addEventListener('change',function(){S.quality=this.value;save();quality();resize()});$('sRed').addEventListener('change',function(){S.reduced=this.checked;save()});$('sSkip').addEventListener('change',function(){S.skipIntro=this.checked;save()});
-    $('ovIn').querySelectorAll('[data-m]').forEach(function(b){b.addEventListener('click',function(){var a=b.dataset.m;if(a==='resume')closeOv();if(a==='map')openMap();if(a==='lobby')travel('lobby');if(a==='entrance')travel('entrance');if(a==='info')openInfo('faq');if(a==='contact')openContact();if(a==='film')replayFilm()})});
+    var sw=function(id,lab){return '<label for="'+id+'">'+lab+'</label><span class="sw"><input type="checkbox" id="'+id+'"></span>'};
+    openOv('menu','<span class="lbl kick">Paused</span><h2>Menu</h2><div class="menu"><button class="btn solid" type="button" data-m="resume">Resume</button><button type="button" data-m="map">Gallery map</button><button type="button" data-m="lobby">Return to the lobby</button><button type="button" data-m="entrance">Back to the entrance</button><button type="button" data-m="info">Visitor information</button><button type="button" data-m="contact">Contact</button><button type="button" data-m="film">Watch the film again</button><button type="button" data-m="help">How to move</button></div>'+
+      '<p class="h3">Settings</p><div class="set"><label for="sSens">Look sensitivity<output id="oSens"></output></label><input type="range" id="sSens" min="0.3" max="2.5" step="0.1"><label for="sSpeed">Walking speed<output id="oSpeed"></output></label><input type="range" id="sSpeed" min="0.5" max="1.8" step="0.1">'+sw('sInv','Invert look up and down')+sw('sSmooth','Smooth camera')+sw('sBob','Walking motion')+'<label for="sQual">Graphics quality</label><select id="sQual"><option value="auto">Automatic</option><option value="low">Low</option><option value="medium">Medium</option><option value="high">High</option></select>'+sw('sRed','Reduced motion')+sw('sSkip','Skip the entrance')+'</div>','narrow');
+    var ou=function(){$('oSens').textContent=(+S.sens).toFixed(1)+'×';$('oSpeed').textContent=(+S.speed).toFixed(1)+'×'};
+    $('sSens').value=S.sens;$('sSpeed').value=S.speed;$('sQual').value=S.quality;$('sRed').checked=S.reduced;$('sSkip').checked=S.skipIntro;$('sInv').checked=!!S.invertY;$('sSmooth').checked=S.smooth!==false;$('sBob').checked=S.bob!==false;ou();
+    $('sSens').addEventListener('input',function(){S.sens=+this.value;save();ou()});$('sSpeed').addEventListener('input',function(){S.speed=+this.value;save();ou()});$('sQual').addEventListener('change',function(){S.quality=this.value;save();quality();resize()});
+    [['sRed','reduced'],['sSkip','skipIntro'],['sInv','invertY'],['sSmooth','smooth'],['sBob','bob']].forEach(function(p){$(p[0]).addEventListener('change',function(){S[p[1]]=this.checked;save()})});
+    $('ovIn').querySelectorAll('[data-m]').forEach(function(b){b.addEventListener('click',function(){var a=b.dataset.m;if(a==='resume'){closeOv();lockPointer()}if(a==='map')openMap();if(a==='lobby')travel('lobby');if(a==='entrance')travel('entrance');if(a==='info')openInfo('faq');if(a==='contact')openContact();if(a==='film')replayFilm();if(a==='help')openWelcome()})});
+    setTimeout(function(){var r=$('ovIn').querySelector('[data-m="resume"]');if(r)r.focus()},30);
   }
-

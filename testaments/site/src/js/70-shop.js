@@ -7,16 +7,16 @@
     var Sh=RM.shop,M=libMats(),cx=(Sh.x1+Sh.x2)/2;
 
     /* --- statement wall: a halo-lit sign across the north wall --- */
-    var sw=12.4,shh=2.9,sz=Sh.z2+.2;
-    var hal=glow(sw*1.35,shh*2.1,0xfff0dc,.22);hal.position.set(cx,3.35,sz-.03);scene.add(hal);
+    var sw=12.4,shh=2.9,sz=Sh.z2+.3,sy=3.75,wz=Sh.z2+.16;
+    var hal=glow(sw*1.35,shh*2.1,0xfff0dc,.22);hal.position.set(cx,sy,wz);scene.add(hal);
     var sign=libSign(sw,shh,function(c,W,H){c.fillStyle='#0a0a0b';c.fillRect(0,0,W,H);c.strokeStyle='rgba(255,255,255,.12)';c.lineWidth=3;c.strokeRect(24,24,W-48,H-48);
       c.fillStyle='#cfccc5';c.font='600 '+Math.round(H*.07)+'px Inter';sp(c,'THE MUSEUM SHOP',W/2,H*.3,Math.round(H*.035));
       c.fillStyle='#f8f5ef';c.font='400 '+Math.round(H*.25)+'px "Bodoni Moda"';sp(c,'A STORY YOU CAN HOLD.',W/2,H*.62,Math.round(H*.03));
       c.fillStyle='#b49be0';c.fillRect(W/2-40,H*.72,80,5);
       c.fillStyle='#bdbab3';c.font='500 '+Math.round(H*.058)+'px Inter';sp(c,'PRINT EDITIONS OF EVERY CHAPTER',W/2,H*.84,Math.round(H*.022))},330);
-    sign.position.set(cx,3.35,sz);scene.add(sign);
+    sign.position.set(cx,sy,sz);scene.add(sign);
     var cove=box(sw+.4,.03,.03,MAT.lamp,cx,5.9,sz+.05);
-    var wash=spot(sw*1.3,5.6,.45);wash.position.set(cx,3.2,sz-.01);scene.add(wash);
+    var wash=spot(sw*1.3,5.6,.45);wash.position.set(cx,sy-.1,wz+.01);scene.add(wash);
 
     /* --- three illuminated plinths, one per edition --- */
     var pz=-51.2,n=CH.length,ped=[],tops=[],ease=[],xs=CH.map(function(c,i){return n===1?cx:Sh.x1+4.5+i*(Sh.x2-Sh.x1-9)/(n-1)});
@@ -28,8 +28,8 @@
       var pl=libSign(1.15,.62,function(t,W,H){t.fillStyle='#0b0b0c';t.fillRect(0,0,W,H);t.fillStyle='#d4d0c9';t.font='600 '+Math.round(H*.1)+'px Inter';sp(t,'CHAPTER '+c.num,W/2,H*.2,Math.round(H*.03));
         t.fillStyle='#f8f5ef';t.font='400 '+Math.round(H*.24)+'px "Bodoni Moda"';sp(t,c.title.toUpperCase(),W/2,H*.47,Math.round(H*.02));
         t.fillStyle='#c9c6bf';t.font='italic 400 '+Math.round(H*.11)+'px "Bodoni Moda"';t.textAlign='center';t.fillText(who(c),W/2,H*.64);
-        t.fillStyle='#b49be0';t.fillRect(W/2-24,H*.71,48,3);
-        t.fillStyle='#f0ede7';t.font='600 '+Math.round(H*.085)+'px Inter';sp(t,(shopPrice(c)+'  ·  '+edState(c)).toUpperCase(),W/2,H*.86,Math.round(H*.018))},700);
+        t.fillStyle='#b49be0';t.fillRect(W/2-24,H*.7,48,3);
+        t.fillStyle='#f0ede7';t.font='600 '+Math.round(H*.075)+'px Inter';sp(t,shopPrice(c).toUpperCase(),W/2,H*.83,Math.round(H*.016));t.fillStyle='#b8b5ae';t.font='500 '+Math.round(H*.06)+'px Inter';sp(t,edState(c).toUpperCase(),W/2,H*.94,Math.round(H*.016))},700);
       pl.position.set(x,.56,pz+.632);scene.add(pl);
       floorGlow(x,pz,3.2,3.2,0xfff0dc,.2);floorGlow(x,pz,2,2,0x6e42a3,.14);
       var pin=new T.Mesh(new T.CircleGeometry(.14,16),MAT.lamp);pin.rotation.x=Math.PI/2;pin.position.set(x,Sh.h-.02,pz-.2);scene.add(pin);
@@ -43,14 +43,19 @@
     var tt=box(tl,.07,tw,M.marble,tcx,.865,tz);
     libB(tb,.5,.83,.9,tx1+.9,.415,tz);libB(tb,.5,.83,.9,tx2-.9,.415,tz);libMerge(tb,MAT.ped);
     var slots=[];CH.forEach(function(c){slots.push([c,false],[c,true])});
-    slots.forEach(function(s,i){var x=tx1+.7+i*(tl-1.4)/(slots.length-1),k=(i*37)%5,cnt=7+k,hgt=cnt*.007,ry=((i%3)-1)*.06;
+    slots.forEach(function(s,i){var x=tx1+.7+i*(tl-1.4)/(slots.length-1),k=(i*37)%5,cnt=12+k*2,hgt=cnt*.007,ry=((i%3)-1)*.06;
       libB(stk,.3,hgt,.39,x,.9+hgt/2,tz+.04,ry);
       var key=s[0].slug+(s[1]?'L':'D');(tcov[key]=tcov[key]||{c:s[0],l:s[1],p:[]}).p.push({g:new T.PlaneGeometry(.3,.39).rotateX(-Math.PI/2).rotateY(ry),x:x,y:.9+hgt+.002,z:tz+.04});
     });
     libMerge(stk,M.page);
+    /* one edition of each chapter propped face-out on a small stand at the back of the table */
+    var stand=[];CH.forEach(function(c,i){var x=tcx+(i-(CH.length-1)/2)*2.6,z=tz-.32;
+      libB(stand,.46,.6,.02,x,1.19,z-.03,0,-.2);libB(stand,.46,.03,.08,x,.915,z+.05);
+      var cv=plane(.42,.55,coverTex(c,i%2===1),true);cv.position.set(x,1.2,z-.012);cv.rotation.x=-.2;scene.add(cv)});
+    libMerge(stand,MAT.frame);
     Object.keys(tcov).forEach(function(k){var f=tcov[k];libMerge(f.p,new T.MeshBasicMaterial({map:coverTex(f.c,f.l)}))});
-    var tgl=glow(tl*1.15,tw*2.4,0xfff0dc,.22);tgl.rotation.x=-Math.PI/2;tgl.position.set(tcx,.905,tz);scene.add(tgl);
-    var lab=libSign(2.2,.16,function(t,W,H){t.fillStyle='#0b0b0c';t.fillRect(0,0,W,H);t.fillStyle='#e9e6e0';t.font='600 '+Math.round(H*.36)+'px Inter';sp(t,'EDITIONS OPEN FOR ORDERING WHEN EACH CHAPTER IS PUBLISHED',W/2,H*.64,Math.round(H*.07))},900);
+    var tgl=glow(tl*1.15,tw*2.4,0xfff0dc,.08);tgl.rotation.x=-Math.PI/2;tgl.position.set(tcx,.905,tz);scene.add(tgl);
+    var lab=libSign(3.6,.14,function(t,W,H){t.fillStyle='#0b0b0c';t.fillRect(0,0,W,H);t.fillStyle='#e9e6e0';t.font='600 '+Math.round(H*.34)+'px Inter';sp(t,'EDITIONS OPEN FOR ORDERING WHEN EACH CHAPTER IS PUBLISHED',W/2,H*.64,Math.round(H*.05))},900);
     lab.position.set(tcx,.86,tz+tw/2+.006);scene.add(lab);
     col(tx1-.05,tx2+.05,tz-tw/2-.05,tz+tw/2+.05);
     floorGlow(tcx,tz,tl+2,3.2,0xfff0dc,.12);

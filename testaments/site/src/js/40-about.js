@@ -1,13 +1,35 @@
-  /* ===== about ===== */
+  /* ===== about =====
+     One idea per wall, set large. Entering from the lobby (facing west):
+       west   the manifesto            north  the medium: photography · conversation · editorial
+       south  the founder              east   mission and vision, flanking the door (read on the way out)
+     Uses the ex* sign helpers from 50-chapters.js (shared scope). */
   function buildAbout(){
-    var A=RM.about,dk='#141414',md='#55534f';
-    panel(A,'n',-29,3.1,11,4.8,function(c){c.fillStyle=md;c.font='500 34px Inter';sp(c,'ABOUT TESTAMENTS',90,150,12,'left');c.fillStyle=dk;c.font='400 132px "Bodoni Moda"';sp(c,'THE STORY',84,320,10,'left');sp(c,'BEHIND THE STORY.',84,470,10,'left');c.fillStyle='#2f2e2b';c.font='400 38px Inter';var y=wrap(c,'Most of us encounter people in fragments. A photograph. A conversation. A first impression. A moment in time. But a person is more than the moment in which we meet them.',90,600,1500,56);c.fillStyle='#6E42A3';c.font='500 28px Inter';sp(c,'READ THE MANIFESTO',90,y+110,8,'left')},{act:aboutManifesto,label:'Read the manifesto',r:7});
-    panel(A,'w',-10.5,2.9,4.6,3,function(c){c.fillStyle=md;c.font='500 32px Inter';sp(c,'THE MISSION',60,110,12,'left');c.fillStyle=dk;c.font='400 54px "Bodoni Moda"';wrap(c,'To preserve personal stories through meaningful conversations, cinematic photography, and thoughtful editorial storytelling.',60,210,800,72)},{act:aboutMission,label:'The mission'});
-    panel(A,'w',-15.5,2.9,4.6,3,function(c){c.fillStyle=md;c.font='500 32px Inter';sp(c,'THE VISION',60,110,12,'left');c.fillStyle=dk;c.font='400 54px "Bodoni Moda"';wrap(c,'To build a lasting collection of human experiences that encourages understanding, reflection, and connection across different walks of life.',60,210,800,72)},{act:aboutMission,label:'The vision'});
-    var pos=onWall(A,'s',-35),g=new T.Group(),fr=new T.Mesh(new T.BoxGeometry(1.9,2.4,.06),MAT.frame);fr.position.z=.03;g.add(fr);
-    var inner=plane(1.76,2.26,ctex(352,452,function(c,W,H){c.fillStyle='#e9e6e0';c.fillRect(0,0,W,H);c.strokeStyle='#8e8c88';c.setLineDash([6,6]);c.strokeRect(20,20,W-40,H-40);c.fillStyle='#55534f';c.font='500 16px Inter';sp(c,'PORTRAIT',W/2,H/2-8,5);sp(c,'TO BE SUPPLIED',W/2,H/2+20,5)}),true);inner.position.z=.065;g.add(inner);place(g,pos.x,2.4,pos.z,pos.n);
-    panel(A,'s',-30.4,2.3,4.4,2.2,function(c){c.fillStyle=md;c.font='500 30px Inter';sp(c,'THE FOUNDER',40,90,12,'left');c.fillStyle=dk;c.font='400 92px "Bodoni Moda"';c.fillText('Matthew Beecher',40,215);c.fillStyle='#2f2e2b';c.font='500 26px Inter';sp(c,'PHOTOGRAPHER  ·  FILMMAKER  ·  STORYTELLER',40,285,6,'left');c.font='400 30px Inter';c.fillStyle=md;c.fillText('Creator of TESTAMENTS. Biography to be approved.',40,355)},{act:aboutFounder,label:'The founder'});
-    hang('mural-portrait',A,'s',-23.5,2.4,2);
+    var A=RM.about,dk=EX.dInk,md=EX.dKick,bg=EX.dBg,vio=EX.dVio;
+    /* west: the manifesto */
+    exOnWall(A,'w',-13,3.1,9.4,4.2,function(x,W,H){exBg(x,W,H,bg);var L=W*.07;
+      exK(x,'About TESTAMENTS',L,H*.15,H*.04,md);
+      exT(x,'THE STORY',L-H*.01,H*.38,H*.17,dk,'left',H*.02);exT(x,'BEHIND THE STORY.',L-H*.01,H*.58,H*.17,dk,'left',H*.02);
+      exRule(x,L,H*.67,H*.08,H*.008,vio);
+      exI(x,'A person is more than the moment in which we meet them.',L,H*.78,H*.06,'#2b2926');
+      exK(x,'Read the manifesto',L,H*.9,H*.032,vio)},{act:aboutManifesto,label:'Read the manifesto',r:9});
+    /* north: the medium */
+    [['01','Photography','Photography is not decoration.',-34.6],['02','Conversation','Built around genuine conversation rather than scripted answers.',-29],['03','Editorial','Shaping everything into a chapter that reads as one piece.',-23.4]].forEach(function(m){
+      exOnWall(A,'n',m[3],2.7,4.6,2.8,function(x,W,H){exBg(x,W,H,bg);var L=W*.09;
+        exK(x,'The medium · '+m[0],L,H*.17,H*.05,md);exT(x,m[1],L,H*.42,H*.15,dk);exRule(x,L,H*.52,H*.08,H*.01,vio);
+        exW(x,m[2],L,H*.68,W*.82,H*.075,H*.1,'italic 400 '+Math.round(H*.075)+'px "Bodoni Moda"','#2b2926')},{act:aboutManifesto,label:'The medium · '+m[1],r:4.5})});
+    /* south: the founder */
+    var pos=onWall(A,'s',-34.4),g=new T.Group(),fr=new T.Mesh(new T.BoxGeometry(2,2.6,.06),MAT.frame);fr.position.z=.03;g.add(fr);
+    var inner=exSign(1.86,2.46,function(c,W,H){c.fillStyle='#e4e0d8';c.fillRect(0,0,W,H);c.strokeStyle='#8e8a82';c.lineWidth=3;c.setLineDash([12,12]);c.strokeRect(W*.08,H*.06,W*.84,H*.88);exK(c,'Portrait',W/2,H*.48,H*.032,'#55524c','center');exK(c,'To be supplied',W/2,H*.55,H*.032,'#55524c','center')},300);
+    inner.position.z=.065;g.add(inner);place(g,pos.x,2.5,pos.z,pos.n);var fs=spot(4.4,5.6,.25);place(fs,pos.x,3,pos.z-.01,'nz');
+    addInter(pos.x,pos.z,'nz',4,'Read','The founder',aboutFounder,{y:2.5,w:2,h:2.6});
+    exOnWall(A,'s',-28.4,2.5,5,2.6,function(x,W,H){exBg(x,W,H,bg);var L=W*.08;
+      exK(x,'The founder',L,H*.18,H*.055,md);exT(x,'Matthew Beecher',L,H*.45,H*.16,dk);exRule(x,L,H*.56,H*.07,H*.01,vio);
+      exK(x,'Photographer · Filmmaker · Storyteller',L,H*.71,H*.05,'#3a3733');exI(x,'Biography on approval.',L,H*.86,H*.065,'#55524c')},{act:aboutFounder,label:'The founder',r:5});
+    hang('mural-portrait',A,'s',-21.8,2.5,1.7);
+    /* east: mission and vision, flanking the door */
+    [['The mission','To preserve personal stories through meaningful conversations, cinematic photography, and thoughtful editorial storytelling.',-8.5],['The vision','To build a lasting collection of human experiences that encourages understanding, reflection, and connection across different walks of life.',-17.5]].forEach(function(m){
+      exOnWall(A,'e',m[2],2.9,4.6,3.4,function(x,W,H){exBg(x,W,H,bg);var L=W*.08;exK(x,m[0],L,H*.16,H*.05,md);exRule(x,L,H*.22,H*.07,H*.01,vio);
+        exW(x,m[1],L,H*.36,W*.84,H*.062,H*.092,null,dk)},{act:aboutMission,label:m[0],r:5})});
     box(3,.46,.7,MAT.bench,-29,.23,-13);col(-30.5,-27.5,-13.4,-12.6);
-    var al=new T.PointLight(0xfff4e6,1.5,24,2);al.position.set(-29,5.2,-13);scene.add(al);
+    var al=new T.PointLight(0xfff4e6,1.4,26,2);al.position.set(-29,5.2,-13);scene.add(al);
   }

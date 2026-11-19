@@ -63,7 +63,7 @@
           ' float lkV=pow(lkN.a,lkE.w)*(.55+.9*lkN.g);diffuseColor.rgb=mix(diffuseColor.rgb,lkE.rgb,clamp(lkV*lkP.w,0.0,1.0));lkR-=lkV*.3;',
           '#endif',
           '#ifdef LK_FLOOR',
-          ' float lkChip=smoothstep(.74,.82,texture2D(lkNoise,vLkW.xz*1.1+.37).b)*(1.0-smoothstep(4.0,14.0,lkDist));',
+          ' float lkChip=smoothstep(.8,.86,texture2D(lkNoise,vLkW.xz*1.1+.37).b)*(1.0-smoothstep(3.0,10.0,lkDist));',
           ' diffuseColor.rgb=mix(diffuseColor.rgb,lkE.rgb,lkChip*lkP.w);',
           ' vec2 lkG=abs(fract(vLkW.xz/3.0+.5)-.5)*3.0;',
           ' lkJ=(1.0-smoothstep(.004,.008+lkDist*.0016,min(lkG.x,lkG.y)))*(1.0-smoothstep(8.0,26.0,lkDist));diffuseColor.rgb*=1.0-.4*lkJ;',
@@ -91,7 +91,7 @@
     LK.tier=lookTier();LK.noise=lookNoiseTex();
     function set(m,o){if(!m)return;for(var k in o){if(k==='color'||k==='emissive')m[k].set(o[k]);else m[k]=o[k]}m.needsUpdate=true}
     /* polished dark concrete / terrazzo floor */
-    set(MAT.floor,{color:0x171717,roughness:.26,metalness:0,envMapIntensity:1});lookDetail(MAT.floor,'FLOOR',[.22,.07,.09,.55],[.33,.32,.3,8]);
+    set(MAT.floor,{color:0x131313,roughness:.24,metalness:0,envMapIntensity:.65});lookDetail(MAT.floor,'FLOOR',[.22,.05,.08,.16],[.22,.215,.2,8]);
     /* matte charcoal plaster */
     set(MAT.wall,{color:0x1d1d1e,roughness:.92,envMapIntensity:.55});lookDetail(MAT.wall,'',[.35,.035,.04,0]);
     set(MAT.whiteWall,{color:0xd3cec5,roughness:.93,envMapIntensity:.45});lookDetail(MAT.whiteWall,'',[.35,.022,.03,0]);
@@ -103,7 +103,7 @@
     set(MAT.path,{color:0x2c2a27,roughness:.6,envMapIntensity:.45});lookDetail(MAT.path,'PAVE',[.4,.05,.08,0]);
     set(MAT.col,{color:0x2b2926,roughness:.6,envMapIntensity:.6});lookDetail(MAT.col,'',[.4,.05,.06,0]);
     /* veined dark marble monument */
-    set(MAT.mono,{color:0x24221f,roughness:.3,metalness:0,envMapIntensity:1.1});lookDetail(MAT.mono,'VEIN',[.32,.06,.06,.75],[.56,.53,.49,14]);
+    set(MAT.mono,{color:0x181716,roughness:.32,metalness:0,envMapIntensity:.8});lookDetail(MAT.mono,'VEIN',[.32,.05,.06,.22],[.3,.29,.27,26]);
     /* brushed dark metal, lacquer, anodised frames */
     set(MAT.metal,{color:0x3a3835,metalness:.85,roughness:.34,envMapIntensity:1.2});lookDetail(MAT.metal,'',[1.5,.04,.12,0]);
     set(MAT.ped,{color:0x101010,metalness:0,roughness:.28,envMapIntensity:1});
@@ -188,20 +188,20 @@
 
     /* skylight shaft: open cylinder with view-dependent density, fading to the floor */
     var cg=new T.CylinderGeometry(4.15,4.7,9.9,48,8,true),cp=cg.attributes.position,af=new Float32Array(cp.count);
-    for(var i=0;i<cp.count;i++){var hy=(cp.getY(i)+4.95)/9.9;af[i]=Math.pow(hy,1.4)*(.35+.65*hy)}
-    cg.setAttribute('aF',new T.BufferAttribute(af,1));var shaft=new T.Mesh(cg,lookVolMat(0xaebde0,.07,.7));shaft.position.set(0,5,-20);shaft.renderOrder=3;scene.add(shaft);
+    for(var i=0;i<cp.count;i++){var hy=(cp.getY(i)+4.95)/9.9;af[i]=Math.pow(hy,2.2)}
+    cg.setAttribute('aF',new T.BufferAttribute(af,1));var shaft=new T.Mesh(cg,lookVolMat(0xaebde0,.04,.6));shaft.position.set(0,5,-20);shaft.renderOrder=3;scene.add(shaft);
     /* entrance doors: a low wedge of warm light leaving the glass onto the plaza */
     var wg=new T.BoxGeometry(1,1,1,10,4,10),wp=wg.attributes.position,wf=new Float32Array(wp.count);
     for(i=0;i<wp.count;i++){var x=wp.getX(i),yy=wp.getY(i)+.5,t=wp.getZ(i)+.5;wp.setXYZ(i,x*(6+2.6*t),yy*(5.1*(1-t)+.06*t),.12+t*7.5);wf[i]=Math.pow(1-t,1.6)*(1-Math.pow(Math.abs(x*2),4))}
     wg.computeVertexNormals();wg.setAttribute('aF',new T.BufferAttribute(wf,1));var wedge=new T.Mesh(wg,lookVolMat(0xffe2bc,.09,0));wedge.renderOrder=3;scene.add(wedge);
 
     /* dust motes drifting in the skylight */
-    var DN=tier==='low'?140:320,dp=new Float32Array(DN*3),ds=new Float32Array(DN);
+    var DN=tier==='low'?90:200,dp=new Float32Array(DN*3),ds=new Float32Array(DN);
     for(i=0;i<DN;i++){var a=Math.random()*Math.PI*2,rr=Math.sqrt(Math.random())*5.4;dp[i*3]=Math.cos(a)*rr;dp[i*3+1]=.4+Math.random()*9;dp[i*3+2]=-20+Math.sin(a)*rr;ds[i]=Math.random()}
     var dg=new T.BufferGeometry();dg.setAttribute('position',new T.BufferAttribute(dp,3));dg.setAttribute('aSeed',new T.BufferAttribute(ds,1));
     LK.dust=new T.Points(dg,new T.ShaderMaterial({transparent:true,depthWrite:false,blending:T.AdditiveBlending,fog:false,uniforms:{uT:{value:0},uPx:{value:600}},
-      vertexShader:'attribute float aSeed;uniform float uT;uniform float uPx;varying float vA;void main(){vec3 p=position;float s=aSeed*6.2831;\np+=vec3(sin(uT*.07+s)*.45,sin(uT*.05+s*1.7)*.35+mod(uT*.012+aSeed*9.0,1.0)*-.0,cos(uT*.06+s*2.3)*.45);\nvec4 mv=modelViewMatrix*vec4(p,1.0);gl_Position=projectionMatrix*mv;float r=length(p.xz-vec2(0.0,-20.0));\nvA=(.12+.88*(1.0-smoothstep(3.4,4.6,r)))*(.4+.6*fract(aSeed*7.3))*smoothstep(.2,1.5,p.y)*smoothstep(-.5,-3.0,mv.z);\ngl_PointSize=clamp(.028*uPx/-mv.z,1.0,6.0);}',
-      fragmentShader:'varying float vA;void main(){vec2 d=gl_PointCoord-.5;float a=smoothstep(.5,.1,length(d));gl_FragColor=vec4(vec3(1.0,.96,.9)*.55*a*vA,1.0);\n'+LK_TONE+'}'}));
+      vertexShader:'attribute float aSeed;uniform float uT;uniform float uPx;varying float vA;void main(){vec3 p=position;float s=aSeed*6.2831;\np+=vec3(sin(uT*.07+s)*.45,sin(uT*.05+s*1.7)*.35+mod(uT*.012+aSeed*9.0,1.0)*-.0,cos(uT*.06+s*2.3)*.45);\nvec4 mv=modelViewMatrix*vec4(p,1.0);gl_Position=projectionMatrix*mv;float r=length(p.xz-vec2(0.0,-20.0));\nvA=(.02+.98*(1.0-smoothstep(3.4,4.6,r)))*(.4+.6*fract(aSeed*7.3))*smoothstep(.2,1.5,p.y)*smoothstep(-.5,-3.0,mv.z);\ngl_PointSize=clamp(.028*uPx/-mv.z,1.0,6.0);}',
+      fragmentShader:'varying float vA;void main(){vec2 d=gl_PointCoord-.5;float a=smoothstep(.5,.1,length(d));gl_FragColor=vec4(vec3(1.0,.96,.9)*.32*a*vA,1.0);\n'+LK_TONE+'}'}));
     LK.dust.frustumCulled=false;LK.dust.renderOrder=4;scene.add(LK.dust);
 
     /* night sky dome: gradient, horizon glow, soft moon (drawn after opaque geometry so early-z skips covered pixels) */
@@ -215,7 +215,7 @@
 
     /* key light on the monument (medium/high); shadows only on high */
     if(tier!=='low'){var mono=null;scene.traverse(function(o){if(o.isMesh&&o.material===MAT.mono)mono=o});
-      if(mono){var kl=new T.SpotLight(0xfff0e0,1.5,18,.32,.85,2);kl.position.set(0,9.6,-14.2);kl.target.position.set(0,2.4,-20.2);scene.add(kl);scene.add(kl.target);
+      if(mono){var kl=new T.SpotLight(0xfff0e0,.9,18,.3,.9,2);kl.position.set(0,9.6,-14.2);kl.target.position.set(0,2.4,-20.2);scene.add(kl);scene.add(kl.target);
         if(tier==='high'){R.shadowMap.enabled=true;R.shadowMap.type=T.PCFSoftShadowMap;kl.castShadow=true;kl.shadow.mapSize.set(1024,1024);kl.shadow.camera.near=2;kl.shadow.camera.far=16;kl.shadow.bias=-.0006;kl.shadow.radius=3;mono.castShadow=true;
           scene.traverse(function(o){if(o.isMesh&&(o.material===MAT.floor||o.material===MAT.bench))o.receiveShadow=true})}}}
   }
