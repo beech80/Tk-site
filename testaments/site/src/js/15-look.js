@@ -91,7 +91,7 @@
     LK.tier=lookTier();LK.noise=lookNoiseTex();
     function set(m,o){if(!m)return;for(var k in o){if(k==='color'||k==='emissive')m[k].set(o[k]);else m[k]=o[k]}m.needsUpdate=true}
     /* polished dark concrete / terrazzo floor */
-    set(MAT.floor,{color:0x161616,roughness:.34,metalness:0,envMapIntensity:.65});lookDetail(MAT.floor,'FLOOR',[.12,.012,.03,0],[.22,.215,.2,8]);
+    set(MAT.floor,{color:0x161616,roughness:.46,metalness:0,envMapIntensity:.65});lookDetail(MAT.floor,'FLOOR',[.12,.012,.03,0],[.22,.215,.2,8]);
     /* matte charcoal plaster */
     set(MAT.wall,{color:0x222223,roughness:.92,envMapIntensity:.55});lookDetail(MAT.wall,'',[.15,.008,.01,0]);
     set(MAT.whiteWall,{color:0xd3cec5,roughness:.93,envMapIntensity:.45});lookDetail(MAT.whiteWall,'',[.15,.005,.01,0]);
@@ -182,6 +182,8 @@
     scene.traverse(function(o){if(o.isMesh&&o.geometry&&o.geometry.type==='CircleGeometry'&&o.geometry.parameters.radius===4.2&&o.material&&o.material.isMeshBasicMaterial)o.material.color.setRGB(.75,.86,1.15)});
     /* the lobby's original constant-opacity shaft reads as a glass tube; the view-dependent shaft below replaces it */
     scene.traverse(function(o){if(o.isMesh&&o.geometry&&o.geometry.type==='CylinderGeometry'&&o.geometry.parameters.openEnded&&Math.abs(o.geometry.parameters.radiusTop-4.1)<.01&&o.material&&o.material.blending===T.AdditiveBlending)o.visible=false});
+    /* calm the purple pool / uplight hotspot at the monument foot */
+    scene.traverse(function(o){if(o.isMesh&&o.material&&o.material.blending===T.AdditiveBlending&&Math.abs(o.position.x)<.1&&Math.abs(o.position.z+19.6)<.3&&o.position.y<.1)o.material.opacity=Math.min(o.material.opacity,.3);if(o.isPointLight&&Math.abs(o.position.z+18.1)<.2&&o.position.y<.5)o.intensity=Math.min(o.intensity,1)});
     glows.push({c:[0,9.9,-20],u:[1,0,0],v:[0,0,1],w:12,h:12,k:k(0xb8c6e6,.18)});
     /* entrance: warm interior light spilling onto the plaza */
     glows.push({c:[0,.03,2.6],u:[1,0,0],v:[0,0,1],w:9,h:7,k:k(0xffe6c4,.32)});

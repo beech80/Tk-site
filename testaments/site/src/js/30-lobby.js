@@ -80,10 +80,9 @@
       ['EVERY','CHAPTER','MATTERS.'].forEach(function(w,i){var y=Hh*(.3+i*.25);
         c.fillStyle='rgba(0,0,0,.75)';sp(c,w,W/2-3,y-3,gap);c.fillStyle='rgba(255,255,255,.22)';sp(c,w,W/2+2,y+2,gap);c.fillStyle='#ece8e0';sp(c,w,W/2,y,gap)})},500);
     eng.position.set(0,PY+3.35,MZ+.6*(1-(3.35/5.2)*.08)+.012);scene.add(eng);
-    var ml=new T.PointLight(0x7d4fc4,1.7,7,2);ml.position.set(0,.6,MZ+1.9);scene.add(ml);
+    var ml=new T.PointLight(0x7d4fc4,1.4,7,2);ml.position.set(0,2.6,MZ+2.4);scene.add(ml);
     spotB.quad(2.3,5,0,PY+2.5,MZ+.63,0,0,archCol(PUR,.55),Math.PI);
     glowB.quad(5.5,3.4,0,.02,MZ+1.6,-Math.PI/2,0,archCol(0x7a4cc0,.5));
-    lampB.bx(-1.55,1.55,.255,.27,MZ+1.06,MZ+1.08);
     col(-1.95,1.95,MZ-1.35,MZ+1.35);
 
     /* ----- benches facing the monument ----- */
