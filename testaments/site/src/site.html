@@ -573,7 +573,7 @@ var STOCKISTS = [];   // confirmed partners only: {name, address}
           '#ifdef LK_FLOOR',
           ' float lkChip=smoothstep(.8,.86,texture2D(lkNoise,vLkW.xz*1.1+.37).b)*(1.0-smoothstep(3.0,10.0,lkDist));',
           ' diffuseColor.rgb=mix(diffuseColor.rgb,lkE.rgb,lkChip*lkP.w);',
-          ' vec2 lkG=abs(fract(vLkW.xz/3.0+.5)-.5)*3.0;',
+          ' vec2 lkG=abs(fract(vLkW.xz/3.0)-.5)*3.0;',
           ' lkJ=(1.0-smoothstep(.004,.008+lkDist*.0016,min(lkG.x,lkG.y)))*(1.0-smoothstep(8.0,26.0,lkDist));diffuseColor.rgb*=1.0-.18*lkJ;',
           '#endif',
           '#ifdef LK_PAVE',
