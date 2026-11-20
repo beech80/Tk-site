@@ -40,7 +40,7 @@
     var joyEl=$('joy'),knob=$('knob'),jid=null,jo=null,lid=null,lx=0,ly=0,tap=null,jtap=null,JR=52;joyEl.hidden=!coarse;
     function joyAt(x,y){jo={x:x,y:y};joyEl.style.left=x+'px';joyEl.style.top=y+'px';joyEl.classList.add('live')}
     function mj(t){var dx=t.clientX-jo.x,dy=t.clientY-jo.y,d=Math.hypot(dx,dy);if(d>JR){/* drag the base along so the thumb never loses it */var k=(d-JR)/d;jo.x+=dx*k;jo.y+=dy*k;joyEl.style.left=jo.x+'px';joyEl.style.top=jo.y+'px';dx=t.clientX-jo.x;dy=t.clientY-jo.y;d=JR}
-      knob.style.transform='translate('+dx+'px,'+dy+'px)';var m=Math.max(0,d-6)/(JR-6),a=Math.atan2(dy,dx);joy.x=Math.cos(a)*m;joy.y=Math.sin(a)*m;if(m>.1)uiMoved()}
+      knob.style.transform='translate('+dx+'px,'+dy+'px)';var m=Math.max(0,d-8)/(JR-8),a=Math.atan2(dy,dx);m=m*m*(1.6-.6*m);/* soft start for precise creeping, full speed at the rim */joy.x=Math.cos(a)*m;joy.y=Math.sin(a)*m;if(m>.1)uiMoved()}
     function joyOff(){jid=null;jo=null;joy.x=joy.y=0;knob.style.transform='';joyEl.classList.remove('live');joyEl.style.left=joyEl.style.top=''}
     canvas.addEventListener('touchstart',function(e){
       e.preventDefault();if(mode==='anim'){skipAnim();return}if(mode!=='play')return;
@@ -49,7 +49,7 @@
         else if(lid===null){lid=t.identifier;lx=t.clientX;ly=t.clientY;tap={t:performance.now(),m:0}}})},{passive:false});
     document.addEventListener('touchmove',function(e){var used=false;Array.prototype.forEach.call(e.changedTouches,function(t){
       if(t.identifier===jid){if(jtap&&Math.hypot(t.clientX-jtap.x,t.clientY-jtap.y)>10)jtap=null;if(!jtap)mj(t);used=true}
-      else if(t.identifier===lid){var dx=t.clientX-lx,dy=t.clientY-ly;lx=t.clientX;ly=t.clientY;if(tap)tap.m+=Math.abs(dx)+Math.abs(dy);if(!tap||tap.m>6)lookBy(dx,dy,.0048);used=true}});if(used)e.preventDefault()},{passive:false});
+      else if(t.identifier===lid){var dx=t.clientX-lx,dy=t.clientY-ly;lx=t.clientX;ly=t.clientY;if(tap)tap.m+=Math.abs(dx)+Math.abs(dy);if(!tap||tap.m>6)lookBy(dx,dy*.8,.0048);used=true}});if(used)e.preventDefault()},{passive:false});
     function endT(e){Array.prototype.forEach.call(e.changedTouches,function(t){
       if(t.identifier===jid){var wasTap=jtap&&performance.now()-jtap.t<320;joyOff();if(wasTap&&e.type==='touchend')tapAt(t.clientX,t.clientY);jtap=null}
       if(t.identifier===lid){lid=null;if(e.type==='touchend'&&tap&&tap.m<10&&performance.now()-tap.t<320)tapAt(t.clientX,t.clientY);tap=null}})}
@@ -75,4 +75,7 @@
       var ax=best.nx!==undefined?best.x+best.nx*Math.min(2.2,best.r*.6):best.x-(best.x-P.x)/Math.hypot(best.x-P.x,best.z-P.z)*1.8,az=best.nz!==undefined?best.z+best.nz*Math.min(2.2,best.r*.6):best.z-(best.z-P.z)/Math.hypot(best.x-P.x,best.z-P.z)*1.8;
       auto={x:ax,z:az};return}
     tapWalk(cx,cy)}
-  function tapWalk(cx,cy){var r=canvas.getBoundingClientRect(),v=new T.Vector3((cx-r.left)/r.width*2-1,-(cy-r.top)/r.height*2+1,.5);v.unproject(cam);var d=v.sub(cam.position).normalize();if(d.y>=-.02)return;var t=-cam.position.y/d.y;if(t>40)return;auto={x:cam.position.x+d.x*t,z:cam.position.z+d.z*t};uiMoved()}
+  function tapWalk(cx,cy){var r=canvas.getBoundingClientRect(),v=new T.Vector3((cx-r.left)/r.width*2-1,-(cy-r.top)/r.height*2+1,.5);v.unproject(cam);var d=v.sub(cam.position).normalize();if(d.y>=-.02)return;var t=-cam.position.y/d.y;if(t>40)return;var gx=cam.position.x+d.x*t,gz=cam.position.z+d.z*t;
+    /* never aim through a wall: pull the goal back along the ray to the last clear, free point */
+    if(!sightClear(P.x,P.z,gx,gz)||blocked(gx,gz)){var lo=0,hi=1;for(var i=0;i<12;i++){var m=(lo+hi)/2,mx=P.x+(gx-P.x)*m,mz=P.z+(gz-P.z)*m;if(sightClear(P.x,P.z,mx,mz)&&!blocked(mx,mz))lo=m;else hi=m}var L=Math.hypot(gx-P.x,gz-P.z)*lo-.4;if(L<.5)return;var k=L/Math.hypot(gx-P.x,gz-P.z);gx=P.x+(gx-P.x)*k;gz=P.z+(gz-P.z)*k}
+    auto={x:gx,z:gz};uiMoved()}

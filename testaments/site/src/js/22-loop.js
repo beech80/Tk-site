@@ -66,6 +66,7 @@
     /* a slight widening of view when walking fast */
     var ft=baseFov+((sprint&&moving&&!S.reduced&&Math.hypot(P.vx,P.vz)>3.6)?5:0);fovNow+=(ft-fovNow)*Math.min(1,dt*4);if(Math.abs(cam.fov-fovNow)>.02){cam.fov=fovNow;cam.updateProjectionMatrix()}
     if(mode==='play')findNear();else setPrompt(null);
+    walkMarkStep(dt);
     hlStep(dt);
     var rm=roomAt(P.x,P.z);if(rm.id!==curRoom.id){var prevRoom=curRoom;curRoom=rm;HOOKS.roomChange.forEach(function(f){f(rm,prevRoom)});uiRoom(rm,prevRoom);if(SPAWN[rm.id]&&(mode==='play')){try{history.replaceState(null,'','#'+rm.id)}catch(e){}}}
     if(screenTex){var sv=$('screenVid'),inLib=curRoom.id==='library'||curRoom.id==='c-library';if(inLib&&sv.paused)sv.play().catch(function(){});if(!inLib&&!sv.paused)sv.pause()}
@@ -131,6 +132,19 @@
     else if(near&&near.nx===undefined&&near.hl)hlPlace(near);
     hlOp+=((near?1:0)-hlOp)*Math.min(1,dt*(near?7:10));if(!near&&hlOp<.01){hlO=null;HL.g.visible=HL.ring.visible=false;return}
     var pul=S.reduced?1:.82+.18*Math.sin(clock.elapsedTime*2.6),op=hlOp*pul;HL.bm.opacity=.85*op;HL.fill.material.opacity=.07*op;HL.ring.material.opacity=.7*op;
+  }
+
+  /* ---------- tap-to-walk destination: a soft ring on the floor that fades as you arrive ---------- */
+  var WMK=null,wmkOp=0,wmkT=null;
+  function walkMarkStep(dt){
+    var want=mode==='play'&&auto&&!auto.noMark?1:0;
+    if(want&&!WMK){var rt=ctex(128,128,function(c){var g=c.createRadialGradient(64,64,0,64,64,64);g.addColorStop(0,'rgba(255,255,255,.35)');g.addColorStop(.18,'rgba(255,255,255,0)');g.addColorStop(.7,'rgba(255,255,255,.05)');g.addColorStop(.82,'rgba(255,255,255,.85)');g.addColorStop(.9,'rgba(255,255,255,.15)');g.addColorStop(1,'rgba(255,255,255,0)');c.fillStyle=g;c.fillRect(0,0,128,128)});
+      WMK=new T.Mesh(new T.PlaneGeometry(1,1),new T.MeshBasicMaterial({map:rt,color:0xe8e0f4,transparent:true,opacity:0,blending:T.AdditiveBlending,depthWrite:false,fog:false}));WMK.rotation.x=-Math.PI/2;WMK.renderOrder=4;WMK.visible=false;scene.add(WMK)}
+    if(!WMK)return;
+    if(want&&auto!==wmkT){wmkT=auto;WMK.position.set(auto.x,.03,auto.z);wmkOp=Math.max(wmkOp,.2)}
+    if(want){var dd=Math.hypot(auto.x-P.x,auto.z-P.z);want=Math.min(1,dd/1.5)}
+    wmkOp+=(want-wmkOp)*Math.min(1,dt*(want?9:6));WMK.visible=wmkOp>.01;if(!WMK.visible){wmkT=null;return}
+    var pul=S.reduced?1:.85+.15*Math.sin(clock.elapsedTime*3.2),sc=.75+.12*wmkOp;WMK.scale.set(sc,sc,1);WMK.material.opacity=.55*wmkOp*pul;
   }
 
   /* ---------- states ---------- */
