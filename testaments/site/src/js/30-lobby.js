@@ -63,7 +63,7 @@
     /* ----- floor: bronze compass inlay around the monument, processional line from the entrance ----- */
     function ringI(r,w){inlay.add(new T.RingGeometry(r-w/2,r+w/2,96),new T.Matrix4().makeRotationX(-Math.PI/2).setPosition(OX,.004,OZ))}
     ringI(5.6,.07);ringI(7.2,.035);
-    for(var k=0;k<16;k++){var an=k/16*Math.PI*2,l=k%4===0?1.6:.6,r0=5.6+.04;inlay.add(new T.PlaneGeometry(k%4===0?.06:.03,l),new T.Matrix4().makeRotationFromEuler(new T.Euler(-Math.PI/2,0,-an,'YXZ')).setPosition(OX+Math.sin(an)*(r0+l/2),.004,OZ+Math.cos(an)*(r0+l/2)))}
+    for(var k=0;k<16;k++){var an=k/16*Math.PI*2,l=.6,r0=5.6+.04;inlay.add(new T.PlaneGeometry(.03,l),new T.Matrix4().makeRotationFromEuler(new T.Euler(-Math.PI/2,0,-an,'YXZ')).setPosition(OX+Math.sin(an)*(r0+l/2),.004,OZ+Math.cos(an)*(r0+l/2)))}
     glowB.quad(15,15,OX,.015,OZ,-Math.PI/2,0,archCol(PUR,.08));
 
     /* ----- the monument: a rough-hewn stone with a dressed, engraved face, on a low plinth ----- */
@@ -80,7 +80,7 @@
       ['EVERY','CHAPTER','MATTERS.'].forEach(function(w,i){var y=Hh*(.3+i*.25);
         c.fillStyle='rgba(0,0,0,.75)';sp(c,w,W/2-3,y-3,gap);c.fillStyle='rgba(255,255,255,.22)';sp(c,w,W/2+2,y+2,gap);c.fillStyle='#ece8e0';sp(c,w,W/2,y,gap)})},500);
     eng.position.set(0,PY+3.35,MZ+.6*(1-(3.35/5.2)*.08)+.012);scene.add(eng);
-    var ml=new T.PointLight(0x7d4fc4,1.4,7,2);ml.position.set(0,2.6,MZ+2.4);scene.add(ml);
+    var ml=new T.PointLight(0x7d4fc4,1.4,7,2);ml.position.set(0,1.3,MZ+2.6);scene.add(ml);
     spotB.quad(2.3,5,0,PY+2.5,MZ+.63,0,0,archCol(PUR,.55),Math.PI);
     glowB.quad(5.5,3.4,0,.02,MZ+1.6,-Math.PI/2,0,archCol(0x7a4cc0,.5));
     col(-1.95,1.95,MZ-1.35,MZ+1.35);

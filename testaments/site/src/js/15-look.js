@@ -182,8 +182,10 @@
     scene.traverse(function(o){if(o.isMesh&&o.geometry&&o.geometry.type==='CircleGeometry'&&o.geometry.parameters.radius===4.2&&o.material&&o.material.isMeshBasicMaterial)o.material.color.setRGB(.75,.86,1.15)});
     /* the lobby's original constant-opacity shaft reads as a glass tube; the view-dependent shaft below replaces it */
     scene.traverse(function(o){if(o.isMesh&&o.geometry&&o.geometry.type==='CylinderGeometry'&&o.geometry.parameters.openEnded&&Math.abs(o.geometry.parameters.radiusTop-4.1)<.01&&o.material&&o.material.blending===T.AdditiveBlending)o.visible=false});
-    /* calm the purple pool / uplight hotspot at the monument foot */
-    scene.traverse(function(o){if(o.isMesh&&o.material&&o.material.blending===T.AdditiveBlending&&Math.abs(o.position.x)<.1&&Math.abs(o.position.z+19.6)<.3&&o.position.y<.1)o.material.opacity=Math.min(o.material.opacity,.3);if(o.isPointLight&&Math.abs(o.position.z+18.1)<.2&&o.position.y<.5)o.intensity=Math.min(o.intensity,1)});
+    /* calm purple hotspots in the lobby: cap purple floor glows and the monument uplight */
+    scene.traverse(function(o){var c=o.material&&o.material.color;
+      if(o.isMesh&&c&&o.material.blending===T.AdditiveBlending&&o.position.y<.1&&o.position.z<-6&&o.position.z>-34&&Math.abs(o.position.x)<14&&c.b>c.r*1.2)o.material.opacity=Math.min(o.material.opacity,.28);
+      if(o.isPointLight&&o.color.b>o.color.r*1.2&&o.position.z<-6&&o.position.z>-34&&Math.abs(o.position.x)<14)o.intensity*=.55});
     glows.push({c:[0,9.9,-20],u:[1,0,0],v:[0,0,1],w:12,h:12,k:k(0xb8c6e6,.18)});
     /* entrance: warm interior light spilling onto the plaza */
     glows.push({c:[0,.03,2.6],u:[1,0,0],v:[0,0,1],w:9,h:7,k:k(0xffe6c4,.32)});

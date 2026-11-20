@@ -690,8 +690,10 @@ var STOCKISTS = [];   // confirmed partners only: {name, address}
     scene.traverse(function(o){if(o.isMesh&&o.geometry&&o.geometry.type==='CircleGeometry'&&o.geometry.parameters.radius===4.2&&o.material&&o.material.isMeshBasicMaterial)o.material.color.setRGB(.75,.86,1.15)});
     /* the lobby's original constant-opacity shaft reads as a glass tube; the view-dependent shaft below replaces it */
     scene.traverse(function(o){if(o.isMesh&&o.geometry&&o.geometry.type==='CylinderGeometry'&&o.geometry.parameters.openEnded&&Math.abs(o.geometry.parameters.radiusTop-4.1)<.01&&o.material&&o.material.blending===T.AdditiveBlending)o.visible=false});
-    /* calm the purple pool / uplight hotspot at the monument foot */
-    scene.traverse(function(o){if(o.isMesh&&o.material&&o.material.blending===T.AdditiveBlending&&Math.abs(o.position.x)<.1&&Math.abs(o.position.z+19.6)<.3&&o.position.y<.1)o.material.opacity=Math.min(o.material.opacity,.3);if(o.isPointLight&&Math.abs(o.position.z+18.1)<.2&&o.position.y<.5)o.intensity=Math.min(o.intensity,1)});
+    /* calm purple hotspots in the lobby: cap purple floor glows and the monument uplight */
+    scene.traverse(function(o){var c=o.material&&o.material.color;
+      if(o.isMesh&&c&&o.material.blending===T.AdditiveBlending&&o.position.y<.1&&o.position.z<-6&&o.position.z>-34&&Math.abs(o.position.x)<14&&c.b>c.r*1.2)o.material.opacity=Math.min(o.material.opacity,.28);
+      if(o.isPointLight&&o.color.b>o.color.r*1.2&&o.position.z<-6&&o.position.z>-34&&Math.abs(o.position.x)<14)o.intensity*=.55});
     glows.push({c:[0,9.9,-20],u:[1,0,0],v:[0,0,1],w:12,h:12,k:k(0xb8c6e6,.18)});
     /* entrance: warm interior light spilling onto the plaza */
     glows.push({c:[0,.03,2.6],u:[1,0,0],v:[0,0,1],w:9,h:7,k:k(0xffe6c4,.32)});
@@ -1226,7 +1228,7 @@ var STOCKISTS = [];   // confirmed partners only: {name, address}
 
     /* ----- lettering: TESTAMENTS above the portal (lit, with halo); tagline cut into the portal lintel ----- */
     var sign=archText(13.6,1.9,function(c,W,H){c.fillStyle='#fbf7ef';c.font='500 '+Math.round(H*.8)+'px "Bodoni Moda"';sp(c,'TESTAMENTS',W/2,H*.8,Math.round(H*.13))},300);
-    dark.bx(-7.6,7.6,10.95,13.35,FZ,FZ+.03);lamp.bx(-7.6,7.6,10.93,10.95,FZ,FZ+.05);sign.position.set(0,12.15,FZ+.04);scene.add(sign);refl.push(sign);
+    dark.bx(-7.6,7.6,10.95,13.35,FZ,FZ+.03);sign.position.set(0,12.15,FZ+.04);scene.add(sign);refl.push(sign);
     var halo=glow(15,2.6,0xfff0dc,.1);halo.position.set(0,12.1,FZ+.01);scene.add(halo);
     var sub=archText(8,.62,function(c,W,H){c.fillStyle='#e9e4da';c.font='500 '+Math.round(H*.56)+'px Inter';sp(c,'UNDERSTAND THE WHY.',W/2,H*.72,Math.round(H*.3))},500);
     sub.position.set(0,PH+.6,FZ+.81);scene.add(sub);refl.push(sub);
@@ -1418,7 +1420,7 @@ var STOCKISTS = [];   // confirmed partners only: {name, address}
     /* ----- floor: bronze compass inlay around the monument, processional line from the entrance ----- */
     function ringI(r,w){inlay.add(new T.RingGeometry(r-w/2,r+w/2,96),new T.Matrix4().makeRotationX(-Math.PI/2).setPosition(OX,.004,OZ))}
     ringI(5.6,.07);ringI(7.2,.035);
-    for(var k=0;k<16;k++){var an=k/16*Math.PI*2,l=k%4===0?1.6:.6,r0=5.6+.04;inlay.add(new T.PlaneGeometry(k%4===0?.06:.03,l),new T.Matrix4().makeRotationFromEuler(new T.Euler(-Math.PI/2,0,-an,'YXZ')).setPosition(OX+Math.sin(an)*(r0+l/2),.004,OZ+Math.cos(an)*(r0+l/2)))}
+    for(var k=0;k<16;k++){var an=k/16*Math.PI*2,l=.6,r0=5.6+.04;inlay.add(new T.PlaneGeometry(.03,l),new T.Matrix4().makeRotationFromEuler(new T.Euler(-Math.PI/2,0,-an,'YXZ')).setPosition(OX+Math.sin(an)*(r0+l/2),.004,OZ+Math.cos(an)*(r0+l/2)))}
     glowB.quad(15,15,OX,.015,OZ,-Math.PI/2,0,archCol(PUR,.08));
 
     /* ----- the monument: a rough-hewn stone with a dressed, engraved face, on a low plinth ----- */
@@ -1435,7 +1437,7 @@ var STOCKISTS = [];   // confirmed partners only: {name, address}
       ['EVERY','CHAPTER','MATTERS.'].forEach(function(w,i){var y=Hh*(.3+i*.25);
         c.fillStyle='rgba(0,0,0,.75)';sp(c,w,W/2-3,y-3,gap);c.fillStyle='rgba(255,255,255,.22)';sp(c,w,W/2+2,y+2,gap);c.fillStyle='#ece8e0';sp(c,w,W/2,y,gap)})},500);
     eng.position.set(0,PY+3.35,MZ+.6*(1-(3.35/5.2)*.08)+.012);scene.add(eng);
-    var ml=new T.PointLight(0x7d4fc4,1.4,7,2);ml.position.set(0,2.6,MZ+2.4);scene.add(ml);
+    var ml=new T.PointLight(0x7d4fc4,1.4,7,2);ml.position.set(0,1.3,MZ+2.6);scene.add(ml);
     spotB.quad(2.3,5,0,PY+2.5,MZ+.63,0,0,archCol(PUR,.55),Math.PI);
     glowB.quad(5.5,3.4,0,.02,MZ+1.6,-Math.PI/2,0,archCol(0x7a4cc0,.5));
     col(-1.95,1.95,MZ-1.35,MZ+1.35);

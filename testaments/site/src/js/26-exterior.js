@@ -129,7 +129,7 @@
 
     /* ----- lettering: TESTAMENTS above the portal (lit, with halo); tagline cut into the portal lintel ----- */
     var sign=archText(13.6,1.9,function(c,W,H){c.fillStyle='#fbf7ef';c.font='500 '+Math.round(H*.8)+'px "Bodoni Moda"';sp(c,'TESTAMENTS',W/2,H*.8,Math.round(H*.13))},300);
-    dark.bx(-7.6,7.6,10.95,13.35,FZ,FZ+.03);lamp.bx(-7.6,7.6,10.93,10.95,FZ,FZ+.05);sign.position.set(0,12.15,FZ+.04);scene.add(sign);refl.push(sign);
+    dark.bx(-7.6,7.6,10.95,13.35,FZ,FZ+.03);sign.position.set(0,12.15,FZ+.04);scene.add(sign);refl.push(sign);
     var halo=glow(15,2.6,0xfff0dc,.1);halo.position.set(0,12.1,FZ+.01);scene.add(halo);
     var sub=archText(8,.62,function(c,W,H){c.fillStyle='#e9e4da';c.font='500 '+Math.round(H*.56)+'px Inter';sp(c,'UNDERSTAND THE WHY.',W/2,H*.72,Math.round(H*.3))},500);
     sub.position.set(0,PH+.6,FZ+.81);scene.add(sub);refl.push(sub);
