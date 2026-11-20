@@ -167,15 +167,15 @@
     if(bp.length){var bg=new T.BufferGeometry();bg.setAttribute('position',new T.Float32BufferAttribute(bp,3));scene.add(new T.Mesh(bg,new T.MeshBasicMaterial({color:0x1b1b1c,side:T.DoubleSide})))}
     ring.dispose();
     /* wall-washer scallops on every gallery wall (skip doors), so lettered walls read evenly */
-    var SCAL=ctex(256,256,function(c,W,H){c.save();c.translate(W/2,-H*.08);c.scale(1.4,1.3);var g=c.createRadialGradient(0,0,0,0,0,H*.95);g.addColorStop(0,'rgba(255,255,255,1)');g.addColorStop(.25,'rgba(255,255,255,.62)');g.addColorStop(.6,'rgba(255,255,255,.2)');g.addColorStop(1,'rgba(255,255,255,0)');c.fillStyle=g;c.fillRect(-W*2,0,W*4,H*2);c.restore();
+    var SCAL=ctex(256,256,function(c,W,H){c.save();c.translate(W/2,-H*.08);c.scale(1.4,1.3);var g=c.createRadialGradient(0,0,0,0,0,H*.95);g.addColorStop(0,'rgba(255,255,255,1)');g.addColorStop(.3,'rgba(255,255,255,.78)');g.addColorStop(.65,'rgba(255,255,255,.34)');g.addColorStop(1,'rgba(255,255,255,0)');c.fillStyle=g;c.fillRect(-W*2,0,W*4,H*2);c.restore();
       var f=c.createLinearGradient(0,0,W,0);f.addColorStop(0,'rgba(0,0,0,1)');f.addColorStop(.18,'rgba(0,0,0,0)');f.addColorStop(.82,'rgba(0,0,0,0)');f.addColorStop(1,'rgba(0,0,0,1)');c.globalCompositeOperation='destination-out';c.fillStyle=f;c.fillRect(0,0,W,H)});
     SCAL.encoding=T.LinearEncoding;
-    ROOMS.forEach(function(r){if(r.cor||r.id==='vestibule'||r.dark)return;var wh=!!r.white,H=Math.min(r.h*.8,r.id==='lobby'?6.5:4.6),sp=r.id==='lobby'?3.4:2.7,kk=k(0xffeedd,wh?.03:.06),o=.155;
+    ROOMS.forEach(function(r){if(r.cor||r.id==='vestibule'||r.dark)return;var wh=!!r.white,H=Math.min(r.h*.8,r.id==='lobby'?6.5:4.6),sp=r.id==='lobby'?3.4:2.7,kk=k(0xffeedd,wh?.024:.05),o=.155;
       [['s',r.x1,r.x2],['n',r.x1,r.x2],['w',r.z2,r.z1],['e',r.z2,r.z1]].forEach(function(sd){var s=sd[0];if(r.open&&r.open.indexOf(s)>=0)return;
         var a=sd[1],b=sd[2],len=b-a,n=Math.max(1,Math.round(len/sp)),step=len/n;
         for(var i=0;i<n;i++){var at=a+step*(i+.5),bad=(r.doors||[]).some(function(d){return d.s===s&&Math.abs(d.at-at)<(d.w||4)/2+.9});if(bad)continue;
           var c,u;if(s==='w'){c=[r.x1+o,r.h-H/2-.02,at];u=[0,0,1]}else if(s==='e'){c=[r.x2-o,r.h-H/2-.02,at];u=[0,0,1]}else if(s==='s'){c=[at,r.h-H/2-.02,r.z1-o];u=[1,0,0]}else{c=[at,r.h-H/2-.02,r.z2+o];u=[1,0,0]}
-          washes.push({c:c,u:u,v:[0,1,0],w:step*2.2,h:H*1.15,k:kk})}
+          washes.push({c:c,u:u,v:[0,1,0],w:step*2.6,h:H*1.2,k:kk})}
       })});
     /* lobby: purple floor-slot uplight at the monument, cool skylight boost */
     var slot=new T.Mesh(new T.BoxGeometry(1.4,.012,.05),new T.MeshBasicMaterial({}));slot.material.color.setRGB(.55,.3,.9);slot.position.set(0,.006,-18.95);scene.add(slot);
@@ -289,7 +289,7 @@
       lookBlur(LK.b1,LK.b1b,1);if(!hi)lookBlur(LK.b1,LK.b1b,2);
       if(hi){b.tSrc.value=LK.b1.texture;b.uTx.value.set(1/LK.b1.width,1/LK.b1.height);b.uThr.value=-1;lookPass(LK.mBright,LK.b2);lookBlur(LK.b2,LK.b2b,1);lookBlur(LK.b2,LK.b2b,2)}
       var f=LK.mFinal.uniforms;f.tScene.value=LK.rt.texture;f.tB1.value=LK.b1.texture;f.tB2.value=hi?LK.b2.texture:null;
-      f.uB1.value=hi?.22:.28;f.uB2.value=hi?.3:0;f.uExp.value=R.toneMappingExposure;f.uVig.value=hi?.26:.2;f.uGrain.value=hi&&!S.reduced?.012:0;f.uCA.value=hi?.006:0;f.uT.value=S.reduced?0:LK.t;
+      f.uB1.value=hi?.22:.28;f.uB2.value=hi?.3:0;f.uExp.value=R.toneMappingExposure;f.uVig.value=hi?.26:.2;f.uGrain.value=0;f.uCA.value=0;f.uT.value=S.reduced?0:LK.t;
       var asp=w/h;f.uAsp.value.set(Math.sqrt(asp),1/Math.sqrt(asp));
       lookPass(LK.mFinal,null);
     }catch(e){console.warn('look: post disabled',e);LK.broken=true;LK.post=false;R.toneMapping=T.ACESFilmicToneMapping;R.setRenderTarget(null);R.render(scene,cam)}

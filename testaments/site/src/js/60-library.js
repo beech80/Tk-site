@@ -41,7 +41,7 @@
   var libCovers={};
   function coverTex(c,light){
     var key=c.slug+(light?'L':'D');if(libCovers[key])return libCovers[key];
-    return libCovers[key]=ctex(840,1100,function(x,W){x.fillStyle=light?'#f5f3ef':'#090909';x.fillRect(0,0,W,1100);var fg=light?'#090909':'#f5f3ef';x.fillStyle=fg;x.font='500 80px "Bodoni Moda"';sp(x,'TESTAMENTS',W/2,124,12);x.font='500 18px Inter';x.fillStyle=light?'#55534f':'#bdbbb6';sp(x,'UNDERSTAND THE WHY.',W/2,172,6);
+    return libCovers[key]=ctex(840,1100,function(x,W){x.fillStyle=light?'#f5f3ef':'#090909';x.fillRect(0,0,W,1100);var fg=light?'#090909':'#f5f3ef';x.fillStyle=fg;x.textBaseline='alphabetic';x.font='500 76px "Bodoni Moda"';sp(x,'TESTAMENTS',W/2,132,11);x.fillStyle=light?'#3d3b38':'#d2d0cb';x.font='600 22px Inter';sp(x,'UNDERSTAND THE WHY.',W/2,206,7);
       x.font='400 420px "Bodoni Moda"';x.strokeStyle=light?'rgba(8,8,8,.35)':'rgba(255,255,255,.45)';x.lineWidth=2.8;x.textAlign='center';x.strokeText(c.num,W/2,660);x.fillStyle=fg;x.font='italic 400 88px "Bodoni Moda"';x.fillText(c.title,W/2,860);x.fillStyle='#b49be0';x.fillRect(W/2-28,896,56,4);x.fillStyle=fg;x.font='500 24px Inter';sp(x,who(c).toUpperCase(),W/2,956,8)});
   }
 
@@ -51,7 +51,7 @@
     var cx=-17.25,sw=9.2,sh=sw*822/1620,sy=3.25,sz=-57.7;
 
     /* --- cinema: screen in a black reveal, masking, soft spill on the floor --- */
-    box(sw+.5,sh+.5,.12,MAT.frame,cx,sy,sz-.1);
+    box(sw+.5,sh+.5,.12,MAT.frame,cx,sy,sz-.08);
     var scr=new T.Mesh(new T.PlaneGeometry(sw,sh),new T.MeshBasicMaterial(vt?{map:vt,toneMapped:false}:{color:0x222222}));scr.position.set(cx,sy,sz);scene.add(scr);
     var halo=glow(sw*1.7,sh*1.9,0x9fa6c8,.12);halo.position.set(cx,sy,sz-.04);scene.add(halo);
     floorGlow(cx,-55.5,10,4,0xb9c0dc,.16);
@@ -67,8 +67,16 @@
     });
     libMerge(fab,M.fabric);libMerge(base,M.dark);if(riser.length)libMerge(riser,MAT.stone);
     col(cx-rw/2-.25,cx+rw/2+.25,-53.05,-47.05);
-    /* aisle step lights on both ends of each row */
-    
+    /* aisle step lights on both ends of each row (emissive strips, no real lights) */
+    var stepL=[];rows.forEach(function(r){[-1,1].forEach(function(s){libB(stepL,.22,.025,.05,cx+s*(rw/2+.12),r.y+.06,r.z+1.06)})});
+    libMerge(stepL,MAT.warm);
+    rows.forEach(function(r){[-1,1].forEach(function(s){var g=glow(.9,.6,0xffd9a6,.22);g.rotation.x=-Math.PI/2;g.position.set(cx+s*(rw/2+.12),r.y+.012,r.z+1.2);scene.add(g)})});
+    /* the cinema is dressed in black: carpet under the seating, dark fabric on the screen wall and side walls */
+    var cz1=-47.4,cz2=Lb.z2+.04;
+    var carpet=new T.Mesh(new T.PlaneGeometry(Lb.x2-Lb.x1-.1,cz1-cz2),M.dark);carpet.rotation.x=-Math.PI/2;carpet.position.set(cx,.008,(cz1+cz2)/2);scene.add(carpet);
+    var drape=[];libB(drape,Lb.x2-Lb.x1-.1,5.2,.04,cx,2.6,Lb.z2+.04);libB(drape,.04,5.2,cz1-cz2,Lb.x1+.04,2.6,(cz1+cz2)/2);libB(drape,.04,5.2,cz1-cz2,Lb.x2-.04,2.6,(cz1+cz2)/2);
+    libMerge(drape,new T.MeshStandardMaterial({color:0x0c0b0e,roughness:1}));
+
     /* --- slatted acoustic panels on both side walls of the cinema --- */
     var ac=[];[{x:Lb.x1+.2,n:1},{x:Lb.x2-.2,n:-1}].forEach(function(w){for(var i=0;i<6;i++){var z=-56.6+i*1.45;libB(ac,.1,3.8,1.25,w.x,2.4,z)}});
     libMerge(ac,M.slat);
@@ -148,7 +156,7 @@
     var desk=new T.Mesh(new T.BoxGeometry(1.08,.05,.78),M.oak);desk.position.y=1.08;desk.rotation.x=-.32;lec.add(desk);
     var lip=new T.Mesh(new T.BoxGeometry(1.08,.06,.03),M.brass);lip.position.set(0,1.0,.37);lip.rotation.x=-.32;lec.add(lip);
     var mag=plane(.98,.64,ctex(1520,1000,function(x,W,H){x.fillStyle='#f5f3ef';x.fillRect(0,0,W,H);x.fillStyle='#090909';x.fillRect(0,0,W/2,H);x.fillStyle='#f5f3ef';x.font='500 68px "Bodoni Moda"';sp(x,'TESTAMENTS',W/4,240,12);x.font='italic 400 84px "Bodoni Moda"';x.textAlign='center';x.fillText('Understand',W/4,560);x.fillText('the Why.',W/4,660);x.fillStyle='#b49be0';x.fillRect(W/4-30,720,60,4);
-      x.fillStyle='#090909';x.font='500 30px Inter';sp(x,'READ THE MAGAZINE',W*3/4,480,10);x.font='italic 400 52px "Bodoni Moda"';x.textAlign='center';x.fillText('Every Chapter Matters.',W*3/4,580);var g=x.createLinearGradient(W/2-60,0,W/2+60,0);g.addColorStop(0,'rgba(0,0,0,0)');g.addColorStop(.5,'rgba(0,0,0,.28)');g.addColorStop(1,'rgba(0,0,0,0)');x.fillStyle=g;x.fillRect(W/2-60,0,120,H)}),true);
+      x.fillStyle='#090909';x.font='600 40px Inter';sp(x,'READ THE MAGAZINE',W*3/4,460,10);x.font='italic 400 64px "Bodoni Moda"';x.textAlign='center';x.fillText('Every Chapter Matters.',W*3/4,580);var g=x.createLinearGradient(W/2-60,0,W/2+60,0);g.addColorStop(0,'rgba(0,0,0,0)');g.addColorStop(.5,'rgba(0,0,0,.28)');g.addColorStop(1,'rgba(0,0,0,0)');x.fillStyle=g;x.fillRect(W/2-60,0,120,H)}),true);
     mag.rotation.x=-Math.PI/2+.32;mag.position.set(0,1.115,0);lec.add(mag);lec.position.set(-11,0,-43.5);scene.add(lec);
     col(-11.4,-10.6,-43.85,-43.15);
     var lg=glow(1.4,1,0xfff0dc,.25);lg.rotation.x=-Math.PI/2+.32;lg.position.set(-11,1.13,-43.5);scene.add(lg);
@@ -170,12 +178,12 @@
   /* large, high-contrast wall plaque: kicker in caps, a big serif title, an optional small line */
   function libPlaque(r,side,along,y,w,h,kick,title,small,big){
     var pos=onWall(r,side,along),ppm=440;
-    var m=libSign(w,h,function(c,W,H){c.fillStyle='#0b0b0c';c.fillRect(0,0,W,H);c.fillStyle='#b49be0';c.fillRect(W*.06,H*.17,56,5);
-      c.fillStyle='#d8d5cf';c.font='600 '+Math.round(H*.085)+'px Inter';sp(c,kick,W*.06,H*.3,Math.round(H*.03),'left');
+    var m=libSign(w,h,function(c,W,H){c.fillStyle='#0b0b0c';c.fillRect(0,0,W,H);c.fillStyle='#b49be0';c.fillRect(W*.06,H*.13,Math.round(H*.12),Math.max(5,Math.round(H*.012)));
+      c.fillStyle='#d8d5cf';c.font='600 '+Math.round(H*.1)+'px Inter';sp(c,kick,W*.06,H*.3,Math.round(H*.03),'left');
       c.fillStyle='#f7f4ee';c.font=(big?'italic ':'')+'400 '+Math.round(H*(big?.2:.25))+'px "Bodoni Moda"';c.textAlign='left';c.fillText(title,W*.06,H*(small?.6:.66));
-      if(small){c.fillStyle='#bdbab3';c.font='500 '+Math.round(H*.075)+'px Inter';sp(c,small.toUpperCase(),W*.06,H*.82,Math.round(H*.022),'left')}},ppm);
+      if(small){c.fillStyle='#bdbab3';c.font='500 '+Math.round(H*.09)+'px Inter';sp(c,small.toUpperCase(),W*.06,H*.82,Math.round(H*.022),'left')}},ppm);
     place(m,pos.x+NV[pos.n][0]*.1,y,pos.z+NV[pos.n][1]*.1,pos.n);
-    var bk=new T.Mesh(new T.BoxGeometry(w+.06,h+.06,.08),MAT.frame);place(bk,pos.x+NV[pos.n][0]*.055,y,pos.z+NV[pos.n][1]*.004,pos.n);
+    var bk=new T.Mesh(new T.BoxGeometry(w+.06,h+.06,.08),MAT.frame);place(bk,pos.x+NV[pos.n][0]*.055,y,pos.z+NV[pos.n][1]*.055,pos.n);
     var s=spot(w*1.5,h*2.2,.35);place(s,pos.x+NV[pos.n][0]*.006,y+h*.35,pos.z+NV[pos.n][1]*.006,pos.n);
     return m;
   }
