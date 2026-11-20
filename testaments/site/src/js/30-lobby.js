@@ -33,7 +33,7 @@
     /* a small warm downlight in every coffer outside the oculus */
     var cx=[X1].concat(GX,[X2]),cz=[Z2].concat(GZ.slice().reverse(),[Z1]);
     for(var i=0;i<cx.length-1;i++)for(var j=0;j<cz.length-1;j++){var mx=(cx[i]+cx[i+1])/2,mz=(cz[j]+cz[j+1])/2;if(Math.hypot(mx-OX,mz-OZ)<RC+1)continue;
-      lampB.add(new T.CircleGeometry(.12,16),new T.Matrix4().makeRotationX(Math.PI/2).setPosition(mx,H-.02,mz));glowB.quad(1.2,1.2,mx,H-.03,mz,Math.PI/2,0,archCol(WARM,.25))}
+      lampB.add(new T.CircleGeometry(.12,16),new T.Matrix4().makeRotationX(Math.PI/2).setPosition(mx,H-.02,mz))}
     /* perimeter light slot washing the upper walls */
     [[X1+.16,'x',1],[X2-.16,'x',-1],[Z1-.16,'z',-1],[Z2+.16,'z',1]].forEach(function(w){var len=w[1]==='x'?Z1-Z2:X2-X1,mid=w[1]==='x'?(Z1+Z2)/2:(X1+X2)/2;
       if(w[1]==='x'){lampB.bx(w[0]-.02,w[0]+.02,H-.06,H-.02,Z2,Z1);washB.quad(len,3.6,w[0]+w[2]*.005,H-1.8,mid,0,w[2]*Math.PI/2,archCol(WARM,.12))}
@@ -46,7 +46,7 @@
         stoneB.bx(X1,X2,BY,BY+bt,a,b,0,6);bronzeB.bx(X1,X2,BY+bt+1.05,BY+bt+1.1,zf-.05,zf+.05);
         var gl=new T.Mesh(new T.PlaneGeometry(X2-X1,1.05),MAT.glass);gl.position.set(0,BY+bt+.525,zf);scene.add(gl);
         lampB.bx(X1,X2,BY-.02,BY-.005,zf+(s==='n'?-.12:.08),zf+(s==='n'?-.08:.12));
-        glowB.quad(X2-X1,1,0,BY-.025,zf+(s==='n'?-.6:.6),Math.PI/2,0,archCol(WARM,.1))}
+}
       else{var xf=s==='w'?X1+BP:X2-BP,xw=s==='w'?X1:X2;a=Math.min(xf,xw);b=Math.max(xf,xw);
         stoneB.bx(a,b,BY,BY+bt,Z2+BP,Z1-BP,0,6);bronzeB.bx(xf-.05,xf+.05,BY+bt+1.05,BY+bt+1.1,Z2+BP,Z1-BP);
         var gl2=new T.Mesh(new T.PlaneGeometry(Z1-Z2-2*BP,1.05),MAT.glass);gl2.rotation.y=Math.PI/2;gl2.position.set(xf,BY+bt+.525,(Z1+Z2)/2);scene.add(gl2);
@@ -64,7 +64,6 @@
     function ringI(r,w){inlay.add(new T.RingGeometry(r-w/2,r+w/2,96),new T.Matrix4().makeRotationX(-Math.PI/2).setPosition(OX,.004,OZ))}
     ringI(5.6,.07);ringI(7.2,.035);
     for(var k=0;k<16;k++){var an=k/16*Math.PI*2,l=k%4===0?1.6:.6,r0=5.6+.04;inlay.add(new T.PlaneGeometry(k%4===0?.06:.03,l),new T.Matrix4().makeRotationFromEuler(new T.Euler(-Math.PI/2,0,-an,'YXZ')).setPosition(OX+Math.sin(an)*(r0+l/2),.004,OZ+Math.cos(an)*(r0+l/2)))}
-    inlay.bx(-.03,.03,0,.008,OZ+7.2,Z1-.3);
     glowB.quad(15,15,OX,.015,OZ,-Math.PI/2,0,archCol(PUR,.08));
 
     /* ----- the monument: a rough-hewn stone with a dressed, engraved face, on a low plinth ----- */
@@ -104,8 +103,8 @@
       if(alongX){col(at-hw-sw,at-hw,face,face+nz*d);col(at+hw,at+hw+sw,face,face+nz*d)}else{col(face,face+nx*d,at-hw-sw,at-hw);col(face,face+nx*d,at+hw,at+hw+sw)}
       if(!big)return;
       bxA(-hw,hw,dh,topY,0,.08,darkB);
-      var s=archText(w+.6,SH,function(c,W,Hh){c.fillStyle='#d6d2ca';c.font='600 '+Math.round(Hh*.13)+'px Inter';sp(c,top,W/2,Hh*.28,Math.round(Hh*.05));
-        c.fillStyle='#fbf8f2';c.font='500 '+Math.round(Hh*.42)+'px "Bodoni Moda"';sp(c,big,W/2,Hh*.8,Math.round(Hh*.04))},420);
+      var s=archText(w+.6,SH,function(c,W,Hh){c.fillStyle='#e4e0d8';c.font='600 '+Math.round(Hh*.15)+'px Inter';sp(c,top,W/2,Hh*.28,Math.round(Hh*.05));
+        c.fillStyle='#fbf8f2';c.font='500 '+Math.round(Hh*.46)+'px "Bodoni Moda"';sp(c,big,W/2,Hh*.82,Math.round(Hh*.04))},420);
       var sx=alongX?at:face+nx*.09,sz=alongX?face+nz*.09:at;place(s,sx,SY,sz,p.n);
       var lx=alongX?at:face+nx*.12,lz=alongX?face+nz*.12:at;
       if(alongX)lampB.bx(at-hw+.1,at+hw-.1,topY-.03,topY,face+nz*.06,face+nz*.1);else lampB.bx(face+nx*.06,face+nx*.1,topY-.03,topY,at-hw+.1,at+hw-.1);
@@ -122,12 +121,12 @@
     var dirs=[];(L.doors||[]).forEach(function(d){if(d.s==='s')return;var px=d.s==='w'?X1-6:d.s==='e'?X2+6:d.at,pz=d.s==='n'?Z2-6:d.at;
       var r=ROOMS.filter(function(q){return !q.cor&&px>=q.x1&&px<=q.x2&&pz<=q.z1&&pz>=q.z2})[0];if(r&&(!r.chapter||r.c))dirs.push([d.s,r.name])});
     var ord={w:0,n:1,e:2},arrow={w:'←',n:'↑',e:'→'};dirs.sort(function(a,b){return ord[a[0]]-ord[b[0]]});
-    var TX=-4.8,TZ=-9.4,TH=2.3,TW=1.15;
+    var TX=-5.2,TZ=-9.4,TH=2.4,TW=1.6;
     darkB.bx(TX-TW/2,TX+TW/2,0,TH,TZ-.14,TZ+.14);
     var tt=archText(TW-.12,TH-.2,function(c,W,Hh){c.fillStyle='#0c0c0d';c.fillRect(0,0,W,Hh);c.fillStyle='#b49be0';c.fillRect(W*.1,Hh*.07,W*.12,4);
-      c.fillStyle='#d6d2ca';c.font='600 '+Math.round(W*.055)+'px Inter';sp(c,'GALLERIES',W*.1,Hh*.13,Math.round(W*.02),'left');
-      dirs.forEach(function(d,i){var y=Hh*(.24+i*.1);c.fillStyle='#fbf8f2';c.font='500 '+Math.round(W*.085)+'px Inter';c.textAlign='left';c.fillText(arrow[d[0]],W*.1,y);
-        c.font='400 '+Math.round(W*.07)+'px "Bodoni Moda"';var nm=d[1].replace(' · ',' ');c.fillText(nm.length>24?nm.slice(0,23)+'…':nm,W*.24,y)})},400);
+      c.fillStyle='#d6d2ca';c.font='600 '+Math.round(W*.06)+'px Inter';sp(c,'GALLERIES',W*.1,Hh*.13,Math.round(W*.02),'left');
+      dirs.forEach(function(d,i){var y=Hh*(.24+i*.1);c.fillStyle='#fbf8f2';c.font='600 '+Math.round(W*.09)+'px Inter';c.textAlign='left';c.fillText(arrow[d[0]],W*.1,y);
+        c.font='500 '+Math.round(W*.075)+'px Inter';var nm=d[1].replace(' · ',' ');c.fillText(nm.length>26?nm.slice(0,25)+'…':nm,W*.24,y)})},400);
     tt.position.set(TX,TH/2+.05,TZ+.145);scene.add(tt);
     col(TX-TW/2,TX+TW/2,TZ-.14,TZ+.14);
 

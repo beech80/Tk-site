@@ -19,7 +19,7 @@
         exW(x,m[2],L,H*.68,W*.82,H*.075,H*.1,'italic 400 '+Math.round(H*.075)+'px "Bodoni Moda"','#2b2926')},{act:aboutManifesto,label:'The medium · '+m[1],r:4.5})});
     /* south: the founder */
     var pos=onWall(A,'s',-25.6),g=new T.Group(),fr=new T.Mesh(new T.BoxGeometry(2,2.6,.06),MAT.frame);fr.position.z=.03;g.add(fr);
-    var inner=exSign(1.86,2.46,function(c,W,H){c.fillStyle='#e4e0d8';c.fillRect(0,0,W,H);c.strokeStyle='#8e8a82';c.lineWidth=3;c.setLineDash([12,12]);c.strokeRect(W*.08,H*.06,W*.84,H*.88);exK(c,'Portrait',W/2,H*.48,H*.032,'#55524c','center');exK(c,'To be supplied',W/2,H*.55,H*.032,'#55524c','center')},300);
+    var inner=exSign(1.86,2.46,function(c,W,H){c.fillStyle='#e4e0d8';c.fillRect(0,0,W,H);c.strokeStyle='#8e8a82';c.lineWidth=3;c.setLineDash([12,12]);c.strokeRect(W*.08,H*.06,W*.84,H*.88);exK(c,'Portrait',W/2,H*.47,H*.042,'#3f3c37','center');exK(c,'To be supplied',W/2,H*.56,H*.042,'#3f3c37','center')},300);
     inner.position.z=.065;g.add(inner);place(g,pos.x,2.5,pos.z,pos.n);var fs=spot(4.4,5.6,.25);place(fs,pos.x,3,pos.z-.01,'nz');
     addInter(pos.x,pos.z,'nz',4,'Read','The founder',aboutFounder,{y:2.5,w:2,h:2.6});
     exOnWall(A,'s',-32,2.5,5,2.6,function(x,W,H){exBg(x,W,H,bg);var L=W*.08;

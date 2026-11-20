@@ -68,9 +68,7 @@
     libMerge(fab,M.fabric);libMerge(base,M.dark);if(riser.length)libMerge(riser,MAT.stone);
     col(cx-rw/2-.25,cx+rw/2+.25,-53.05,-47.05);
     /* aisle step lights on both ends of each row */
-    var dots=[];rows.forEach(function(r){[-1,1].forEach(function(s){libB(dots,.06,.03,.22,cx+s*(rw/2+.18),.1+r.y*.5,r.z)})});libMerge(dots,MAT.lamp);
-    [-1,1].forEach(function(s){floorGlow(cx+s*(rw/2+.7),-50.4,1,6.4,0x8e6cc4,.16)});
-
+    
     /* --- slatted acoustic panels on both side walls of the cinema --- */
     var ac=[];[{x:Lb.x1+.2,n:1},{x:Lb.x2-.2,n:-1}].forEach(function(w){for(var i=0;i<6;i++){var z=-56.6+i*1.45;libB(ac,.1,3.8,1.25,w.x,2.4,z)}});
     libMerge(ac,M.slat);
@@ -90,7 +88,7 @@
     beam.frustumCulled=false;scene.add(beam);
     if(!S.reduced)HOOKS.frame.push(function(dt){if(curRoom.id==='library')beamU.uT.value+=dt});
 
-    libPlaque(Lb,'e',-46.1,2.15,2.4,1.25,'THE SCREENING ROOM','The film','TESTAMENTS · on loop');
+    libPlaque(Lb,'e',-46.1,2.3,3,1.5,'THE SCREENING ROOM','The film','TESTAMENTS · on loop');
 
     /* --- reading lounge --- */
     /* tall bookcase on the west wall: oak frame, spines, the editions face-out */
@@ -158,7 +156,7 @@
     addInter(-11,-43.5,null,2.8,'Read','Read the magazine',function(){openReader()});
 
     /* signage */
-    libPlaque(Lb,'s',-20.5,2.6,4.6,1.55,'THE READING ROOM','Read slowly. Come back often.',null,true);
+    libPlaque(Lb,'s',-20.5,2.8,6,1.8,'THE READING ROOM','Read slowly. Come back often.',null,true);
   }
 
   /* low brass table lamp with a glowing shade (no real-time light) */

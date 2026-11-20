@@ -7,7 +7,7 @@
     var Sh=RM.shop,M=libMats(),cx=(Sh.x1+Sh.x2)/2;
 
     /* --- statement wall: a halo-lit sign across the north wall --- */
-    var sw=12.4,shh=2.9,sz=Sh.z2+.3,sy=3.75,wz=Sh.z2+.16;
+    var sw=12.4,shh=2.4,sz=Sh.z2+.3,sy=4.3,wz=Sh.z2+.16;
     var hal=glow(sw*1.35,shh*2.1,0xfff0dc,.22);hal.position.set(cx,sy,wz);scene.add(hal);
     var sign=libSign(sw,shh,function(c,W,H){c.fillStyle='#0a0a0b';c.fillRect(0,0,W,H);c.strokeStyle='rgba(255,255,255,.12)';c.lineWidth=3;c.strokeRect(24,24,W-48,H-48);
       c.fillStyle='#cfccc5';c.font='600 '+Math.round(H*.07)+'px Inter';sp(c,'THE MUSEUM SHOP',W/2,H*.3,Math.round(H*.035));
@@ -25,12 +25,13 @@
       libB(ease,.92,1.2,.04,x,1.66,pz-.12,0,-.14);libB(ease,.92,.04,.12,x,1.07,pz+.02);
       var cv=plane(.88,1.15,coverTex(c,i%2===1),true);cv.position.set(x,1.67,pz-.093);cv.rotation.x=-.14;scene.add(cv);
       var ha=glow(2.2,2.6,0xfff1dc,.16);ha.position.set(x,1.7,pz-.2);scene.add(ha);
-      var pl=libSign(1.15,.62,function(t,W,H){t.fillStyle='#0b0b0c';t.fillRect(0,0,W,H);t.fillStyle='#d4d0c9';t.font='600 '+Math.round(H*.1)+'px Inter';sp(t,'CHAPTER '+c.num,W/2,H*.2,Math.round(H*.03));
-        t.fillStyle='#f8f5ef';t.font='400 '+Math.round(H*.24)+'px "Bodoni Moda"';sp(t,c.title.toUpperCase(),W/2,H*.47,Math.round(H*.02));
-        t.fillStyle='#c9c6bf';t.font='italic 400 '+Math.round(H*.11)+'px "Bodoni Moda"';t.textAlign='center';t.fillText(who(c),W/2,H*.64);
-        t.fillStyle='#b49be0';t.fillRect(W/2-24,H*.7,48,3);
-        t.fillStyle='#f0ede7';t.font='600 '+Math.round(H*.075)+'px Inter';sp(t,shopPrice(c).toUpperCase(),W/2,H*.83,Math.round(H*.016));t.fillStyle='#b8b5ae';t.font='500 '+Math.round(H*.06)+'px Inter';sp(t,edState(c).toUpperCase(),W/2,H*.94,Math.round(H*.016))},700);
-      pl.position.set(x,.56,pz+.632);scene.add(pl);
+      var pl=libSign(1.17,.9,function(t,W,H){t.fillStyle='#0b0b0c';t.fillRect(0,0,W,H);t.fillStyle='#d4d0c9';t.font='600 '+Math.round(H*.075)+'px Inter';sp(t,'CHAPTER '+c.num,W/2,H*.15,Math.round(H*.022));
+        t.fillStyle='#f8f5ef';t.font='400 '+Math.round(H*.17)+'px "Bodoni Moda"';sp(t,c.title.toUpperCase(),W/2,H*.35,Math.round(H*.015));
+        t.fillStyle='#c9c6bf';t.font='italic 400 '+Math.round(H*.08)+'px "Bodoni Moda"';t.textAlign='center';t.fillText(who(c),W/2,H*.48);
+        t.fillStyle='#b49be0';t.fillRect(W/2-30,H*.55,60,4);
+        var pr=shopPrice(c).toUpperCase(),fs=Math.round(H*.1);t.font='600 '+fs+'px Inter';while(t.measureText(pr).width+pr.length*H*.01>W*.92&&fs>10){fs--;t.font='600 '+fs+'px Inter'}
+        t.fillStyle='#ffffff';sp(t,pr,W/2,H*.71,Math.round(H*.01));t.fillStyle='#cfccc5';t.font='600 '+Math.round(H*.08)+'px Inter';sp(t,edState(c).toUpperCase(),W/2,H*.87,Math.round(H*.015))},800);
+      pl.position.set(x,.49,pz+.632);scene.add(pl);
       floorGlow(x,pz,3.2,3.2,0xfff0dc,.2);floorGlow(x,pz,2,2,0x6e42a3,.14);
       var pin=new T.Mesh(new T.CircleGeometry(.14,16),MAT.lamp);pin.rotation.x=Math.PI/2;pin.position.set(x,Sh.h-.02,pz-.2);scene.add(pin);
       col(x-.68,x+.68,pz-.68,pz+.68);
@@ -55,8 +56,8 @@
     libMerge(stand,MAT.frame);
     Object.keys(tcov).forEach(function(k){var f=tcov[k];libMerge(f.p,new T.MeshBasicMaterial({map:coverTex(f.c,f.l)}))});
     var tgl=glow(tl*1.15,tw*2.4,0xfff0dc,.08);tgl.rotation.x=-Math.PI/2;tgl.position.set(tcx,.905,tz);scene.add(tgl);
-    var lab=libSign(3.6,.14,function(t,W,H){t.fillStyle='#0b0b0c';t.fillRect(0,0,W,H);t.fillStyle='#e9e6e0';t.font='600 '+Math.round(H*.34)+'px Inter';sp(t,'EDITIONS OPEN FOR ORDERING WHEN EACH CHAPTER IS PUBLISHED',W/2,H*.64,Math.round(H*.05))},900);
-    lab.position.set(tcx,.86,tz+tw/2+.006);scene.add(lab);
+    var lab=libSign(7.6,.2,function(t,W,H){t.fillStyle='#0b0b0c';t.fillRect(0,0,W,H);t.fillStyle='#e9e6e0';t.font='600 '+Math.round(H*.42)+'px Inter';sp(t,'EDITIONS OPEN FOR ORDERING WHEN EACH CHAPTER IS PUBLISHED',W/2,H*.64,Math.round(H*.05))},900);
+    lab.position.set(tcx,.73,tz+tw/2+.006);scene.add(lab);
     col(tx1-.05,tx2+.05,tz-tw/2-.05,tz+tw/2+.05);
     floorGlow(tcx,tz,tl+2,3.2,0xfff0dc,.12);
 
@@ -83,7 +84,7 @@
     var kc=plane(.3,.39,coverTex(CH[0],false),true);kc.rotation.x=-Math.PI/2;kc.position.set(kx-.05,1.082,kz+1.05);scene.add(kc);
     libLamp(kx-.2,1.03,kz,.38);
     col(Sh.x1,kx+kd/2+.06,kz-kl/2-.05,kz+kl/2+.05);
-    libPlaque(Sh,'w',kz,2.55,2.4,1.1,'THE COUNTER','Your cart','Shipping & returns');
+    libPlaque(Sh,'w',kz,2.6,3,1.3,'THE COUNTER','Your cart','Shipping & returns');
     addInter(kx+kd/2+.05,kz,'px',3.2,'Cart','Your cart',openCart);
 
     /* one soft, even fill for the room */

@@ -92,7 +92,7 @@
     /* singles */
     [['v1',17],['v1',24.5],['v0',26.6]].forEach(function(s){var q=next();if(q)exHangL(q.id,r,s[0],s[1],2.3,sz(q));else exPlateL(r,s[0],s[1],2.3,1.6,2,c)});
     /* section title, beside the entrance */
-    exSignL(r,'v0',13.9,2.4,3.0,1.3,function(x,W,H){exBg(x,W,H);var L=W*.08;exK(x,'I',L,H*.24,H*.09,EX.vio);exT(x,'The Photography',L,H*.6,H*.2);exK(x,'TESTAMENTS photography',L,H*.84,H*.07)});
+    exSignL(r,'v0',13.9,2.5,3.6,1.6,function(x,W,H){exBg(x,W,H);var L=W*.09;exK(x,'I',L,H*.24,H*.07,EX.vio);exT(x,'The Photography',L,H*.56,H*.18);exK(x,'TESTAMENTS photography',L,H*.82,H*.06)});
     /* a bench facing the diptych */
     exBox(r,3,.46,.7,MAT.bench,20.5,.23,-.4,true);
   }
@@ -106,11 +106,11 @@
     exAccent(r,'u1',-9,7.5,tone);
     var hs=exHand(r.wing);
     [['17','What would you tell the world?',hs>0?-4.65:3.15],['18','What would you title your chapter?',hs>0?3.15:-4.65]].forEach(function(q){
-      exSignL(r,'u1',q[2],2.9,6.2,3.7,function(x,W,H){exBg(x,W,H,'#0e0d0d');var L=W*.08;
-        exK(x,'05 · Signature Questions · Q'+q[0],L,H*.17,H*.042,EX.vio);
-        exW(x,q[1],L,H*.42,W*.84,H*.15,H*.19);
-        exRule(x,L,H*.74,H*.08,H*.008,'#6b6760');
-        exI(x,'The answer, on release.',L,H*.88,H*.08,'#d9d4cb')},
+      exSignL(r,'u1',q[2],2.9,7.0,3.9,function(x,W,H){exBg(x,W,H,'#0e0d0d');var L=W*.09;
+        exK(x,'Signature Question '+q[0],L,H*.16,H*.036,EX.vio);
+        exW(x,q[1],L,H*.37,W*.78,H*.12,H*.15);
+        exRule(x,L,H*.72,H*.08,H*.008,'#6b6760');
+        exI(x,'The answer, on release.',L,H*.86,H*.058,'#e2ddd4')},
         {act:function(){toast('Question '+q[0]+'. '+who(c)+'’s answer is published with the chapter.')},label:'Question '+q[0],r:7,tint:tone.light})});
     exSignL(r,'u0',-4.2,2.8,5,2.2,function(x,W,H){exBg(x,W,H);var L=W*.08;exK(x,'II',L,H*.22,H*.08,EX.vio);exT(x,'The Story',L,H*.5,H*.2);exI(x,'Eighteen questions in five parts.',L,H*.72,H*.075,'#d9d5cd');exK(x,'Answers on release',L,H*.88,H*.055)});
     exBox(r,3,.46,.7,MAT.bench,38.6,.23,-.8,true);
@@ -121,9 +121,9 @@
     var W=r.wing,sw=4.2,sh=2.36,p=exL(r,'v0',37),pos=onWall(r,p.s,p.a),n=NV[pos.n],g=new T.Group();
     var fr=new T.Mesh(new T.BoxGeometry(sw+.16,sh+.16,.08),MAT.frame);fr.position.z=.04;g.add(fr);
     var scr=exSign(sw,sh,function(x,Wd,H){var gr=x.createLinearGradient(0,0,0,H);gr.addColorStop(0,'#0b0b0d');gr.addColorStop(1,'#060607');x.fillStyle=gr;x.fillRect(0,0,Wd,H);
-      exK(x,'III · The Conversation',Wd/2,H*.3,H*.05,'#9f9a92','center');
-      if(c.video){x.strokeStyle=EX.ink;x.lineWidth=H*.008;x.beginPath();x.arc(Wd/2,H*.55,H*.11,0,Math.PI*2);x.stroke();x.fillStyle=EX.ink;x.beginPath();x.moveTo(Wd/2-H*.035,H*.49);x.lineTo(Wd/2-H*.035,H*.61);x.lineTo(Wd/2+H*.06,H*.55);x.fill();exK(x,'Press to play',Wd/2,H*.8,H*.045,null,'center')}
-      else{exT(x,'Coming soon',Wd/2,H*.6,H*.15,null,'center');exK(x,c.title+'  ·  Chapter '+c.num,Wd/2,H*.76,H*.04,EX.vio,'center')}});
+      exK(x,'III · The Conversation',Wd/2,H*.24,H*.05,'#c9c4bb','center');
+      if(c.video){x.strokeStyle=EX.ink;x.lineWidth=H*.008;x.beginPath();x.arc(Wd/2,H*.55,H*.11,0,Math.PI*2);x.stroke();x.fillStyle=EX.ink;x.beginPath();x.moveTo(Wd/2-H*.035,H*.49);x.lineTo(Wd/2-H*.035,H*.61);x.lineTo(Wd/2+H*.06,H*.55);x.fill();exK(x,'Press to play',Wd/2,H*.84,H*.05,null,'center')}
+      else{exT(x,'Coming soon',Wd/2,H*.58,H*.2,null,'center');exK(x,c.title,Wd/2,H*.78,H*.05,EX.vio,'center')}});
     scr.position.z=.085;g.add(scr);var gl=glow(sw*1.6,sh*1.8,0x8f86b8,.08);gl.position.z=.02;g.add(gl);place(g,pos.x,1.95,pos.z,pos.n);
     addInter(pos.x,pos.z,pos.n,5.5,c.video?'Watch':'View','The conversation · '+(c.video?'watch':'coming soon'),function(){if(c.video)openFilm(c.video);else toast('The filmed conversation for '+c.title+' is coming soon.')},{y:1.95,w:sw,h:sh});
     exBox(r,2.6,.44,.6,MAT.bench,37,.22,-25.9,true);
@@ -145,11 +145,11 @@
     addInter(lp.x,lp.z,null,2.8,'Read','Read the magazine · '+c.title,function(){openReader(c)},wrapG);
     /* the Read · View · Watch · Own kiosk */
     var kp=wingPt(W,32.8,-16.2),kg=new T.Group(),ped=new T.Mesh(new T.BoxGeometry(.8,1.1,.8),MAT.ped);ped.position.y=.55;kg.add(ped);
-    var kt=exSign(.7,.7,function(x,Wd,H){exBg(x,Wd,H,'#0d0d0e');exK(x,'Explore',Wd/2,H*.28,H*.06,EX.vio,'center');exT(x,c.title,Wd/2,H*.52,H*.15,null,'center');exK(x,'Read · View · Watch · Own',Wd/2,H*.74,H*.045,'#c9c4bb','center')},500);
+    var kt=exSign(.7,.7,function(x,Wd,H){exBg(x,Wd,H,'#0d0d0e');exK(x,'Explore',Wd/2,H*.28,H*.06,EX.vio,'center');exT(x,c.title,Wd/2,H*.52,H*.15,null,'center');exK(x,'Read · Watch · Own',Wd/2,H*.76,H*.065,'#d9d4cb','center')},500);
     kt.rotation.x=-Math.PI/2+.5;kt.position.y=1.13;kg.add(kt);kg.position.set(kp.x,0,kp.z);exFace(kg,up);scene.add(kg);col(kp.x-.45,kp.x+.45,kp.z-.45,kp.z+.45);floorGlow(kp.x,kp.z,2.4,2.4,0x6e42a3,.35);
     addInter(kp.x,kp.z,null,2.8,'Explore','Read · View · Watch · Own',function(){openChapter(c)},kg);
     /* section title on the entrance wall */
-    exSignL(r,'v1',34.4,2.6,4.4,1.7,function(x,Wd,H){exBg(x,Wd,H);var L=Wd*.08;exK(x,'IV',L,H*.24,H*.08,EX.vio);exT(x,'The Magazine',L,H*.56,H*.22);exK(x,'Read · View · Watch · Own',L,H*.82,H*.065)});
+    exSignL(r,'v1',34.4,2.5,5.6,2.4,function(x,Wd,H){exBg(x,Wd,H);var L=Wd*.09;exK(x,'IV',L,H*.22,H*.055,EX.vio);exT(x,'The Magazine',L,H*.52,H*.19);exK(x,'Read · View · Watch · Own',L,H*.8,H*.05)});
     /* the cover, large */
     exSignL(r,'v0',43,2.4,2.1,2.8,function(x,Wd,H){exBg(x,Wd,H,'#0b0b0c');x.strokeStyle='rgba(255,255,255,.14)';x.lineWidth=3;x.strokeRect(Wd*.05,H*.04,Wd*.9,H*.92);
       exK(x,'TESTAMENTS',Wd/2,H*.12,H*.035,'#e9e5dd','center');exI(x,'Understand the Why.',Wd/2,H*.17,H*.025,'#a9a49b','center');

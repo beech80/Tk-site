@@ -66,7 +66,7 @@
           ' float lkChip=smoothstep(.8,.86,texture2D(lkNoise,vLkW.xz*1.1+.37).b)*(1.0-smoothstep(3.0,10.0,lkDist));',
           ' diffuseColor.rgb=mix(diffuseColor.rgb,lkE.rgb,lkChip*lkP.w);',
           ' vec2 lkG=abs(fract(vLkW.xz/3.0+.5)-.5)*3.0;',
-          ' lkJ=(1.0-smoothstep(.004,.008+lkDist*.0016,min(lkG.x,lkG.y)))*(1.0-smoothstep(8.0,26.0,lkDist));diffuseColor.rgb*=1.0-.4*lkJ;',
+          ' lkJ=(1.0-smoothstep(.004,.008+lkDist*.0016,min(lkG.x,lkG.y)))*(1.0-smoothstep(8.0,26.0,lkDist));diffuseColor.rgb*=1.0-.18*lkJ;',
           '#endif',
           '#ifdef LK_PAVE',
           ' vec2 lkG=vLkW.xz/vec2(1.2,.6);lkG.x+=.5*mod(floor(lkG.y),2.0);diffuseColor.rgb*=.94+.12*lkHash(floor(lkG));',
@@ -91,11 +91,11 @@
     LK.tier=lookTier();LK.noise=lookNoiseTex();
     function set(m,o){if(!m)return;for(var k in o){if(k==='color'||k==='emissive')m[k].set(o[k]);else m[k]=o[k]}m.needsUpdate=true}
     /* polished dark concrete / terrazzo floor */
-    set(MAT.floor,{color:0x131313,roughness:.24,metalness:0,envMapIntensity:.65});lookDetail(MAT.floor,'FLOOR',[.22,.05,.08,.16],[.22,.215,.2,8]);
+    set(MAT.floor,{color:0x161616,roughness:.34,metalness:0,envMapIntensity:.65});lookDetail(MAT.floor,'FLOOR',[.12,.012,.03,0],[.22,.215,.2,8]);
     /* matte charcoal plaster */
-    set(MAT.wall,{color:0x1d1d1e,roughness:.92,envMapIntensity:.55});lookDetail(MAT.wall,'',[.35,.035,.04,0]);
-    set(MAT.whiteWall,{color:0xd3cec5,roughness:.93,envMapIntensity:.45});lookDetail(MAT.whiteWall,'',[.35,.022,.03,0]);
-    set(MAT.ceil,{color:0x0e0e0f,roughness:.95,envMapIntensity:.3});lookDetail(MAT.ceil,'',[.25,.05,0,0]);
+    set(MAT.wall,{color:0x222223,roughness:.92,envMapIntensity:.55});lookDetail(MAT.wall,'',[.15,.008,.01,0]);
+    set(MAT.whiteWall,{color:0xd3cec5,roughness:.93,envMapIntensity:.45});lookDetail(MAT.whiteWall,'',[.15,.005,.01,0]);
+    set(MAT.ceil,{color:0x0e0e0f,roughness:.95,envMapIntensity:.3});lookDetail(MAT.ceil,'',[.15,.01,0,0]);
     /* warm limestone facade */
     set(MAT.stone,{color:0x5a5248,roughness:.82,envMapIntensity:.45});lookDetail(MAT.stone,'STONE',[.3,.06,.06,0]);
     /* plaza: dark granite pavers, honed stone path */
@@ -113,7 +113,7 @@
     /* glass: dark, reflective, tinted */
     set(MAT.glass,{color:0x7f8a9a,metalness:.95,roughness:.04,opacity:.34,envMapIntensity:1.5});
     /* emitters go slightly HDR so the post pass can bloom them (low tier just clips to white) */
-    if(MAT.lamp)MAT.lamp.color.setRGB(2.6,2.45,2.2);if(MAT.warm)MAT.warm.color.setRGB(2.1,1.85,1.45);
+    if(MAT.lamp)MAT.lamp.color.setRGB(1.6,1.5,1.35);if(MAT.warm)MAT.warm.color.setRGB(2.1,1.85,1.45);
     lookEnvironment();
   }
 
@@ -161,24 +161,24 @@
     var ring=new T.RingGeometry(.11,.17,20);ring.rotateX(Math.PI/2);var rp=ring.toNonIndexed().attributes.position.array,bp=[];
     lamps.forEach(function(o){var r=roomAt(o.position.x,o.position.z),wh=!!(r&&r.white),y=o.position.y;
       for(var i=0;i<rp.length;i+=3)bp.push(rp[i]+o.position.x,rp[i+1]+y-.002,rp[i+2]+o.position.z);
-      glows.push({c:[o.position.x,y-.012,o.position.z],u:[1,0,0],v:[0,0,1],w:.95,h:.95,k:k(0xfff1dc,wh?.22:.4)});
+      glows.push({c:[o.position.x,y-.012,o.position.z],u:[1,0,0],v:[0,0,1],w:.95,h:.95,k:k(0xfff1dc,wh?.08:.14)});
       glows.push({c:[o.position.x,.03,o.position.z],u:[1,0,0],v:[0,0,1],w:3.2,h:3.2,k:k(0xffeedd,wh?.05:.1)});
     });
     if(bp.length){var bg=new T.BufferGeometry();bg.setAttribute('position',new T.Float32BufferAttribute(bp,3));scene.add(new T.Mesh(bg,new T.MeshBasicMaterial({color:0x1b1b1c,side:T.DoubleSide})))}
     ring.dispose();
     /* wall-washer scallops on every gallery wall (skip doors), so lettered walls read evenly */
-    var SCAL=ctex(256,256,function(c,W,H){c.save();c.translate(W/2,-H*.08);c.scale(.55,1.15);var g=c.createRadialGradient(0,0,0,0,0,H*.95);g.addColorStop(0,'rgba(255,255,255,1)');g.addColorStop(.25,'rgba(255,255,255,.62)');g.addColorStop(.6,'rgba(255,255,255,.2)');g.addColorStop(1,'rgba(255,255,255,0)');c.fillStyle=g;c.fillRect(-W*2,0,W*4,H*2);c.restore();
+    var SCAL=ctex(256,256,function(c,W,H){c.save();c.translate(W/2,-H*.08);c.scale(1.4,1.3);var g=c.createRadialGradient(0,0,0,0,0,H*.95);g.addColorStop(0,'rgba(255,255,255,1)');g.addColorStop(.25,'rgba(255,255,255,.62)');g.addColorStop(.6,'rgba(255,255,255,.2)');g.addColorStop(1,'rgba(255,255,255,0)');c.fillStyle=g;c.fillRect(-W*2,0,W*4,H*2);c.restore();
       var f=c.createLinearGradient(0,0,W,0);f.addColorStop(0,'rgba(0,0,0,1)');f.addColorStop(.18,'rgba(0,0,0,0)');f.addColorStop(.82,'rgba(0,0,0,0)');f.addColorStop(1,'rgba(0,0,0,1)');c.globalCompositeOperation='destination-out';c.fillStyle=f;c.fillRect(0,0,W,H)});
     SCAL.encoding=T.LinearEncoding;
-    ROOMS.forEach(function(r){if(r.cor||r.id==='vestibule'||r.dark)return;var wh=!!r.white,H=Math.min(r.h*.8,r.id==='lobby'?6.5:4.6),sp=r.id==='lobby'?3.4:2.7,kk=k(0xffeedd,wh?.075:.15),o=.155;
+    ROOMS.forEach(function(r){if(r.cor||r.id==='vestibule'||r.dark)return;var wh=!!r.white,H=Math.min(r.h*.8,r.id==='lobby'?6.5:4.6),sp=r.id==='lobby'?3.4:2.7,kk=k(0xffeedd,wh?.03:.06),o=.155;
       [['s',r.x1,r.x2],['n',r.x1,r.x2],['w',r.z2,r.z1],['e',r.z2,r.z1]].forEach(function(sd){var s=sd[0];if(r.open&&r.open.indexOf(s)>=0)return;
         var a=sd[1],b=sd[2],len=b-a,n=Math.max(1,Math.round(len/sp)),step=len/n;
         for(var i=0;i<n;i++){var at=a+step*(i+.5),bad=(r.doors||[]).some(function(d){return d.s===s&&Math.abs(d.at-at)<(d.w||4)/2+.9});if(bad)continue;
           var c,u;if(s==='w'){c=[r.x1+o,r.h-H/2-.02,at];u=[0,0,1]}else if(s==='e'){c=[r.x2-o,r.h-H/2-.02,at];u=[0,0,1]}else if(s==='s'){c=[at,r.h-H/2-.02,r.z1-o];u=[1,0,0]}else{c=[at,r.h-H/2-.02,r.z2+o];u=[1,0,0]}
-          washes.push({c:c,u:u,v:[0,1,0],w:step*1.25,h:H,k:kk})}
+          washes.push({c:c,u:u,v:[0,1,0],w:step*2.2,h:H*1.15,k:kk})}
       })});
     /* lobby: purple floor-slot uplight at the monument, cool skylight boost */
-    var slot=new T.Mesh(new T.BoxGeometry(1.4,.012,.05),new T.MeshBasicMaterial({}));slot.material.color.setRGB(1.5,.75,2.6);slot.position.set(0,.006,-18.95);scene.add(slot);
+    var slot=new T.Mesh(new T.BoxGeometry(1.4,.012,.05),new T.MeshBasicMaterial({}));slot.material.color.setRGB(.55,.3,.9);slot.position.set(0,.006,-18.95);scene.add(slot);
     scene.traverse(function(o){if(o.isMesh&&o.geometry&&o.geometry.type==='CircleGeometry'&&o.geometry.parameters.radius===4.2&&o.material&&o.material.isMeshBasicMaterial)o.material.color.setRGB(.75,.86,1.15)});
     /* the lobby's original constant-opacity shaft reads as a glass tube; the view-dependent shaft below replaces it */
     scene.traverse(function(o){if(o.isMesh&&o.geometry&&o.geometry.type==='CylinderGeometry'&&o.geometry.parameters.openEnded&&Math.abs(o.geometry.parameters.radiusTop-4.1)<.01&&o.material&&o.material.blending===T.AdditiveBlending)o.visible=false});
@@ -216,7 +216,7 @@
 
     /* key light on the monument (medium/high); shadows only on high */
     if(tier!=='low'){var mono=null;scene.traverse(function(o){if(o.isMesh&&o.material===MAT.mono)mono=o});
-      if(mono){var kl=new T.SpotLight(0xfff0e0,.9,18,.3,.9,2);kl.position.set(0,9.6,-14.2);kl.target.position.set(0,2.4,-20.2);scene.add(kl);scene.add(kl.target);
+      if(mono){var kl=new T.SpotLight(0xfff0e0,.7,18,.3,.9,2);kl.position.set(0,9.6,-14.2);kl.target.position.set(0,2.4,-20.2);scene.add(kl);scene.add(kl.target);
         if(tier==='high'){R.shadowMap.enabled=true;R.shadowMap.type=T.PCFSoftShadowMap;kl.castShadow=true;kl.shadow.mapSize.set(1024,1024);kl.shadow.camera.near=2;kl.shadow.camera.far=16;kl.shadow.bias=-.0006;kl.shadow.radius=3;mono.castShadow=true;
           scene.traverse(function(o){if(o.isMesh&&(o.material===MAT.floor||o.material===MAT.bench))o.receiveShadow=true})}}}
   }

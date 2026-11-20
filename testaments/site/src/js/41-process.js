@@ -11,7 +11,7 @@
     PROC.forEach(function(s,i){var a=st[i],side=a[0],at=a[1],dir=side==='n'?1:-1,wz=side==='n'?Pr.z2:Pr.z1,p=photo(s[3]),h=p.h>p.w?1.9:1.4;
       /* photograph left, wall text right (as seen facing the wall) */
       var off=dir===1?-1:1,pw=h*p.w/p.h;hang(s[3],Pr,side,at+off*(.5+pw/2),2.55,h);
-      exOnWall(Pr,side,at-off*1.65,2.45,2.3,1.6,function(x,W,H){exBg(x,W,H);var L=W*.09;exT(x,s[0],L,H*.27,H*.17,EX.vio);exT(x,s[1],L,H*.5,H*.14);exRule(x,L,H*.58,H*.07,H*.008,'#6b6760');
+      exOnWall(Pr,side,at-off*1.8,2.45,2.6,1.8,function(x,W,H){exBg(x,W,H);var L=W*.09;exT(x,s[0],L,H*.27,H*.17,EX.vio);exT(x,s[1],L,H*.5,H*.14);exRule(x,L,H*.58,H*.07,H*.008,'#6b6760');
         exW(x,s[2],L,H*.72,W*.84,H*.062,H*.088,'400 '+Math.round(H*.062)+'px Inter','#d6d2ca')},{act:function(){openProcess(i)},label:s[0]+' · '+s[1],r:4.5});
       /* the installation, 2 m out from the wall */
       var g=new T.Group(),cz=wz+dir*2.3,cx=at;g.position.set(0,0,0);

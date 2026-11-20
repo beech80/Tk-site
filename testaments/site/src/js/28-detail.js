@@ -24,13 +24,13 @@
         /* wall segments between doorways: skirting + panel joints */
         var cur=a;gaps.concat([{a:b,b:b}]).forEach(function(g){
           if(g.a-cur>.01){wb(skirt,k,inner,cur,g.a,0,.1,0,.02);
-            if(r.cor||lob||ves){var step=r.cor?1.6:3.5,n0=Math.ceil((cur+.4)/step);for(var t=n0*step;t<g.a-.4;t+=step)wq(JN,k,inner,t,(r.cor?r.h:lob?6:r.h)/2,.014,(r.cor?r.h:lob?6:r.h)-.02,.004)}}
+            if(false){var step=r.cor?1.6:3.5,n0=Math.ceil((cur+.4)/step);for(var t=n0*step;t<g.a-.4;t+=step)wq(JN,k,inner,t,(r.cor?r.h:lob?6:r.h)/2,.014,(r.cor?r.h:lob?6:r.h)-.02,.004)}}
           cur=Math.max(cur,g.b)});
         /* doorways (the lobby builds its own portals) */
         if(!lob)gaps.forEach(function(g){var hw=g.w/2,tw=.2,tp=.06,dh=Math.min(g.h,r.h);
           /* bronze-lined reveal through the wall + a thin light line in the head */
           wb(bronze,k,wall,g.a,g.a+.03,0,dh,-th,th);wb(bronze,k,wall,g.b-.03,g.b,0,dh,-th,th);
-          if(r.h>g.h){wb(bronze,k,wall,g.a,g.b,dh-.03,dh,-th,th);wb(lamp,k,wall,g.a+.15,g.b-.15,dh-.035,dh-.03,-.02,.02)}
+          if(r.h>g.h){wb(bronze,k,wall,g.a,g.b,dh-.03,dh,-th,th)}
           /* architrave on the room face, and on the far face when it opens into a room (not a corridor) */
           var faces=[[inner,0]];var n=k==='s'||k==='e'?1:-1,px=k==='w'||k==='e'?wall+n*.8:g.at,pz=k==='n'||k==='s'?wall+n*.8:g.at,o=find(px,pz);
           if(o&&!o.cor&&o.id!=='vestibule'&&o.id!=='lobby')faces.push([wall+n*th,1]);
@@ -39,7 +39,7 @@
         });
         /* light slot at the top of the wall and a soft wash down it */
         if(!lob){var wh=Math.min(r.cor?1.6:2.4,r.h-Math.max.apply(null,gaps.map(function(g){return g.h}).concat([0]))-.05);
-          wb(lamp,k,inner,a,b,r.h-.05,r.h-.02,0,.04);
+          if(!r.cor)wb(lamp,k,inner,a,b,r.h-.05,r.h-.02,0,.04);
           if(wh>.3)wq(wash,k,inner,mid,r.h-wh/2-.02,len,wh,.006,archCol(WARM,white?.08:r.cor?.1:.14))}
       });
 

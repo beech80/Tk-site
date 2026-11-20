@@ -574,7 +574,7 @@ var STOCKISTS = [];   // confirmed partners only: {name, address}
           ' float lkChip=smoothstep(.8,.86,texture2D(lkNoise,vLkW.xz*1.1+.37).b)*(1.0-smoothstep(3.0,10.0,lkDist));',
           ' diffuseColor.rgb=mix(diffuseColor.rgb,lkE.rgb,lkChip*lkP.w);',
           ' vec2 lkG=abs(fract(vLkW.xz/3.0+.5)-.5)*3.0;',
-          ' lkJ=(1.0-smoothstep(.004,.008+lkDist*.0016,min(lkG.x,lkG.y)))*(1.0-smoothstep(8.0,26.0,lkDist));diffuseColor.rgb*=1.0-.4*lkJ;',
+          ' lkJ=(1.0-smoothstep(.004,.008+lkDist*.0016,min(lkG.x,lkG.y)))*(1.0-smoothstep(8.0,26.0,lkDist));diffuseColor.rgb*=1.0-.18*lkJ;',
           '#endif',
           '#ifdef LK_PAVE',
           ' vec2 lkG=vLkW.xz/vec2(1.2,.6);lkG.x+=.5*mod(floor(lkG.y),2.0);diffuseColor.rgb*=.94+.12*lkHash(floor(lkG));',
@@ -599,11 +599,11 @@ var STOCKISTS = [];   // confirmed partners only: {name, address}
     LK.tier=lookTier();LK.noise=lookNoiseTex();
     function set(m,o){if(!m)return;for(var k in o){if(k==='color'||k==='emissive')m[k].set(o[k]);else m[k]=o[k]}m.needsUpdate=true}
     /* polished dark concrete / terrazzo floor */
-    set(MAT.floor,{color:0x131313,roughness:.24,metalness:0,envMapIntensity:.65});lookDetail(MAT.floor,'FLOOR',[.22,.05,.08,.16],[.22,.215,.2,8]);
+    set(MAT.floor,{color:0x161616,roughness:.34,metalness:0,envMapIntensity:.65});lookDetail(MAT.floor,'FLOOR',[.12,.012,.03,0],[.22,.215,.2,8]);
     /* matte charcoal plaster */
-    set(MAT.wall,{color:0x1d1d1e,roughness:.92,envMapIntensity:.55});lookDetail(MAT.wall,'',[.35,.035,.04,0]);
-    set(MAT.whiteWall,{color:0xd3cec5,roughness:.93,envMapIntensity:.45});lookDetail(MAT.whiteWall,'',[.35,.022,.03,0]);
-    set(MAT.ceil,{color:0x0e0e0f,roughness:.95,envMapIntensity:.3});lookDetail(MAT.ceil,'',[.25,.05,0,0]);
+    set(MAT.wall,{color:0x222223,roughness:.92,envMapIntensity:.55});lookDetail(MAT.wall,'',[.15,.008,.01,0]);
+    set(MAT.whiteWall,{color:0xd3cec5,roughness:.93,envMapIntensity:.45});lookDetail(MAT.whiteWall,'',[.15,.005,.01,0]);
+    set(MAT.ceil,{color:0x0e0e0f,roughness:.95,envMapIntensity:.3});lookDetail(MAT.ceil,'',[.15,.01,0,0]);
     /* warm limestone facade */
     set(MAT.stone,{color:0x5a5248,roughness:.82,envMapIntensity:.45});lookDetail(MAT.stone,'STONE',[.3,.06,.06,0]);
     /* plaza: dark granite pavers, honed stone path */
@@ -621,7 +621,7 @@ var STOCKISTS = [];   // confirmed partners only: {name, address}
     /* glass: dark, reflective, tinted */
     set(MAT.glass,{color:0x7f8a9a,metalness:.95,roughness:.04,opacity:.34,envMapIntensity:1.5});
     /* emitters go slightly HDR so the post pass can bloom them (low tier just clips to white) */
-    if(MAT.lamp)MAT.lamp.color.setRGB(2.6,2.45,2.2);if(MAT.warm)MAT.warm.color.setRGB(2.1,1.85,1.45);
+    if(MAT.lamp)MAT.lamp.color.setRGB(1.6,1.5,1.35);if(MAT.warm)MAT.warm.color.setRGB(2.1,1.85,1.45);
     lookEnvironment();
   }
 
@@ -669,24 +669,24 @@ var STOCKISTS = [];   // confirmed partners only: {name, address}
     var ring=new T.RingGeometry(.11,.17,20);ring.rotateX(Math.PI/2);var rp=ring.toNonIndexed().attributes.position.array,bp=[];
     lamps.forEach(function(o){var r=roomAt(o.position.x,o.position.z),wh=!!(r&&r.white),y=o.position.y;
       for(var i=0;i<rp.length;i+=3)bp.push(rp[i]+o.position.x,rp[i+1]+y-.002,rp[i+2]+o.position.z);
-      glows.push({c:[o.position.x,y-.012,o.position.z],u:[1,0,0],v:[0,0,1],w:.95,h:.95,k:k(0xfff1dc,wh?.22:.4)});
+      glows.push({c:[o.position.x,y-.012,o.position.z],u:[1,0,0],v:[0,0,1],w:.95,h:.95,k:k(0xfff1dc,wh?.08:.14)});
       glows.push({c:[o.position.x,.03,o.position.z],u:[1,0,0],v:[0,0,1],w:3.2,h:3.2,k:k(0xffeedd,wh?.05:.1)});
     });
     if(bp.length){var bg=new T.BufferGeometry();bg.setAttribute('position',new T.Float32BufferAttribute(bp,3));scene.add(new T.Mesh(bg,new T.MeshBasicMaterial({color:0x1b1b1c,side:T.DoubleSide})))}
     ring.dispose();
     /* wall-washer scallops on every gallery wall (skip doors), so lettered walls read evenly */
-    var SCAL=ctex(256,256,function(c,W,H){c.save();c.translate(W/2,-H*.08);c.scale(.55,1.15);var g=c.createRadialGradient(0,0,0,0,0,H*.95);g.addColorStop(0,'rgba(255,255,255,1)');g.addColorStop(.25,'rgba(255,255,255,.62)');g.addColorStop(.6,'rgba(255,255,255,.2)');g.addColorStop(1,'rgba(255,255,255,0)');c.fillStyle=g;c.fillRect(-W*2,0,W*4,H*2);c.restore();
+    var SCAL=ctex(256,256,function(c,W,H){c.save();c.translate(W/2,-H*.08);c.scale(1.4,1.3);var g=c.createRadialGradient(0,0,0,0,0,H*.95);g.addColorStop(0,'rgba(255,255,255,1)');g.addColorStop(.25,'rgba(255,255,255,.62)');g.addColorStop(.6,'rgba(255,255,255,.2)');g.addColorStop(1,'rgba(255,255,255,0)');c.fillStyle=g;c.fillRect(-W*2,0,W*4,H*2);c.restore();
       var f=c.createLinearGradient(0,0,W,0);f.addColorStop(0,'rgba(0,0,0,1)');f.addColorStop(.18,'rgba(0,0,0,0)');f.addColorStop(.82,'rgba(0,0,0,0)');f.addColorStop(1,'rgba(0,0,0,1)');c.globalCompositeOperation='destination-out';c.fillStyle=f;c.fillRect(0,0,W,H)});
     SCAL.encoding=T.LinearEncoding;
-    ROOMS.forEach(function(r){if(r.cor||r.id==='vestibule'||r.dark)return;var wh=!!r.white,H=Math.min(r.h*.8,r.id==='lobby'?6.5:4.6),sp=r.id==='lobby'?3.4:2.7,kk=k(0xffeedd,wh?.075:.15),o=.155;
+    ROOMS.forEach(function(r){if(r.cor||r.id==='vestibule'||r.dark)return;var wh=!!r.white,H=Math.min(r.h*.8,r.id==='lobby'?6.5:4.6),sp=r.id==='lobby'?3.4:2.7,kk=k(0xffeedd,wh?.03:.06),o=.155;
       [['s',r.x1,r.x2],['n',r.x1,r.x2],['w',r.z2,r.z1],['e',r.z2,r.z1]].forEach(function(sd){var s=sd[0];if(r.open&&r.open.indexOf(s)>=0)return;
         var a=sd[1],b=sd[2],len=b-a,n=Math.max(1,Math.round(len/sp)),step=len/n;
         for(var i=0;i<n;i++){var at=a+step*(i+.5),bad=(r.doors||[]).some(function(d){return d.s===s&&Math.abs(d.at-at)<(d.w||4)/2+.9});if(bad)continue;
           var c,u;if(s==='w'){c=[r.x1+o,r.h-H/2-.02,at];u=[0,0,1]}else if(s==='e'){c=[r.x2-o,r.h-H/2-.02,at];u=[0,0,1]}else if(s==='s'){c=[at,r.h-H/2-.02,r.z1-o];u=[1,0,0]}else{c=[at,r.h-H/2-.02,r.z2+o];u=[1,0,0]}
-          washes.push({c:c,u:u,v:[0,1,0],w:step*1.25,h:H,k:kk})}
+          washes.push({c:c,u:u,v:[0,1,0],w:step*2.2,h:H*1.15,k:kk})}
       })});
     /* lobby: purple floor-slot uplight at the monument, cool skylight boost */
-    var slot=new T.Mesh(new T.BoxGeometry(1.4,.012,.05),new T.MeshBasicMaterial({}));slot.material.color.setRGB(1.5,.75,2.6);slot.position.set(0,.006,-18.95);scene.add(slot);
+    var slot=new T.Mesh(new T.BoxGeometry(1.4,.012,.05),new T.MeshBasicMaterial({}));slot.material.color.setRGB(.55,.3,.9);slot.position.set(0,.006,-18.95);scene.add(slot);
     scene.traverse(function(o){if(o.isMesh&&o.geometry&&o.geometry.type==='CircleGeometry'&&o.geometry.parameters.radius===4.2&&o.material&&o.material.isMeshBasicMaterial)o.material.color.setRGB(.75,.86,1.15)});
     /* the lobby's original constant-opacity shaft reads as a glass tube; the view-dependent shaft below replaces it */
     scene.traverse(function(o){if(o.isMesh&&o.geometry&&o.geometry.type==='CylinderGeometry'&&o.geometry.parameters.openEnded&&Math.abs(o.geometry.parameters.radiusTop-4.1)<.01&&o.material&&o.material.blending===T.AdditiveBlending)o.visible=false});
@@ -724,7 +724,7 @@ var STOCKISTS = [];   // confirmed partners only: {name, address}
 
     /* key light on the monument (medium/high); shadows only on high */
     if(tier!=='low'){var mono=null;scene.traverse(function(o){if(o.isMesh&&o.material===MAT.mono)mono=o});
-      if(mono){var kl=new T.SpotLight(0xfff0e0,.9,18,.3,.9,2);kl.position.set(0,9.6,-14.2);kl.target.position.set(0,2.4,-20.2);scene.add(kl);scene.add(kl.target);
+      if(mono){var kl=new T.SpotLight(0xfff0e0,.7,18,.3,.9,2);kl.position.set(0,9.6,-14.2);kl.target.position.set(0,2.4,-20.2);scene.add(kl);scene.add(kl.target);
         if(tier==='high'){R.shadowMap.enabled=true;R.shadowMap.type=T.PCFSoftShadowMap;kl.castShadow=true;kl.shadow.mapSize.set(1024,1024);kl.shadow.camera.near=2;kl.shadow.camera.far=16;kl.shadow.bias=-.0006;kl.shadow.radius=3;mono.castShadow=true;
           scene.traverse(function(o){if(o.isMesh&&(o.material===MAT.floor||o.material===MAT.bench))o.receiveShadow=true})}}}
   }
@@ -1308,13 +1308,13 @@ var STOCKISTS = [];   // confirmed partners only: {name, address}
         /* wall segments between doorways: skirting + panel joints */
         var cur=a;gaps.concat([{a:b,b:b}]).forEach(function(g){
           if(g.a-cur>.01){wb(skirt,k,inner,cur,g.a,0,.1,0,.02);
-            if(r.cor||lob||ves){var step=r.cor?1.6:3.5,n0=Math.ceil((cur+.4)/step);for(var t=n0*step;t<g.a-.4;t+=step)wq(JN,k,inner,t,(r.cor?r.h:lob?6:r.h)/2,.014,(r.cor?r.h:lob?6:r.h)-.02,.004)}}
+            if(false){var step=r.cor?1.6:3.5,n0=Math.ceil((cur+.4)/step);for(var t=n0*step;t<g.a-.4;t+=step)wq(JN,k,inner,t,(r.cor?r.h:lob?6:r.h)/2,.014,(r.cor?r.h:lob?6:r.h)-.02,.004)}}
           cur=Math.max(cur,g.b)});
         /* doorways (the lobby builds its own portals) */
         if(!lob)gaps.forEach(function(g){var hw=g.w/2,tw=.2,tp=.06,dh=Math.min(g.h,r.h);
           /* bronze-lined reveal through the wall + a thin light line in the head */
           wb(bronze,k,wall,g.a,g.a+.03,0,dh,-th,th);wb(bronze,k,wall,g.b-.03,g.b,0,dh,-th,th);
-          if(r.h>g.h){wb(bronze,k,wall,g.a,g.b,dh-.03,dh,-th,th);wb(lamp,k,wall,g.a+.15,g.b-.15,dh-.035,dh-.03,-.02,.02)}
+          if(r.h>g.h){wb(bronze,k,wall,g.a,g.b,dh-.03,dh,-th,th)}
           /* architrave on the room face, and on the far face when it opens into a room (not a corridor) */
           var faces=[[inner,0]];var n=k==='s'||k==='e'?1:-1,px=k==='w'||k==='e'?wall+n*.8:g.at,pz=k==='n'||k==='s'?wall+n*.8:g.at,o=find(px,pz);
           if(o&&!o.cor&&o.id!=='vestibule'&&o.id!=='lobby')faces.push([wall+n*th,1]);
@@ -1323,7 +1323,7 @@ var STOCKISTS = [];   // confirmed partners only: {name, address}
         });
         /* light slot at the top of the wall and a soft wash down it */
         if(!lob){var wh=Math.min(r.cor?1.6:2.4,r.h-Math.max.apply(null,gaps.map(function(g){return g.h}).concat([0]))-.05);
-          wb(lamp,k,inner,a,b,r.h-.05,r.h-.02,0,.04);
+          if(!r.cor)wb(lamp,k,inner,a,b,r.h-.05,r.h-.02,0,.04);
           if(wh>.3)wq(wash,k,inner,mid,r.h-wh/2-.02,len,wh,.006,archCol(WARM,white?.08:r.cor?.1:.14))}
       });
 
@@ -1386,7 +1386,7 @@ var STOCKISTS = [];   // confirmed partners only: {name, address}
     /* a small warm downlight in every coffer outside the oculus */
     var cx=[X1].concat(GX,[X2]),cz=[Z2].concat(GZ.slice().reverse(),[Z1]);
     for(var i=0;i<cx.length-1;i++)for(var j=0;j<cz.length-1;j++){var mx=(cx[i]+cx[i+1])/2,mz=(cz[j]+cz[j+1])/2;if(Math.hypot(mx-OX,mz-OZ)<RC+1)continue;
-      lampB.add(new T.CircleGeometry(.12,16),new T.Matrix4().makeRotationX(Math.PI/2).setPosition(mx,H-.02,mz));glowB.quad(1.2,1.2,mx,H-.03,mz,Math.PI/2,0,archCol(WARM,.25))}
+      lampB.add(new T.CircleGeometry(.12,16),new T.Matrix4().makeRotationX(Math.PI/2).setPosition(mx,H-.02,mz))}
     /* perimeter light slot washing the upper walls */
     [[X1+.16,'x',1],[X2-.16,'x',-1],[Z1-.16,'z',-1],[Z2+.16,'z',1]].forEach(function(w){var len=w[1]==='x'?Z1-Z2:X2-X1,mid=w[1]==='x'?(Z1+Z2)/2:(X1+X2)/2;
       if(w[1]==='x'){lampB.bx(w[0]-.02,w[0]+.02,H-.06,H-.02,Z2,Z1);washB.quad(len,3.6,w[0]+w[2]*.005,H-1.8,mid,0,w[2]*Math.PI/2,archCol(WARM,.12))}
@@ -1399,7 +1399,7 @@ var STOCKISTS = [];   // confirmed partners only: {name, address}
         stoneB.bx(X1,X2,BY,BY+bt,a,b,0,6);bronzeB.bx(X1,X2,BY+bt+1.05,BY+bt+1.1,zf-.05,zf+.05);
         var gl=new T.Mesh(new T.PlaneGeometry(X2-X1,1.05),MAT.glass);gl.position.set(0,BY+bt+.525,zf);scene.add(gl);
         lampB.bx(X1,X2,BY-.02,BY-.005,zf+(s==='n'?-.12:.08),zf+(s==='n'?-.08:.12));
-        glowB.quad(X2-X1,1,0,BY-.025,zf+(s==='n'?-.6:.6),Math.PI/2,0,archCol(WARM,.1))}
+}
       else{var xf=s==='w'?X1+BP:X2-BP,xw=s==='w'?X1:X2;a=Math.min(xf,xw);b=Math.max(xf,xw);
         stoneB.bx(a,b,BY,BY+bt,Z2+BP,Z1-BP,0,6);bronzeB.bx(xf-.05,xf+.05,BY+bt+1.05,BY+bt+1.1,Z2+BP,Z1-BP);
         var gl2=new T.Mesh(new T.PlaneGeometry(Z1-Z2-2*BP,1.05),MAT.glass);gl2.rotation.y=Math.PI/2;gl2.position.set(xf,BY+bt+.525,(Z1+Z2)/2);scene.add(gl2);
@@ -1417,7 +1417,6 @@ var STOCKISTS = [];   // confirmed partners only: {name, address}
     function ringI(r,w){inlay.add(new T.RingGeometry(r-w/2,r+w/2,96),new T.Matrix4().makeRotationX(-Math.PI/2).setPosition(OX,.004,OZ))}
     ringI(5.6,.07);ringI(7.2,.035);
     for(var k=0;k<16;k++){var an=k/16*Math.PI*2,l=k%4===0?1.6:.6,r0=5.6+.04;inlay.add(new T.PlaneGeometry(k%4===0?.06:.03,l),new T.Matrix4().makeRotationFromEuler(new T.Euler(-Math.PI/2,0,-an,'YXZ')).setPosition(OX+Math.sin(an)*(r0+l/2),.004,OZ+Math.cos(an)*(r0+l/2)))}
-    inlay.bx(-.03,.03,0,.008,OZ+7.2,Z1-.3);
     glowB.quad(15,15,OX,.015,OZ,-Math.PI/2,0,archCol(PUR,.08));
 
     /* ----- the monument: a rough-hewn stone with a dressed, engraved face, on a low plinth ----- */
@@ -1457,8 +1456,8 @@ var STOCKISTS = [];   // confirmed partners only: {name, address}
       if(alongX){col(at-hw-sw,at-hw,face,face+nz*d);col(at+hw,at+hw+sw,face,face+nz*d)}else{col(face,face+nx*d,at-hw-sw,at-hw);col(face,face+nx*d,at+hw,at+hw+sw)}
       if(!big)return;
       bxA(-hw,hw,dh,topY,0,.08,darkB);
-      var s=archText(w+.6,SH,function(c,W,Hh){c.fillStyle='#d6d2ca';c.font='600 '+Math.round(Hh*.13)+'px Inter';sp(c,top,W/2,Hh*.28,Math.round(Hh*.05));
-        c.fillStyle='#fbf8f2';c.font='500 '+Math.round(Hh*.42)+'px "Bodoni Moda"';sp(c,big,W/2,Hh*.8,Math.round(Hh*.04))},420);
+      var s=archText(w+.6,SH,function(c,W,Hh){c.fillStyle='#e4e0d8';c.font='600 '+Math.round(Hh*.15)+'px Inter';sp(c,top,W/2,Hh*.28,Math.round(Hh*.05));
+        c.fillStyle='#fbf8f2';c.font='500 '+Math.round(Hh*.46)+'px "Bodoni Moda"';sp(c,big,W/2,Hh*.82,Math.round(Hh*.04))},420);
       var sx=alongX?at:face+nx*.09,sz=alongX?face+nz*.09:at;place(s,sx,SY,sz,p.n);
       var lx=alongX?at:face+nx*.12,lz=alongX?face+nz*.12:at;
       if(alongX)lampB.bx(at-hw+.1,at+hw-.1,topY-.03,topY,face+nz*.06,face+nz*.1);else lampB.bx(face+nx*.06,face+nx*.1,topY-.03,topY,at-hw+.1,at+hw-.1);
@@ -1475,12 +1474,12 @@ var STOCKISTS = [];   // confirmed partners only: {name, address}
     var dirs=[];(L.doors||[]).forEach(function(d){if(d.s==='s')return;var px=d.s==='w'?X1-6:d.s==='e'?X2+6:d.at,pz=d.s==='n'?Z2-6:d.at;
       var r=ROOMS.filter(function(q){return !q.cor&&px>=q.x1&&px<=q.x2&&pz<=q.z1&&pz>=q.z2})[0];if(r&&(!r.chapter||r.c))dirs.push([d.s,r.name])});
     var ord={w:0,n:1,e:2},arrow={w:'←',n:'↑',e:'→'};dirs.sort(function(a,b){return ord[a[0]]-ord[b[0]]});
-    var TX=-4.8,TZ=-9.4,TH=2.3,TW=1.15;
+    var TX=-5.2,TZ=-9.4,TH=2.4,TW=1.6;
     darkB.bx(TX-TW/2,TX+TW/2,0,TH,TZ-.14,TZ+.14);
     var tt=archText(TW-.12,TH-.2,function(c,W,Hh){c.fillStyle='#0c0c0d';c.fillRect(0,0,W,Hh);c.fillStyle='#b49be0';c.fillRect(W*.1,Hh*.07,W*.12,4);
-      c.fillStyle='#d6d2ca';c.font='600 '+Math.round(W*.055)+'px Inter';sp(c,'GALLERIES',W*.1,Hh*.13,Math.round(W*.02),'left');
-      dirs.forEach(function(d,i){var y=Hh*(.24+i*.1);c.fillStyle='#fbf8f2';c.font='500 '+Math.round(W*.085)+'px Inter';c.textAlign='left';c.fillText(arrow[d[0]],W*.1,y);
-        c.font='400 '+Math.round(W*.07)+'px "Bodoni Moda"';var nm=d[1].replace(' · ',' ');c.fillText(nm.length>24?nm.slice(0,23)+'…':nm,W*.24,y)})},400);
+      c.fillStyle='#d6d2ca';c.font='600 '+Math.round(W*.06)+'px Inter';sp(c,'GALLERIES',W*.1,Hh*.13,Math.round(W*.02),'left');
+      dirs.forEach(function(d,i){var y=Hh*(.24+i*.1);c.fillStyle='#fbf8f2';c.font='600 '+Math.round(W*.09)+'px Inter';c.textAlign='left';c.fillText(arrow[d[0]],W*.1,y);
+        c.font='500 '+Math.round(W*.075)+'px Inter';var nm=d[1].replace(' · ',' ');c.fillText(nm.length>26?nm.slice(0,25)+'…':nm,W*.24,y)})},400);
     tt.position.set(TX,TH/2+.05,TZ+.145);scene.add(tt);
     col(TX-TW/2,TX+TW/2,TZ-.14,TZ+.14);
 
@@ -1517,7 +1516,7 @@ var STOCKISTS = [];   // confirmed partners only: {name, address}
         exW(x,m[2],L,H*.68,W*.82,H*.075,H*.1,'italic 400 '+Math.round(H*.075)+'px "Bodoni Moda"','#2b2926')},{act:aboutManifesto,label:'The medium · '+m[1],r:4.5})});
     /* south: the founder */
     var pos=onWall(A,'s',-25.6),g=new T.Group(),fr=new T.Mesh(new T.BoxGeometry(2,2.6,.06),MAT.frame);fr.position.z=.03;g.add(fr);
-    var inner=exSign(1.86,2.46,function(c,W,H){c.fillStyle='#e4e0d8';c.fillRect(0,0,W,H);c.strokeStyle='#8e8a82';c.lineWidth=3;c.setLineDash([12,12]);c.strokeRect(W*.08,H*.06,W*.84,H*.88);exK(c,'Portrait',W/2,H*.48,H*.032,'#55524c','center');exK(c,'To be supplied',W/2,H*.55,H*.032,'#55524c','center')},300);
+    var inner=exSign(1.86,2.46,function(c,W,H){c.fillStyle='#e4e0d8';c.fillRect(0,0,W,H);c.strokeStyle='#8e8a82';c.lineWidth=3;c.setLineDash([12,12]);c.strokeRect(W*.08,H*.06,W*.84,H*.88);exK(c,'Portrait',W/2,H*.47,H*.042,'#3f3c37','center');exK(c,'To be supplied',W/2,H*.56,H*.042,'#3f3c37','center')},300);
     inner.position.z=.065;g.add(inner);place(g,pos.x,2.5,pos.z,pos.n);var fs=spot(4.4,5.6,.25);place(fs,pos.x,3,pos.z-.01,'nz');
     addInter(pos.x,pos.z,'nz',4,'Read','The founder',aboutFounder,{y:2.5,w:2,h:2.6});
     exOnWall(A,'s',-32,2.5,5,2.6,function(x,W,H){exBg(x,W,H,bg);var L=W*.08;
@@ -1545,7 +1544,7 @@ var STOCKISTS = [];   // confirmed partners only: {name, address}
     PROC.forEach(function(s,i){var a=st[i],side=a[0],at=a[1],dir=side==='n'?1:-1,wz=side==='n'?Pr.z2:Pr.z1,p=photo(s[3]),h=p.h>p.w?1.9:1.4;
       /* photograph left, wall text right (as seen facing the wall) */
       var off=dir===1?-1:1,pw=h*p.w/p.h;hang(s[3],Pr,side,at+off*(.5+pw/2),2.55,h);
-      exOnWall(Pr,side,at-off*1.65,2.45,2.3,1.6,function(x,W,H){exBg(x,W,H);var L=W*.09;exT(x,s[0],L,H*.27,H*.17,EX.vio);exT(x,s[1],L,H*.5,H*.14);exRule(x,L,H*.58,H*.07,H*.008,'#6b6760');
+      exOnWall(Pr,side,at-off*1.8,2.45,2.6,1.8,function(x,W,H){exBg(x,W,H);var L=W*.09;exT(x,s[0],L,H*.27,H*.17,EX.vio);exT(x,s[1],L,H*.5,H*.14);exRule(x,L,H*.58,H*.07,H*.008,'#6b6760');
         exW(x,s[2],L,H*.72,W*.84,H*.062,H*.088,'400 '+Math.round(H*.062)+'px Inter','#d6d2ca')},{act:function(){openProcess(i)},label:s[0]+' · '+s[1],r:4.5});
       /* the installation, 2 m out from the wall */
       var g=new T.Group(),cz=wz+dir*2.3,cx=at;g.position.set(0,0,0);
@@ -1673,7 +1672,7 @@ var STOCKISTS = [];   // confirmed partners only: {name, address}
     /* singles */
     [['v1',17],['v1',24.5],['v0',26.6]].forEach(function(s){var q=next();if(q)exHangL(q.id,r,s[0],s[1],2.3,sz(q));else exPlateL(r,s[0],s[1],2.3,1.6,2,c)});
     /* section title, beside the entrance */
-    exSignL(r,'v0',13.9,2.4,3.0,1.3,function(x,W,H){exBg(x,W,H);var L=W*.08;exK(x,'I',L,H*.24,H*.09,EX.vio);exT(x,'The Photography',L,H*.6,H*.2);exK(x,'TESTAMENTS photography',L,H*.84,H*.07)});
+    exSignL(r,'v0',13.9,2.5,3.6,1.6,function(x,W,H){exBg(x,W,H);var L=W*.09;exK(x,'I',L,H*.24,H*.07,EX.vio);exT(x,'The Photography',L,H*.56,H*.18);exK(x,'TESTAMENTS photography',L,H*.82,H*.06)});
     /* a bench facing the diptych */
     exBox(r,3,.46,.7,MAT.bench,20.5,.23,-.4,true);
   }
@@ -1687,11 +1686,11 @@ var STOCKISTS = [];   // confirmed partners only: {name, address}
     exAccent(r,'u1',-9,7.5,tone);
     var hs=exHand(r.wing);
     [['17','What would you tell the world?',hs>0?-4.65:3.15],['18','What would you title your chapter?',hs>0?3.15:-4.65]].forEach(function(q){
-      exSignL(r,'u1',q[2],2.9,6.2,3.7,function(x,W,H){exBg(x,W,H,'#0e0d0d');var L=W*.08;
-        exK(x,'05 · Signature Questions · Q'+q[0],L,H*.17,H*.042,EX.vio);
-        exW(x,q[1],L,H*.42,W*.84,H*.15,H*.19);
-        exRule(x,L,H*.74,H*.08,H*.008,'#6b6760');
-        exI(x,'The answer, on release.',L,H*.88,H*.08,'#d9d4cb')},
+      exSignL(r,'u1',q[2],2.9,7.0,3.9,function(x,W,H){exBg(x,W,H,'#0e0d0d');var L=W*.09;
+        exK(x,'Signature Question '+q[0],L,H*.16,H*.036,EX.vio);
+        exW(x,q[1],L,H*.37,W*.78,H*.12,H*.15);
+        exRule(x,L,H*.72,H*.08,H*.008,'#6b6760');
+        exI(x,'The answer, on release.',L,H*.86,H*.058,'#e2ddd4')},
         {act:function(){toast('Question '+q[0]+'. '+who(c)+'’s answer is published with the chapter.')},label:'Question '+q[0],r:7,tint:tone.light})});
     exSignL(r,'u0',-4.2,2.8,5,2.2,function(x,W,H){exBg(x,W,H);var L=W*.08;exK(x,'II',L,H*.22,H*.08,EX.vio);exT(x,'The Story',L,H*.5,H*.2);exI(x,'Eighteen questions in five parts.',L,H*.72,H*.075,'#d9d5cd');exK(x,'Answers on release',L,H*.88,H*.055)});
     exBox(r,3,.46,.7,MAT.bench,38.6,.23,-.8,true);
@@ -1702,9 +1701,9 @@ var STOCKISTS = [];   // confirmed partners only: {name, address}
     var W=r.wing,sw=4.2,sh=2.36,p=exL(r,'v0',37),pos=onWall(r,p.s,p.a),n=NV[pos.n],g=new T.Group();
     var fr=new T.Mesh(new T.BoxGeometry(sw+.16,sh+.16,.08),MAT.frame);fr.position.z=.04;g.add(fr);
     var scr=exSign(sw,sh,function(x,Wd,H){var gr=x.createLinearGradient(0,0,0,H);gr.addColorStop(0,'#0b0b0d');gr.addColorStop(1,'#060607');x.fillStyle=gr;x.fillRect(0,0,Wd,H);
-      exK(x,'III · The Conversation',Wd/2,H*.3,H*.05,'#9f9a92','center');
-      if(c.video){x.strokeStyle=EX.ink;x.lineWidth=H*.008;x.beginPath();x.arc(Wd/2,H*.55,H*.11,0,Math.PI*2);x.stroke();x.fillStyle=EX.ink;x.beginPath();x.moveTo(Wd/2-H*.035,H*.49);x.lineTo(Wd/2-H*.035,H*.61);x.lineTo(Wd/2+H*.06,H*.55);x.fill();exK(x,'Press to play',Wd/2,H*.8,H*.045,null,'center')}
-      else{exT(x,'Coming soon',Wd/2,H*.6,H*.15,null,'center');exK(x,c.title+'  ·  Chapter '+c.num,Wd/2,H*.76,H*.04,EX.vio,'center')}});
+      exK(x,'III · The Conversation',Wd/2,H*.24,H*.05,'#c9c4bb','center');
+      if(c.video){x.strokeStyle=EX.ink;x.lineWidth=H*.008;x.beginPath();x.arc(Wd/2,H*.55,H*.11,0,Math.PI*2);x.stroke();x.fillStyle=EX.ink;x.beginPath();x.moveTo(Wd/2-H*.035,H*.49);x.lineTo(Wd/2-H*.035,H*.61);x.lineTo(Wd/2+H*.06,H*.55);x.fill();exK(x,'Press to play',Wd/2,H*.84,H*.05,null,'center')}
+      else{exT(x,'Coming soon',Wd/2,H*.58,H*.2,null,'center');exK(x,c.title,Wd/2,H*.78,H*.05,EX.vio,'center')}});
     scr.position.z=.085;g.add(scr);var gl=glow(sw*1.6,sh*1.8,0x8f86b8,.08);gl.position.z=.02;g.add(gl);place(g,pos.x,1.95,pos.z,pos.n);
     addInter(pos.x,pos.z,pos.n,5.5,c.video?'Watch':'View','The conversation · '+(c.video?'watch':'coming soon'),function(){if(c.video)openFilm(c.video);else toast('The filmed conversation for '+c.title+' is coming soon.')},{y:1.95,w:sw,h:sh});
     exBox(r,2.6,.44,.6,MAT.bench,37,.22,-25.9,true);
@@ -1726,11 +1725,11 @@ var STOCKISTS = [];   // confirmed partners only: {name, address}
     addInter(lp.x,lp.z,null,2.8,'Read','Read the magazine · '+c.title,function(){openReader(c)},wrapG);
     /* the Read · View · Watch · Own kiosk */
     var kp=wingPt(W,32.8,-16.2),kg=new T.Group(),ped=new T.Mesh(new T.BoxGeometry(.8,1.1,.8),MAT.ped);ped.position.y=.55;kg.add(ped);
-    var kt=exSign(.7,.7,function(x,Wd,H){exBg(x,Wd,H,'#0d0d0e');exK(x,'Explore',Wd/2,H*.28,H*.06,EX.vio,'center');exT(x,c.title,Wd/2,H*.52,H*.15,null,'center');exK(x,'Read · View · Watch · Own',Wd/2,H*.74,H*.045,'#c9c4bb','center')},500);
+    var kt=exSign(.7,.7,function(x,Wd,H){exBg(x,Wd,H,'#0d0d0e');exK(x,'Explore',Wd/2,H*.28,H*.06,EX.vio,'center');exT(x,c.title,Wd/2,H*.52,H*.15,null,'center');exK(x,'Read · Watch · Own',Wd/2,H*.76,H*.065,'#d9d4cb','center')},500);
     kt.rotation.x=-Math.PI/2+.5;kt.position.y=1.13;kg.add(kt);kg.position.set(kp.x,0,kp.z);exFace(kg,up);scene.add(kg);col(kp.x-.45,kp.x+.45,kp.z-.45,kp.z+.45);floorGlow(kp.x,kp.z,2.4,2.4,0x6e42a3,.35);
     addInter(kp.x,kp.z,null,2.8,'Explore','Read · View · Watch · Own',function(){openChapter(c)},kg);
     /* section title on the entrance wall */
-    exSignL(r,'v1',34.4,2.6,4.4,1.7,function(x,Wd,H){exBg(x,Wd,H);var L=Wd*.08;exK(x,'IV',L,H*.24,H*.08,EX.vio);exT(x,'The Magazine',L,H*.56,H*.22);exK(x,'Read · View · Watch · Own',L,H*.82,H*.065)});
+    exSignL(r,'v1',34.4,2.5,5.6,2.4,function(x,Wd,H){exBg(x,Wd,H);var L=Wd*.09;exK(x,'IV',L,H*.22,H*.055,EX.vio);exT(x,'The Magazine',L,H*.52,H*.19);exK(x,'Read · View · Watch · Own',L,H*.8,H*.05)});
     /* the cover, large */
     exSignL(r,'v0',43,2.4,2.1,2.8,function(x,Wd,H){exBg(x,Wd,H,'#0b0b0c');x.strokeStyle='rgba(255,255,255,.14)';x.lineWidth=3;x.strokeRect(Wd*.05,H*.04,Wd*.9,H*.92);
       exK(x,'TESTAMENTS',Wd/2,H*.12,H*.035,'#e9e5dd','center');exI(x,'Understand the Why.',Wd/2,H*.17,H*.025,'#a9a49b','center');
@@ -1818,9 +1817,7 @@ var STOCKISTS = [];   // confirmed partners only: {name, address}
     libMerge(fab,M.fabric);libMerge(base,M.dark);if(riser.length)libMerge(riser,MAT.stone);
     col(cx-rw/2-.25,cx+rw/2+.25,-53.05,-47.05);
     /* aisle step lights on both ends of each row */
-    var dots=[];rows.forEach(function(r){[-1,1].forEach(function(s){libB(dots,.06,.03,.22,cx+s*(rw/2+.18),.1+r.y*.5,r.z)})});libMerge(dots,MAT.lamp);
-    [-1,1].forEach(function(s){floorGlow(cx+s*(rw/2+.7),-50.4,1,6.4,0x8e6cc4,.16)});
-
+    
     /* --- slatted acoustic panels on both side walls of the cinema --- */
     var ac=[];[{x:Lb.x1+.2,n:1},{x:Lb.x2-.2,n:-1}].forEach(function(w){for(var i=0;i<6;i++){var z=-56.6+i*1.45;libB(ac,.1,3.8,1.25,w.x,2.4,z)}});
     libMerge(ac,M.slat);
@@ -1840,7 +1837,7 @@ var STOCKISTS = [];   // confirmed partners only: {name, address}
     beam.frustumCulled=false;scene.add(beam);
     if(!S.reduced)HOOKS.frame.push(function(dt){if(curRoom.id==='library')beamU.uT.value+=dt});
 
-    libPlaque(Lb,'e',-46.1,2.15,2.4,1.25,'THE SCREENING ROOM','The film','TESTAMENTS · on loop');
+    libPlaque(Lb,'e',-46.1,2.3,3,1.5,'THE SCREENING ROOM','The film','TESTAMENTS · on loop');
 
     /* --- reading lounge --- */
     /* tall bookcase on the west wall: oak frame, spines, the editions face-out */
@@ -1908,7 +1905,7 @@ var STOCKISTS = [];   // confirmed partners only: {name, address}
     addInter(-11,-43.5,null,2.8,'Read','Read the magazine',function(){openReader()});
 
     /* signage */
-    libPlaque(Lb,'s',-20.5,2.6,4.6,1.55,'THE READING ROOM','Read slowly. Come back often.',null,true);
+    libPlaque(Lb,'s',-20.5,2.8,6,1.8,'THE READING ROOM','Read slowly. Come back often.',null,true);
   }
 
   /* low brass table lamp with a glowing shade (no real-time light) */
@@ -1942,7 +1939,7 @@ var STOCKISTS = [];   // confirmed partners only: {name, address}
     var Sh=RM.shop,M=libMats(),cx=(Sh.x1+Sh.x2)/2;
 
     /* --- statement wall: a halo-lit sign across the north wall --- */
-    var sw=12.4,shh=2.9,sz=Sh.z2+.3,sy=3.75,wz=Sh.z2+.16;
+    var sw=12.4,shh=2.4,sz=Sh.z2+.3,sy=4.3,wz=Sh.z2+.16;
     var hal=glow(sw*1.35,shh*2.1,0xfff0dc,.22);hal.position.set(cx,sy,wz);scene.add(hal);
     var sign=libSign(sw,shh,function(c,W,H){c.fillStyle='#0a0a0b';c.fillRect(0,0,W,H);c.strokeStyle='rgba(255,255,255,.12)';c.lineWidth=3;c.strokeRect(24,24,W-48,H-48);
       c.fillStyle='#cfccc5';c.font='600 '+Math.round(H*.07)+'px Inter';sp(c,'THE MUSEUM SHOP',W/2,H*.3,Math.round(H*.035));
@@ -1960,12 +1957,13 @@ var STOCKISTS = [];   // confirmed partners only: {name, address}
       libB(ease,.92,1.2,.04,x,1.66,pz-.12,0,-.14);libB(ease,.92,.04,.12,x,1.07,pz+.02);
       var cv=plane(.88,1.15,coverTex(c,i%2===1),true);cv.position.set(x,1.67,pz-.093);cv.rotation.x=-.14;scene.add(cv);
       var ha=glow(2.2,2.6,0xfff1dc,.16);ha.position.set(x,1.7,pz-.2);scene.add(ha);
-      var pl=libSign(1.15,.62,function(t,W,H){t.fillStyle='#0b0b0c';t.fillRect(0,0,W,H);t.fillStyle='#d4d0c9';t.font='600 '+Math.round(H*.1)+'px Inter';sp(t,'CHAPTER '+c.num,W/2,H*.2,Math.round(H*.03));
-        t.fillStyle='#f8f5ef';t.font='400 '+Math.round(H*.24)+'px "Bodoni Moda"';sp(t,c.title.toUpperCase(),W/2,H*.47,Math.round(H*.02));
-        t.fillStyle='#c9c6bf';t.font='italic 400 '+Math.round(H*.11)+'px "Bodoni Moda"';t.textAlign='center';t.fillText(who(c),W/2,H*.64);
-        t.fillStyle='#b49be0';t.fillRect(W/2-24,H*.7,48,3);
-        t.fillStyle='#f0ede7';t.font='600 '+Math.round(H*.075)+'px Inter';sp(t,shopPrice(c).toUpperCase(),W/2,H*.83,Math.round(H*.016));t.fillStyle='#b8b5ae';t.font='500 '+Math.round(H*.06)+'px Inter';sp(t,edState(c).toUpperCase(),W/2,H*.94,Math.round(H*.016))},700);
-      pl.position.set(x,.56,pz+.632);scene.add(pl);
+      var pl=libSign(1.17,.9,function(t,W,H){t.fillStyle='#0b0b0c';t.fillRect(0,0,W,H);t.fillStyle='#d4d0c9';t.font='600 '+Math.round(H*.075)+'px Inter';sp(t,'CHAPTER '+c.num,W/2,H*.15,Math.round(H*.022));
+        t.fillStyle='#f8f5ef';t.font='400 '+Math.round(H*.17)+'px "Bodoni Moda"';sp(t,c.title.toUpperCase(),W/2,H*.35,Math.round(H*.015));
+        t.fillStyle='#c9c6bf';t.font='italic 400 '+Math.round(H*.08)+'px "Bodoni Moda"';t.textAlign='center';t.fillText(who(c),W/2,H*.48);
+        t.fillStyle='#b49be0';t.fillRect(W/2-30,H*.55,60,4);
+        var pr=shopPrice(c).toUpperCase(),fs=Math.round(H*.1);t.font='600 '+fs+'px Inter';while(t.measureText(pr).width+pr.length*H*.01>W*.92&&fs>10){fs--;t.font='600 '+fs+'px Inter'}
+        t.fillStyle='#ffffff';sp(t,pr,W/2,H*.71,Math.round(H*.01));t.fillStyle='#cfccc5';t.font='600 '+Math.round(H*.08)+'px Inter';sp(t,edState(c).toUpperCase(),W/2,H*.87,Math.round(H*.015))},800);
+      pl.position.set(x,.49,pz+.632);scene.add(pl);
       floorGlow(x,pz,3.2,3.2,0xfff0dc,.2);floorGlow(x,pz,2,2,0x6e42a3,.14);
       var pin=new T.Mesh(new T.CircleGeometry(.14,16),MAT.lamp);pin.rotation.x=Math.PI/2;pin.position.set(x,Sh.h-.02,pz-.2);scene.add(pin);
       col(x-.68,x+.68,pz-.68,pz+.68);
@@ -1990,8 +1988,8 @@ var STOCKISTS = [];   // confirmed partners only: {name, address}
     libMerge(stand,MAT.frame);
     Object.keys(tcov).forEach(function(k){var f=tcov[k];libMerge(f.p,new T.MeshBasicMaterial({map:coverTex(f.c,f.l)}))});
     var tgl=glow(tl*1.15,tw*2.4,0xfff0dc,.08);tgl.rotation.x=-Math.PI/2;tgl.position.set(tcx,.905,tz);scene.add(tgl);
-    var lab=libSign(3.6,.14,function(t,W,H){t.fillStyle='#0b0b0c';t.fillRect(0,0,W,H);t.fillStyle='#e9e6e0';t.font='600 '+Math.round(H*.34)+'px Inter';sp(t,'EDITIONS OPEN FOR ORDERING WHEN EACH CHAPTER IS PUBLISHED',W/2,H*.64,Math.round(H*.05))},900);
-    lab.position.set(tcx,.86,tz+tw/2+.006);scene.add(lab);
+    var lab=libSign(7.6,.2,function(t,W,H){t.fillStyle='#0b0b0c';t.fillRect(0,0,W,H);t.fillStyle='#e9e6e0';t.font='600 '+Math.round(H*.42)+'px Inter';sp(t,'EDITIONS OPEN FOR ORDERING WHEN EACH CHAPTER IS PUBLISHED',W/2,H*.64,Math.round(H*.05))},900);
+    lab.position.set(tcx,.73,tz+tw/2+.006);scene.add(lab);
     col(tx1-.05,tx2+.05,tz-tw/2-.05,tz+tw/2+.05);
     floorGlow(tcx,tz,tl+2,3.2,0xfff0dc,.12);
 
@@ -2018,7 +2016,7 @@ var STOCKISTS = [];   // confirmed partners only: {name, address}
     var kc=plane(.3,.39,coverTex(CH[0],false),true);kc.rotation.x=-Math.PI/2;kc.position.set(kx-.05,1.082,kz+1.05);scene.add(kc);
     libLamp(kx-.2,1.03,kz,.38);
     col(Sh.x1,kx+kd/2+.06,kz-kl/2-.05,kz+kl/2+.05);
-    libPlaque(Sh,'w',kz,2.55,2.4,1.1,'THE COUNTER','Your cart','Shipping & returns');
+    libPlaque(Sh,'w',kz,2.6,3,1.3,'THE COUNTER','Your cart','Shipping & returns');
     addInter(kx+kd/2+.05,kz,'px',3.2,'Cart','Your cart',openCart);
 
     /* one soft, even fill for the room */
