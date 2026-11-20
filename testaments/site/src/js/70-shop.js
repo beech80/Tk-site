@@ -69,7 +69,7 @@
     Object.keys(fo).forEach(function(k){libMerge(fo[k].p.map(function(p){p.g.rotateX(-.08);return p}),new T.MeshBasicMaterial({map:coverTex(fo[k].c,fo[k].l)}))});
     var ew=spot(sl*1.1,4.2,.4);place(ew,ex+.02,2.2,sc,'nx');
     col(ex-.3,Sh.x2,sz1-.2,sz0+.2);
-    libPlaque(Sh,'e',-52.6,2.2,2.6,1.3,'PRINT EDITIONS','Every Chapter Matters.','About 24 pages · limited first run');
+    libPlaque(Sh,'e',-55.6,2.6,2.6,1.3,'PRINT EDITIONS','Every Chapter Matters.','About 24 pages · limited first run');
 
     /* --- cash & wrap counter on the west wall --- */
     var kx=8.75,kz=-45.2,kl=4.2,kd=1.0,kb=[];
