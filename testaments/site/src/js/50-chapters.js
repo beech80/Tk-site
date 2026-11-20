@@ -33,7 +33,14 @@
   function exL(r,w,a){return {s:wingSide(r.wing,w),a:wingAlong(r.wing,w,a)}}
   function exSignL(r,w,a,y,W,H,fn,o){var p=exL(r,w,a);return exOnWall(r,p.s,p.a,y,W,H,fn,o)}
   function exHangL(id,r,w,a,y,h){var p=exL(r,w,a);hang(id,r,p.s,p.a,y,h)}
-  function exPlateL(r,w,a,y,W,H,c){var p=exL(r,w,a);emptyFrame(r,p.s,p.a,y,W,H,c)}
+  function exPlateL(r,w,a,y,W,H,c){var p=exL(r,w,a),pos=onWall(r,p.s,p.a),g=new T.Group();
+    /* a designed 'on release' plate: large, legible type in place of the photograph */
+    var fr=new T.Mesh(new T.BoxGeometry(W+.14,H+.14,.06),MAT.frame);fr.position.z=.03;g.add(fr);
+    var t=exSign(W,H,function(x,Wd,Hd){exBg(x,Wd,Hd,'#0d0d0e');var m=Math.min(Wd,Hd);x.strokeStyle='rgba(255,255,255,.16)';x.lineWidth=Math.max(2,m*.006);x.strokeRect(m*.06,m*.06,Wd-m*.12,Hd-m*.12);
+      exK(x,'Chapter '+c.num,Wd/2,Hd*.36,m*.055,EX.vio,'center');exT(x,c.title,Wd/2,Hd*.52,m*.13,null,'center');
+      exRule(x,Wd/2-m*.05,Hd*.58,m*.1,Math.max(2,m*.006),'#6b6760');exK(x,'Plate · on release',Wd/2,Hd*.68,m*.05,'#cfcac1','center')},Math.min(exPPM(),200));
+    t.position.z=.065;g.add(t);var sl=spot(W*2.2,H*2.3,.45);sl.position.set(0,H*.4,.008);g.add(sl);place(g,pos.x,y,pos.z,pos.n);
+    addInter(pos.x,pos.z,pos.n,3.6,'View','Plate · on release',function(){toast('Photographs for '+c.title+' will hang here when the chapter is published.')},{y:y,w:W+.14,h:H+.14})}
   /* a box sized in the local frame (df along f, dl along l); solid adds a collider */
   function exBox(r,df,h,dl,mat,u,y,v,solid){var W=r.wing,p=wingPt(W,u,v),sx=Math.abs(W.f[0])*df+Math.abs(W.l[0])*dl,sz=Math.abs(W.f[1])*df+Math.abs(W.l[1])*dl;
     var m=box(sx,h,sz,mat,p.x,y,p.z);if(solid)col(p.x-sx/2-.04,p.x+sx/2+.04,p.z-sz/2-.04,p.z+sz/2+.04);return m}
@@ -71,7 +78,7 @@
     var t=exL(r,'u1',-2.4),tp=onWall(r,t.s,t.a);floorGlow(tp.x+NV[tp.n][0]*1.1,tp.z+NV[tp.n][1]*1.1,r.wing.f[0]?2.2:6.4,r.wing.f[0]?6.4:2.2,0x6e42a3,.4);
     /* hero image: the first assigned photograph, or a designed plate */
     var mine=PHOTOS.filter(function(p){return p.chapter===c.slug});
-    if(mine[0])exHangL(mine[0].id,r,'v0',5,2.55,mine[0].h>mine[0].w?3:2.3);else exPlateL(r,'v0',5,2.55,3.4,2.3,c);
+    if(mine[0])exHangL(mine[0].id,r,'v0',5,2.6,mine[0].h>mine[0].w?3.3:2.6);else exPlateL(r,'v0',5,2.6,3.8,2.6,c);
     /* wayfinding: what the wing holds */
     exSignL(r,'v1',5.2,2.5,3.2,2.6,function(x,W,H){exBg(x,W,H);var L=W*.1;exK(x,'In this chapter',L,H*.16,H*.05);
       ['The Photography','The Story','The Conversation','The Magazine'].forEach(function(s,i){var y=H*(.36+i*.17);exK(x,['I','II','III','IV'][i],L,y,H*.045,EX.vio);exT(x,s,L+W*.14,y+H*.012,H*.085)})});
@@ -80,17 +87,17 @@
   /* B · photography */
   function exGallery(r,c,tone){
     var mine=PHOTOS.filter(function(p){return p.chapter===c.slug}),k=0;
-    function sz(p,big){return p.h>p.w?(big?2.5:2.0):(big?2.05:1.55)}
+    function sz(p,big){return p.h>p.w?(big?3.1:2.6):(big?2.5:2.1)}
     function next(){return mine[k++]||null}
     exAccent(r,'u1',-6.5,1.2,tone);
     /* the focal wall, straight ahead on entering */
-    var p=next();if(p)exHangL(p.id,r,'u1',-2.6,2.45,sz(p,true));else exPlateL(r,'u1',-2.6,2.45,2.2,2.6,c);
+    var p=next();if(p)exHangL(p.id,r,'u1',-2.6,2.65,sz(p,true));else exPlateL(r,'u1',-2.6,2.65,2.4,3.1,c);
     /* a diptych on the long wall */
-    var a=next(),b=next(),wa=a?sz(a)*a.w/a.h:1.6,wb=b?sz(b)*b.w/b.h:1.6,gap=1.2,tot=wa+wb+gap,c0=19.5,ua=c0-tot/2+wa/2,ub=c0+tot/2-wb/2;
-    if(a)exHangL(a.id,r,'v0',ua,2.3,sz(a));else exPlateL(r,'v0',ua,2.3,1.6,2,c);
-    if(b)exHangL(b.id,r,'v0',ub,2.3,sz(b));else exPlateL(r,'v0',ub,2.3,1.6,2,c);
+    var a=next(),b=next(),wa=a?sz(a)*a.w/a.h:1.8,wb=b?sz(b)*b.w/b.h:1.8,gap=1.1,tot=wa+wb+gap,c0=20.6,ua=c0-tot/2+wa/2,ub=c0+tot/2-wb/2;
+    if(a)exHangL(a.id,r,'v0',ua,2.5,sz(a));else exPlateL(r,'v0',ua,2.5,1.8,2.4,c);
+    if(b)exHangL(b.id,r,'v0',ub,2.5,sz(b));else exPlateL(r,'v0',ub,2.5,1.8,2.4,c);
     /* singles */
-    [['v1',17],['v1',24.5],['v0',26.6]].forEach(function(s){var q=next();if(q)exHangL(q.id,r,s[0],s[1],2.3,sz(q));else exPlateL(r,s[0],s[1],2.3,1.6,2,c)});
+    [['v1',17],['v1',24.5],['v0',27.5]].forEach(function(s){var q=next();if(q)exHangL(q.id,r,s[0],s[1],2.5,sz(q));else exPlateL(r,s[0],s[1],2.5,1.8,2.4,c)});
     /* section title, beside the entrance */
     exSignL(r,'v0',13.9,2.5,3.6,1.6,function(x,W,H){exBg(x,W,H);var L=W*.09;exK(x,'I',L,H*.24,H*.07,EX.vio);exT(x,'The Photography',L,H*.56,H*.18);exK(x,'TESTAMENTS photography',L,H*.82,H*.06)});
     /* a bench facing the diptych */
@@ -151,10 +158,10 @@
     /* section title on the entrance wall */
     exSignL(r,'v1',34.4,2.5,5.6,2.4,function(x,Wd,H){exBg(x,Wd,H);var L=Wd*.09;exK(x,'IV',L,H*.22,H*.055,EX.vio);exT(x,'The Magazine',L,H*.52,H*.19);exK(x,'Read · View · Watch · Own',L,H*.8,H*.05)});
     /* the cover, large */
-    exSignL(r,'v0',43,2.4,2.1,2.8,function(x,Wd,H){exBg(x,Wd,H,'#0b0b0c');x.strokeStyle='rgba(255,255,255,.14)';x.lineWidth=3;x.strokeRect(Wd*.05,H*.04,Wd*.9,H*.92);
-      exK(x,'TESTAMENTS',Wd/2,H*.12,H*.035,'#e9e5dd','center');exI(x,'Understand the Why.',Wd/2,H*.17,H*.025,'#a9a49b','center');
+    exSignL(r,'v0',43,2.45,2.6,3.47,function(x,Wd,H){exBg(x,Wd,H,'#0b0b0c');x.strokeStyle='rgba(255,255,255,.14)';x.lineWidth=3;x.strokeRect(Wd*.05,H*.04,Wd*.9,H*.92);
+      exK(x,'TESTAMENTS',Wd/2,H*.12,H*.038,'#e9e5dd','center');exI(x,'Understand the Why.',Wd/2,H*.175,H*.03,'#bdb8af','center');
       exT(x,c.num,Wd/2,H*.5,H*.2,EX.ink,'center');exRule(x,Wd/2-Wd*.06,H*.56,Wd*.12,H*.004);exT(x,c.title.toUpperCase(),Wd/2,H*.67,H*.075,null,'center',H*.012);exI(x,who(c),Wd/2,H*.73,H*.032,'#d6d1c8','center');
-      exK(x,'Chapter '+c.num+'  ·  '+edState(c),Wd/2,H*.9,H*.025,'#a9a49b','center')},{act:function(){openProduct(c)},verb:'Own',label:'The print edition · '+edState(c),r:4});
+      exK(x,'Chapter '+c.num,Wd/2,H*.85,H*.026,'#bdb8af','center');exK(x,edState(c),Wd/2,H*.9,H*.026,'#bdb8af','center')},{act:function(){openProduct(c)},verb:'Own',label:'The print edition · '+edState(c),r:4});
     /* over the alcove */
     exSignL(r,'v0',37,3.9,3.2,.55,function(x,Wd,H){exBg(x,Wd,H);exK(x,'III · The Conversation',Wd/2,H*.64,H*.26,null,'center')});
     /* F · exit */
