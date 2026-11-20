@@ -7,9 +7,9 @@
   function prMats(){if(PRM)return PRM;var S=function(c,r,m){return new T.MeshStandardMaterial({color:c,roughness:r,metalness:m||0})};
     PRM={wood:S(0x2b221c,.5),oak:S(0x6b5440,.55),fab:S(0x34302d,.95),cer:S(0xefebe3,.3),blk:S(0x111112,.4,.2),steel:S(0x9a958c,.35,.8),
       glass:new T.MeshStandardMaterial({color:0xdfe6ea,roughness:.04,metalness:.3,transparent:true,opacity:.14,depthWrite:false})};return PRM}
-  var prUp=new T.Vector3(0,1,0);
+  var prUp=null;
   function prLeg(g,ax,ay,az,bx,by,bz,r1,r2,mat,seg){var v=new T.Vector3(bx-ax,by-ay,bz-az),L=v.length(),m=new T.Mesh(new T.CylinderGeometry(r2,r1,L,seg||8),mat);
-    m.position.set((ax+bx)/2,(ay+by)/2,(az+bz)/2);m.quaternion.setFromUnitVectors(prUp,v.normalize());g.add(m);return m}
+    m.position.set((ax+bx)/2,(ay+by)/2,(az+bz)/2);m.quaternion.setFromUnitVectors(prUp||(prUp=new T.Vector3(0,1,0)),v.normalize());g.add(m);return m}
   /* upholstered side chair: tapered splayed legs, seat frame + cushion, slightly reclined back. Sitter faces local -z. */
   function prChair(g,x,z,ry){var M=prMats(),c=new T.Group();prMesh(c,new T.BoxGeometry(.48,.035,.46),M.wood,0,.43,0);prMesh(c,new T.BoxGeometry(.45,.06,.43),M.fab,0,.476,-.005);
     [[-.2,-.19],[.2,-.19],[-.2,.19],[.2,.19]].forEach(function(l){prLeg(c,l[0]*1.12,0,l[1]*1.12,l[0],.42,l[1],.011,.019,M.wood)});
@@ -45,10 +45,10 @@
         prMesh(cam,new T.CylinderGeometry(.036,.04,.11,20),M.blk,.01,.07,-.09,Math.PI/2);prMesh(cam,new T.CylinderGeometry(.03,.03,.003,20),M.glass,.01,.07,-.146,Math.PI/2);
         prMesh(cam,new T.CylinderGeometry(.041,.041,.012,20),M.steel,.01,.07,-.06,Math.PI/2);cam.position.set(tx,hy+.06,cz);cam.rotation.y=face+.25*dir;g.add(cam);
         var lx=cx+.9;[0,2.09,4.19].forEach(function(t){prLeg(g,lx+Math.cos(t)*.38,0,cz+Math.sin(t)*.38,lx,.45,cz,.01,.012,M.steel)});
-        prMesh(g,new T.CylinderGeometry(.013,.016,1.85,8),M.steel,lx,.98,cz);
+        prMesh(g,new T.CylinderGeometry(.013,.016,.8,8),M.steel,lx,.84,cz);
         var sb=new T.Group(),sg=new T.CylinderGeometry(.09,.48,.38,4,1,true);sg.rotateY(Math.PI/4);sg.rotateX(Math.PI/2);var shell=new T.Mesh(sg,M.blk);shell.material=M.blk;sb.add(shell);
         var diff=prMesh(sb,new T.PlaneGeometry(.67,.67),MAT.lamp,0,0,-.19,0,Math.PI,0);diff.rotation.y=Math.PI;prMesh(sb,new T.BoxGeometry(.06,.06,.08),M.blk,0,0,.22);
-        sb.position.set(lx,1.95,cz);sb.rotation.y=face-.5*dir;sb.rotation.x=-.12;g.add(sb);
+        sb.position.set(lx,1.28,cz);sb.rotation.y=face+1.25*dir;g.add(sb);
         col(cx-1.1,cx+1.35,cz-.5,cz+.5)}
       if(i===3){prMesh(g,new T.BoxGeometry(2.6,.045,1.2),M.oak,cx,.9,cz);prMesh(g,new T.BoxGeometry(2.5,.02,1.1),M.wood,cx,.867,cz);
         [[-1.15,-.48],[1.15,-.48],[-1.15,.48],[1.15,.48]].forEach(function(l){prLeg(g,cx+l[0]*1.02,0,cz+l[1]*1.04,cx+l[0],.86,cz+l[1],.016,.028,M.wood)});
@@ -59,8 +59,8 @@
         col(cx-1.35,cx+1.35,cz-.65,cz+.65)}
       if(i===4){prMesh(g,new T.BoxGeometry(.8,.94,.8),MAT.ped,cx,.53,cz);prMesh(g,new T.BoxGeometry(.74,.06,.74),M.blk,cx,.03,cz);
         var cv=exSign(.36,.48,function(x,W,H){exBg(x,W,H,'#0b0b0c');exK(x,'TESTAMENTS',W/2,H*.13,H*.045,'#e9e5dd','center');exT(x,'001',W/2,H*.52,H*.2,EX.ink,'center');exRule(x,W*.44,H*.58,W*.12,3);exK(x,'Every Chapter Matters.',W/2,H*.88,H*.03,'#a9a49b','center')},600);
-        prMesh(g,new T.BoxGeometry(.3,.05,.1),M.blk,cx,1.025,cz+.06*dir,-.35*dir,0,0);
-        cv.rotation.x=-Math.PI/2+.35;cv.rotation.y=dir===1?Math.PI:0;cv.position.set(cx,1.1,cz);g.add(cv);
+        prMesh(g,new T.BoxGeometry(.3,.05,.1),M.blk,cx,1.015,cz-.06*dir);
+        cv.rotation.set(-Math.PI/2+.35,dir===1?0:Math.PI,0,'YXZ');cv.position.set(cx,1.1,cz);g.add(cv);
         prMesh(g,new T.BoxGeometry(.7,.5,.7),M.glass,cx,1.25,cz);
         [[-.35,-.35],[.35,-.35],[-.35,.35],[.35,.35]].forEach(function(e){prMesh(g,new T.BoxGeometry(.012,.5,.012),M.steel,cx+e[0],1.25,cz+e[1])});
         prMesh(g,new T.BoxGeometry(.712,.012,.712),M.steel,cx,1.5,cz);prMesh(g,new T.BoxGeometry(.7,.006,.7),M.glass,cx,1.505,cz);
