@@ -1,5 +1,5 @@
   /* ---------- quality, resize, loop ---------- */
-  function quality(){if(!R)return;var q=S.quality==='auto'?(coarse?'low':'medium'):S.quality,d=window.devicePixelRatio||1;R.setPixelRatio(q==='low'?Math.min(d,1)*.8:q==='medium'?Math.min(d,1.25):Math.min(d,2))}
+  function quality(){if(!R)return;var q=S.quality==='auto'?(coarse?'low':'medium'):S.quality,d=window.devicePixelRatio||1;R.setPixelRatio(q==='low'?Math.min(d,coarse?1.5:1):q==='medium'?Math.min(d,1.25):Math.min(d,2))}
   var baseFov=68,fovNow=68;
   function resize(){if(!R)return;var w=window.innerWidth,h=window.innerHeight;R.setSize(w,h,false);cam.aspect=w/h;baseFov=w<h?80:68;cam.fov=fovNow=baseFov;cam.updateProjectionMatrix();HOOKS.resize.forEach(function(f){f(w,h)});if(typeof mmResize==='function')mmResize()}
   window.addEventListener('resize',resize);
