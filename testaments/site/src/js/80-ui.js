@@ -156,3 +156,5 @@
     $('ovIn').querySelectorAll('[data-m]').forEach(function(b){b.addEventListener('click',function(){var a=b.dataset.m;if(a==='resume'){closeOv();lockPointer()}if(a==='map')openMap();if(a==='lobby')travel('lobby');if(a==='entrance')travel('entrance');if(a==='info')openInfo('faq');if(a==='contact')openContact();if(a==='film')replayFilm();if(a==='help')openWelcome()})});
     setTimeout(function(){var r=$('ovIn').querySelector('[data-m="resume"]');if(r)r.focus()},30);
   }
+  /* keep the facade lettering clear: hide the minimap while outside */
+  HOOKS.roomChange.push(function(r){var m=$('mini');if(m)m.style.opacity=r&&r.id==='entrance'?'0':'';if(m)m.style.pointerEvents=r&&r.id==='entrance'?'none':''});

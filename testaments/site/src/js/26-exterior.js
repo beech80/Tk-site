@@ -120,7 +120,7 @@
     var CZ=9.5;stone.bx(-PX,PX,CY,CY+CT,FZ,CZ,0,6);stone.bx(-PO,PO,CY,CY+CT,.5,FZ,0,6);
     bronze.bx(-PX-.02,PX+.02,CY+CT-.04,CY+CT+.02,CZ-.02,CZ+.02);
     var sof=new T.Mesh(new T.PlaneGeometry(2*PX,CZ-.5),A.soffit);sof.rotation.x=Math.PI/2;sof.position.set(0,CY-.005,(CZ+.5)/2);scene.add(sof);refl.push(sof);
-    [2.6,4.9,7.2,9.1].forEach(function(z){lamp.bx(-PX+.4,PX-.4,CY-.03,CY-.01,z-.03,z+.03);glowB.quad(2*PX-.8,.9,0,CY-.04,z,Math.PI/2,0,archCol(WARM,.18));glowB.quad(2*PX,3.2,0,.115,z,-Math.PI/2,0,archCol(WARM,.07))});
+    [2.6,4.9,7.2,9.1].forEach(function(z){lamp.bx(-PX+.4,PX-.4,CY-.03,CY-.01,z-.03,z+.03);glowB.quad(2*PX-.8,.9,0,CY-.04,z,Math.PI/2,0,archCol(WARM,.11));glowB.quad(2*PX,3.2,0,.115,z,-Math.PI/2,0,archCol(WARM,.07))});
     /* grazing light up the portal reveals and the piers */
     [-1,1].forEach(function(s){spotB.quad(1.6,6,s*(PO-.01),3,FZ-.1,0,-s*Math.PI/2,archCol(WARM,.35),Math.PI);
       for(var x=19.5;x<bx2-1;x+=6)spotB.quad(4.2,9,s*x,4.5,WZ+.01,0,0,archCol(WARM,.16),Math.PI)});
@@ -129,7 +129,7 @@
 
     /* ----- lettering: TESTAMENTS above the portal (lit, with halo); tagline cut into the portal lintel ----- */
     var sign=archText(13.6,1.9,function(c,W,H){c.fillStyle='#fbf7ef';c.font='500 '+Math.round(H*.8)+'px "Bodoni Moda"';sp(c,'TESTAMENTS',W/2,H*.8,Math.round(H*.13))},300);
-    bronze.bx(-6.4,6.4,11.02,11.06,FZ,FZ+.03);sign.position.set(0,12.15,FZ+.04);scene.add(sign);refl.push(sign);
+    sign.position.set(0,12.15,FZ+.04);scene.add(sign);refl.push(sign);
     var halo=glow(15,2.6,0xfff0dc,.1);halo.position.set(0,12.1,FZ+.01);scene.add(halo);
     var sub=archText(8,.62,function(c,W,H){c.fillStyle='#e9e4da';c.font='500 '+Math.round(H*.56)+'px Inter';sp(c,'UNDERSTAND THE WHY.',W/2,H*.72,Math.round(H*.3))},500);
     sub.position.set(0,PH+.6,FZ+.81);scene.add(sub);refl.push(sub);

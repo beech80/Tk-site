@@ -1239,7 +1239,7 @@ var STOCKISTS = [];   // confirmed partners only: {name, address}
     var CZ=9.5;stone.bx(-PX,PX,CY,CY+CT,FZ,CZ,0,6);stone.bx(-PO,PO,CY,CY+CT,.5,FZ,0,6);
     bronze.bx(-PX-.02,PX+.02,CY+CT-.04,CY+CT+.02,CZ-.02,CZ+.02);
     var sof=new T.Mesh(new T.PlaneGeometry(2*PX,CZ-.5),A.soffit);sof.rotation.x=Math.PI/2;sof.position.set(0,CY-.005,(CZ+.5)/2);scene.add(sof);refl.push(sof);
-    [2.6,4.9,7.2,9.1].forEach(function(z){lamp.bx(-PX+.4,PX-.4,CY-.03,CY-.01,z-.03,z+.03);glowB.quad(2*PX-.8,.9,0,CY-.04,z,Math.PI/2,0,archCol(WARM,.18));glowB.quad(2*PX,3.2,0,.115,z,-Math.PI/2,0,archCol(WARM,.07))});
+    [2.6,4.9,7.2,9.1].forEach(function(z){lamp.bx(-PX+.4,PX-.4,CY-.03,CY-.01,z-.03,z+.03);glowB.quad(2*PX-.8,.9,0,CY-.04,z,Math.PI/2,0,archCol(WARM,.11));glowB.quad(2*PX,3.2,0,.115,z,-Math.PI/2,0,archCol(WARM,.07))});
     /* grazing light up the portal reveals and the piers */
     [-1,1].forEach(function(s){spotB.quad(1.6,6,s*(PO-.01),3,FZ-.1,0,-s*Math.PI/2,archCol(WARM,.35),Math.PI);
       for(var x=19.5;x<bx2-1;x+=6)spotB.quad(4.2,9,s*x,4.5,WZ+.01,0,0,archCol(WARM,.16),Math.PI)});
@@ -1248,7 +1248,7 @@ var STOCKISTS = [];   // confirmed partners only: {name, address}
 
     /* ----- lettering: TESTAMENTS above the portal (lit, with halo); tagline cut into the portal lintel ----- */
     var sign=archText(13.6,1.9,function(c,W,H){c.fillStyle='#fbf7ef';c.font='500 '+Math.round(H*.8)+'px "Bodoni Moda"';sp(c,'TESTAMENTS',W/2,H*.8,Math.round(H*.13))},300);
-    bronze.bx(-6.4,6.4,11.02,11.06,FZ,FZ+.03);sign.position.set(0,12.15,FZ+.04);scene.add(sign);refl.push(sign);
+    sign.position.set(0,12.15,FZ+.04);scene.add(sign);refl.push(sign);
     var halo=glow(15,2.6,0xfff0dc,.1);halo.position.set(0,12.1,FZ+.01);scene.add(halo);
     var sub=archText(8,.62,function(c,W,H){c.fillStyle='#e9e4da';c.font='500 '+Math.round(H*.56)+'px Inter';sp(c,'UNDERSTAND THE WHY.',W/2,H*.72,Math.round(H*.3))},500);
     sub.position.set(0,PH+.6,FZ+.81);scene.add(sub);refl.push(sub);
@@ -1505,8 +1505,8 @@ var STOCKISTS = [];   // confirmed partners only: {name, address}
       c.fillStyle='#d6d2ca';c.font='600 '+Math.round(W*.06)+'px Inter';sp(c,'GALLERIES',W*.1,Hh*.13,Math.round(W*.02),'left');
       function arw(dir,x,y,sz){c.save();c.translate(x+sz/2,y-sz*.36);c.rotate(dir==='w'?Math.PI:dir==='n'?-Math.PI/2:0);c.strokeStyle='#fbf8f2';c.lineWidth=Math.max(3,sz*.1);c.lineCap='round';c.lineJoin='round';
         c.beginPath();c.moveTo(-sz*.42,0);c.lineTo(sz*.42,0);c.moveTo(sz*.12,-sz*.3);c.lineTo(sz*.42,0);c.lineTo(sz*.12,sz*.3);c.stroke();c.restore()}
-      dirs.forEach(function(d,i){var y=Hh*(.25+i*.1),nm=d[1].replace(' · ',' '),fs=Math.round(W*.075),mw=W*.66;
-        arw(d[0],W*.1,y,W*.085);c.fillStyle='#fbf8f2';c.textAlign='left';c.font='500 '+fs+'px Inter';
+      dirs.forEach(function(d,i){var y=Hh*(.25+i*.1),nm=d[1].replace(' · ',' '),fs=Math.round(W*.068),mw=W*.72;
+        arw(d[0],W*.1,y,W*.085);c.fillStyle='#fbf8f2';c.textAlign='left';try{c.letterSpacing='0px'}catch(e){}c.font='500 '+fs+'px Inter';
         while(c.measureText(nm).width>mw&&fs>W*.05){fs--;c.font='500 '+fs+'px Inter'}while(c.measureText(nm).width>mw&&nm.length>4)nm=nm.slice(0,-2)+'…';c.fillText(nm,W*.24,y)})},400);
     tt.position.set(TX,TH/2+.05,TZ+.145);scene.add(tt);
     col(TX-TW/2,TX+TW/2,TZ-.14,TZ+.14);
@@ -2225,6 +2225,8 @@ var STOCKISTS = [];   // confirmed partners only: {name, address}
     $('ovIn').querySelectorAll('[data-m]').forEach(function(b){b.addEventListener('click',function(){var a=b.dataset.m;if(a==='resume'){closeOv();lockPointer()}if(a==='map')openMap();if(a==='lobby')travel('lobby');if(a==='entrance')travel('entrance');if(a==='info')openInfo('faq');if(a==='contact')openContact();if(a==='film')replayFilm();if(a==='help')openWelcome()})});
     setTimeout(function(){var r=$('ovIn').querySelector('[data-m="resume"]');if(r)r.focus()},30);
   }
+  /* keep the facade lettering clear: hide the minimap while outside */
+  HOOKS.roomChange.push(function(r){var m=$('mini');if(m)m.style.opacity=r&&r.id==='entrance'?'0':'';if(m)m.style.pointerEvents=r&&r.id==='entrance'?'none':''});
 
 /* ---- 82-media.js ---- */
   /* ---------- photo viewer ---------- */
