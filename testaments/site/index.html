@@ -835,13 +835,14 @@ var STOCKISTS = [];   // confirmed partners only: {name, address}
     if(!webgl()){fail('TESTAMENTS is a museum you walk through in 3D, and this browser can’t display it. Please try a recent version of Chrome, Safari, Firefox or Edge.');return}
     var s=document.createElement('script');s.src='https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js';
     s.onload=function(){var fl=document.fonts&&document.fonts.load?Promise.all([document.fonts.load('400 60px "Bodoni Moda"'),document.fonts.load('italic 400 60px "Bodoni Moda"'),document.fonts.load('500 30px Inter'),document.fonts.load('400 30px Inter')]).catch(function(){}):Promise.resolve();
-      fl.then(function(){try{build()}catch(e){console.error(e);fail('The museum could not start on this device. Please try another browser.')}})};
+      fl.then(function(){try{build()}catch(e){console.error(e);fail('The museum could not start on this device. ('+(e&&e.message||e)+')')}})};
     s.onerror=function(){fail('The museum could not load. Please check your connection and reload the page.')};
     document.head.appendChild(s);
   }
 
   /* ---------- canvas drawing ---------- */
-  function ctex(w,h,fn){var c=document.createElement('canvas');c.width=w;c.height=h;var x=c.getContext('2d');fn(x,w,h);var t=new T.CanvasTexture(c);t.encoding=T.sRGBEncoding;t.anisotropy=Math.min(8,R.capabilities.getMaxAnisotropy());return t}
+  var CTEX_SIDE=coarse?2048:4096,CTEX_AREA=coarse?1.5e6:6e6;
+  function ctex(w,h,fn){var k=Math.min(1,CTEX_SIDE/Math.max(w,h),Math.sqrt(CTEX_AREA/(w*h)));var c=document.createElement('canvas');c.width=Math.max(1,Math.round(w*k));c.height=Math.max(1,Math.round(h*k));var x=c.getContext('2d');if(!x)throw new Error('canvas '+w+'x'+h+' unavailable');if(k<1)x.scale(c.width/w,c.height/h);fn(x,w,h);var t=new T.CanvasTexture(c);if(coarse)t.onUpdate=function(){c.width=c.height=1};t.encoding=T.sRGBEncoding;t.anisotropy=Math.min(8,R.capabilities.getMaxAnisotropy());return t}
   function sp(x,s,cx,y,gap,align){var ws=s.split('').map(function(ch){return x.measureText(ch).width}),tot=ws.reduce(function(a,b){return a+b},0)+gap*(s.length-1);var px=align==='left'?cx:align==='right'?cx-tot:cx-tot/2;x.textAlign='left';s.split('').forEach(function(ch,i){x.fillText(ch,px,y);px+=ws[i]+gap})}
   function wrap(x,t,px,y,maxW,lh){var words=String(t).split(' '),line='';x.textAlign='left';words.forEach(function(w){if(line&&x.measureText(line+w).width>maxW){x.fillText(line.trim(),px,y);line='';y+=lh}line+=w+' '});x.fillText(line.trim(),px,y);return y}
   function plane(w,h,tex,solid){return new T.Mesh(new T.PlaneGeometry(w,h),new T.MeshBasicMaterial({map:tex,transparent:!solid,depthWrite:!!solid}))}
@@ -1094,15 +1095,16 @@ var STOCKISTS = [];   // confirmed partners only: {name, address}
     scene.add(new T.HemisphereLight(0xcfd2e6,0x0b0b0b,.36));
     HOOKS.afterMaterials.forEach(function(f){f()});
 
-    buildExterior();
+    try{buildExterior()}catch(e){console.error('build exterior',e)}
 
     /* ===== interior ===== */
     slab(BOUNDS.x1,0,BOUNDS.x2,BOUNDS.z2,.001,MAT.floor);
     ROOMS.forEach(buildRoom);
     var vl=new T.PointLight(0xfff0dc,1.1,12,2);vl.position.set(0,4.4,-3);scene.add(vl);
-    buildLobby();buildAbout();buildProcess();buildLibrary();buildShop();
-    ROOMS.forEach(function(r){if(r.chapter)buildChapter(r)});
-    HOOKS.afterBuild.forEach(function(f){f()});
+    function safe(n,f){try{f()}catch(e){console.error('build '+n,e)}}
+    safe('lobby',buildLobby);safe('about',buildAbout);safe('process',buildProcess);safe('library',buildLibrary);safe('shop',buildShop);
+    ROOMS.forEach(function(r){if(r.chapter)safe(r.id,function(){buildChapter(r)})});
+    HOOKS.afterBuild.forEach(function(f,i){safe('hook '+i,f)});
     resize();bindInput();
   }
 

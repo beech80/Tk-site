@@ -31,15 +31,16 @@
     scene.add(new T.HemisphereLight(0xcfd2e6,0x0b0b0b,.36));
     HOOKS.afterMaterials.forEach(function(f){f()});
 
-    buildExterior();
+    try{buildExterior()}catch(e){console.error('build exterior',e)}
 
     /* ===== interior ===== */
     slab(BOUNDS.x1,0,BOUNDS.x2,BOUNDS.z2,.001,MAT.floor);
     ROOMS.forEach(buildRoom);
     var vl=new T.PointLight(0xfff0dc,1.1,12,2);vl.position.set(0,4.4,-3);scene.add(vl);
-    buildLobby();buildAbout();buildProcess();buildLibrary();buildShop();
-    ROOMS.forEach(function(r){if(r.chapter)buildChapter(r)});
-    HOOKS.afterBuild.forEach(function(f){f()});
+    function safe(n,f){try{f()}catch(e){console.error('build '+n,e)}}
+    safe('lobby',buildLobby);safe('about',buildAbout);safe('process',buildProcess);safe('library',buildLibrary);safe('shop',buildShop);
+    ROOMS.forEach(function(r){if(r.chapter)safe(r.id,function(){buildChapter(r)})});
+    HOOKS.afterBuild.forEach(function(f,i){safe('hook '+i,f)});
     resize();bindInput();
   }
 
