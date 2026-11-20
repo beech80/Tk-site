@@ -51,7 +51,7 @@
     var cx=-17.25,sw=9.2,sh=sw*822/1620,sy=3.25,sz=-57.7;
 
     /* --- cinema: screen in a black reveal, masking, soft spill on the floor --- */
-    box(sw+.5,sh+.5,.12,MAT.frame,cx,sy,sz-.08);
+    box(sw+.5,sh+.5,.12,MAT.frame,cx,sy,sz-.06);
     var scr=new T.Mesh(new T.PlaneGeometry(sw,sh),new T.MeshBasicMaterial(vt?{map:vt,toneMapped:false}:{color:0x222222}));scr.position.set(cx,sy,sz);scene.add(scr);
     var halo=glow(sw*1.7,sh*1.9,0x9fa6c8,.12);halo.position.set(cx,sy,sz-.04);scene.add(halo);
     floorGlow(cx,-55.5,10,4,0xb9c0dc,.16);
@@ -72,9 +72,9 @@
     libMerge(stepL,MAT.warm);
     rows.forEach(function(r){[-1,1].forEach(function(s){var g=glow(.9,.6,0xffd9a6,.22);g.rotation.x=-Math.PI/2;g.position.set(cx+s*(rw/2+.12),r.y+.012,r.z+1.2);scene.add(g)})});
     /* the cinema is dressed in black: carpet under the seating, dark fabric on the screen wall and side walls */
-    var cz1=-47.4,cz2=Lb.z2+.04;
-    var carpet=new T.Mesh(new T.PlaneGeometry(Lb.x2-Lb.x1-.1,cz1-cz2),M.dark);carpet.rotation.x=-Math.PI/2;carpet.position.set(cx,.008,(cz1+cz2)/2);scene.add(carpet);
-    var drape=[];libB(drape,Lb.x2-Lb.x1-.1,5.2,.04,cx,2.6,Lb.z2+.04);libB(drape,.04,5.2,cz1-cz2,Lb.x1+.04,2.6,(cz1+cz2)/2);libB(drape,.04,5.2,cz1-cz2,Lb.x2-.04,2.6,(cz1+cz2)/2);
+    var cz1=-47.4,cz2=Lb.z2+.24;
+    var carpet=new T.Mesh(new T.PlaneGeometry(Lb.x2-Lb.x1-.4,cz1-cz2),M.dark);carpet.rotation.x=-Math.PI/2;carpet.position.set(cx,.02,(cz1+cz2)/2);scene.add(carpet);
+    var drape=[];libB(drape,Lb.x2-Lb.x1-.4,5.2,.04,cx,2.6,cz2);libB(drape,.04,5.2,cz1-cz2,Lb.x1+.17,2.6,(cz1+cz2)/2);libB(drape,.04,5.2,cz1-cz2,Lb.x2-.17,2.6,(cz1+cz2)/2);
     libMerge(drape,new T.MeshStandardMaterial({color:0x0c0b0e,roughness:1}));
 
     /* --- slatted acoustic panels on both side walls of the cinema --- */

@@ -7,11 +7,11 @@
     var A=RM.about,dk=EX.dInk,md=EX.dKick,bg=EX.dBg,vio=EX.dVio;
     /* west: the manifesto */
     exOnWall(A,'w',-13,3.1,9.4,4.2,function(x,W,H){exBg(x,W,H,bg);var L=W*.07;
-      exK(x,'About TESTAMENTS',L,H*.15,H*.04,md);
+      exK(x,'About TESTAMENTS',L,H*.14,H*.05,md);
       exT(x,'THE STORY',L-H*.01,H*.38,H*.17,dk,'left',H*.02);exT(x,'BEHIND THE STORY.',L-H*.01,H*.58,H*.17,dk,'left',H*.02);
       exRule(x,L,H*.67,H*.08,H*.008,vio);
-      exI(x,'A person is more than the moment in which we meet them.',L,H*.785,H*.068,'#2b2926');
-      exK(x,'Read the manifesto',L,H*.9,H*.032,vio)},{act:aboutManifesto,label:'Read the manifesto',r:9});
+      exI(x,'A person is more than the moment in which we meet them.',L,H*.8,H*.082,'#24221f');
+      exK(x,'Read the manifesto',L,H*.92,H*.042,vio)},{act:aboutManifesto,label:'Read the manifesto',r:9});
     /* north: the medium */
     [['01','Photography','Photography is not decoration.',-34.6],['02','Conversation','Built around genuine conversation rather than scripted answers.',-29],['03','Editorial','Shaping everything into a chapter that reads as one piece.',-23.4]].forEach(function(m){
       exOnWall(A,'n',m[3],2.7,4.6,2.8,function(x,W,H){exBg(x,W,H,bg);var L=W*.09;
@@ -28,7 +28,7 @@
     /* east: mission and vision, flanking the door */
     [['The mission','To preserve personal stories through meaningful conversations, cinematic photography, and thoughtful editorial storytelling.',-8.5],['The vision','To build a lasting collection of human experiences that encourages understanding, reflection, and connection across different walks of life.',-17.5]].forEach(function(m){
       exOnWall(A,'e',m[2],2.9,4.6,3.4,function(x,W,H){exBg(x,W,H,bg);var L=W*.08;exK(x,m[0],L,H*.16,H*.05,md);exRule(x,L,H*.22,H*.07,H*.01,vio);
-        exW(x,m[1],L,H*.36,W*.84,H*.062,H*.092,null,dk)},{act:aboutMission,label:m[0],r:5})});
+        exW(x,m[1],L,H*.36,W*.84,H*.07,H*.1,null,dk)},{act:aboutMission,label:m[0],r:5})});
     box(3,.46,.7,MAT.bench,-29,.23,-13);col(-30.5,-27.5,-13.4,-12.6);
     var al=new T.PointLight(0xfff4e6,1.4,26,2);al.position.set(-29,5.2,-13);scene.add(al);
   }

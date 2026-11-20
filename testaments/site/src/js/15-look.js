@@ -10,6 +10,7 @@
                      very light grain and edge chromatic aberration.
      ====================================================================== */
   var LK={tier:null,post:false,hdr:null,broken:false,t:0,noise:null,u:[],sky:null,moon:null,dust:null,vols:[],w:0,h:0,dbs:null};
+  window.lookDebug=function(f){return f(scene,R,MAT,LK,cam)};
   function lookTier(){return S.quality==='auto'?(coarse?'low':'medium'):S.quality}
   Promise.resolve().then(function(){
     HOOKS.afterMaterials.push(function(){try{lookMaterials()}catch(e){console.warn('look: materials',e)}});

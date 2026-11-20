@@ -81,10 +81,10 @@
         c.fillStyle='rgba(0,0,0,.75)';sp(c,w,W/2-3,y-3,gap);c.fillStyle='rgba(255,255,255,.22)';sp(c,w,W/2+2,y+2,gap);c.fillStyle='#ece8e0';sp(c,w,W/2,y,gap)})},500);
     eng.position.set(0,PY+3.35,MZ+.6*(1-(3.35/5.2)*.08)+.012);scene.add(eng);
     var ml=new T.PointLight(0x7d4fc4,1.0,11,2);ml.position.set(0,3.4,MZ+5);scene.add(ml);
-    spotB.quad(2.3,5,0,PY+2.5,MZ+.63,0,0,archCol(PUR,.32),Math.PI);
+    spotB.quad(2.3,5,0,PY+2.5,MZ+.63,0,0,archCol(PUR,.12),Math.PI);
     glowB.quad(5.5,3.4,0,.02,MZ+1.6,-Math.PI/2,0,archCol(0x7a4cc0,.26));
     /* the tagline, cut small beneath a bronze rule */
-    var tag=archText(1.7,.42,function(c,W,Hh){c.fillStyle='rgba(180,155,224,.85)';c.fillRect(W*.38,Hh*.08,W*.24,3);c.font='600 '+Math.round(Hh*.24)+'px Inter';c.fillStyle='rgba(0,0,0,.7)';sp(c,'UNDERSTAND THE WHY.',W/2-2,Hh*.7-2,Math.round(Hh*.06));c.fillStyle='#d9d4ca';sp(c,'UNDERSTAND THE WHY.',W/2,Hh*.7,Math.round(Hh*.06))},500);
+    var tag=archText(1.8,.5,function(c,W,Hh){c.fillStyle='rgba(180,155,224,.85)';c.fillRect(W*.38,Hh*.08,W*.24,3);c.font='600 '+Math.round(Hh*.3)+'px Inter';c.fillStyle='rgba(0,0,0,.7)';sp(c,'UNDERSTAND THE WHY.',W/2-2,Hh*.7-2,Math.round(Hh*.06));c.fillStyle='#d9d4ca';sp(c,'UNDERSTAND THE WHY.',W/2,Hh*.7,Math.round(Hh*.06))},500);
     tag.position.set(0,PY+2.25,MZ+.6*(1-(2.25/5.2)*.08)+.012);scene.add(tag);
     col(-1.95,1.95,MZ-1.35,MZ+1.35);
 
@@ -130,6 +130,7 @@
       dirs.forEach(function(d,i){var y=Hh*(.24+i*.1);c.fillStyle='#fbf8f2';c.font='600 '+Math.round(W*.09)+'px Inter';c.textAlign='left';c.fillText(arrow[d[0]],W*.1,y);
         c.font='500 '+Math.round(W*.075)+'px Inter';var nm=d[1].replace(' · ',' ');c.fillText(nm.length>26?nm.slice(0,25)+'…':nm,W*.24,y)})},400);
     tt.position.set(TX,TH/2+.05,TZ+.145);scene.add(tt);
+    var tb=tt.clone();tb.rotation.y=Math.PI;tb.position.z=TZ-.145;scene.add(tb);
     col(TX-TW/2,TX+TW/2,TZ-.14,TZ+.14);
 
     /* ----- start a conversation, visitor information and the desk ----- */
