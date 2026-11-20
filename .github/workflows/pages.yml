@@ -23,7 +23,7 @@ jobs:
       - name: Collect the site
         run: |
           mkdir _site
-          cp testaments/site/index.html testaments/site/CNAME _site/
+          cp testaments/site/index.html _site/
           cp -r testaments/site/assets _site/
       - uses: actions/upload-pages-artifact@v3
         with:
