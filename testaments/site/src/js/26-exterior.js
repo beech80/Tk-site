@@ -27,21 +27,21 @@
       for(var i=0;i<2;i++)for(var j=0;j<4;j++){var t=210+rn()*30|0;c.fillStyle='rgb('+t+','+(t-3)+','+(t-8)+')';c.fillRect(i*512+2,j*256+2,508,252);
         var g=c.createLinearGradient(0,j*256,0,j*256+256);g.addColorStop(0,'rgba(255,255,255,.05)');g.addColorStop(1,'rgba(0,0,0,.07)');c.fillStyle=g;c.fillRect(i*512+2,j*256+2,508,252)}
       for(var k=0;k<9000;k++){c.fillStyle='rgba('+(rn()<.5?'0,0,0':'255,255,255')+','+(rn()*.07)+')';c.fillRect(rn()*W,rn()*H,1+rn()*2,1+rn()*2)}}));
-    ARCH.clad=new T.MeshStandardMaterial({color:0x1f1d1b,map:clad,bumpMap:clad,bumpScale:.025,roughness:.82});
+    ARCH.clad=new T.MeshStandardMaterial({color:0x1f1d1b,map:clad,bumpMap:clad,bumpScale:.025,roughness:.82,envMapIntensity:.22});
     /* forecourt paving: 1.2 x 0.6 m pavers, running bond, 4.8 m tile */
     var pave=archRep(ctex(1024,1024,function(c,W,H){var rn=archRng(5);c.fillStyle='#000';c.fillRect(0,0,W,H);
       for(var j=0;j<8;j++)for(var i=-1;i<4;i++){var x=i*256+(j%2?128:0),t=150+rn()*50|0;c.fillStyle='rgb('+t+','+(t-2)+','+(t-6)+')';c.fillRect(x+2,j*128+2,252,124);if(x<0)c.fillRect(x+2+W,j*128+2,252,124)}
       for(var k=0;k<14000;k++){c.fillStyle='rgba('+(rn()<.5?'0,0,0':'255,255,255')+','+(rn()*.08)+')';c.fillRect(rn()*W,rn()*H,1+rn()*2,1+rn()*2)}}));
-    ARCH.pave=new T.MeshStandardMaterial({color:0x1c1b1a,map:pave,bumpMap:pave,bumpScale:.02,roughness:.55,metalness:.1});
+    ARCH.pave=new T.MeshStandardMaterial({color:0x1c1b1a,map:pave,bumpMap:pave,bumpScale:.02,roughness:.62,metalness:0,envMapIntensity:.1});
     /* lawn / gravel ground, 8 m tile */
     var gr=archRep(ctex(512,512,function(c,W,H){var rn=archRng(3);c.fillStyle='#808080';c.fillRect(0,0,W,H);for(var k=0;k<16000;k++){c.fillStyle='rgba('+(rn()<.5?'0,0,0':'255,255,255')+','+(rn()*.18)+')';c.fillRect(rn()*W,rn()*H,1+rn()*2,1+rn()*2)}}));
-    ARCH.ground=new T.MeshStandardMaterial({color:0x111112,map:gr,roughness:.97});
-    ARCH.dark=new T.MeshStandardMaterial({color:0x09090a,roughness:.6});
+    ARCH.ground=new T.MeshStandardMaterial({color:0x111112,map:gr,roughness:.97,envMapIntensity:.05});
+    ARCH.dark=new T.MeshStandardMaterial({color:0x09090a,roughness:.6,envMapIntensity:.15});
     ARCH.bronze=new T.MeshStandardMaterial({color:0x4a3b2c,roughness:.35,metalness:.85});
-    ARCH.soffit=new T.MeshStandardMaterial({color:0x6a625a,roughness:.9});
+    ARCH.soffit=new T.MeshStandardMaterial({color:0x6a625a,roughness:.9,envMapIntensity:.3});
     ARCH.water=new T.MeshStandardMaterial({color:0x07080b,roughness:.06,metalness:.4,transparent:true,opacity:.42,depthWrite:false});
     /* tree canopy: vertex colour (brightness) also scales the purple emissive -> lit from below */
-    ARCH.canopy=new T.MeshStandardMaterial({color:0x1c1824,emissive:0x6e42a3,emissiveIntensity:.2,roughness:1,flatShading:true,vertexColors:true});
+    ARCH.canopy=new T.MeshStandardMaterial({color:0x1c1824,emissive:0x6e42a3,emissiveIntensity:.2,roughness:1,flatShading:true,vertexColors:true,envMapIntensity:.08});
     ARCH.canopy.onBeforeCompile=function(s){s.fragmentShader=s.fragmentShader.replace('#include <emissivemap_fragment>','#include <emissivemap_fragment>\n#ifdef USE_COLOR\ntotalEmissiveRadiance*=vColor*vColor;\n#endif')};
     /* additive light planes, coloured per vertex (colour x brightness) so one material serves many */
     function add(map){return new T.MeshBasicMaterial({map:map,vertexColors:true,transparent:true,blending:T.AdditiveBlending,depthWrite:false,fog:true})}
@@ -120,7 +120,7 @@
     var CZ=9.5;stone.bx(-PX,PX,CY,CY+CT,FZ,CZ,0,6);stone.bx(-PO,PO,CY,CY+CT,.5,FZ,0,6);
     bronze.bx(-PX-.02,PX+.02,CY+CT-.04,CY+CT+.02,CZ-.02,CZ+.02);
     var sof=new T.Mesh(new T.PlaneGeometry(2*PX,CZ-.5),A.soffit);sof.rotation.x=Math.PI/2;sof.position.set(0,CY-.005,(CZ+.5)/2);scene.add(sof);refl.push(sof);
-    [2.6,4.9,7.2,9.1].forEach(function(z){lamp.bx(-PX+.4,PX-.4,CY-.03,CY-.01,z-.03,z+.03);glowB.quad(2*PX-.8,.9,0,CY-.04,z,Math.PI/2,0,archCol(WARM,.18));glowB.quad(2*PX,3.2,0,.115,z,-Math.PI/2,0,archCol(WARM,.16))});
+    [2.6,4.9,7.2,9.1].forEach(function(z){lamp.bx(-PX+.4,PX-.4,CY-.03,CY-.01,z-.03,z+.03);glowB.quad(2*PX-.8,.9,0,CY-.04,z,Math.PI/2,0,archCol(WARM,.18));glowB.quad(2*PX,3.2,0,.115,z,-Math.PI/2,0,archCol(WARM,.07))});
     /* grazing light up the portal reveals and the piers */
     [-1,1].forEach(function(s){spotB.quad(1.6,6,s*(PO-.01),3,FZ-.1,0,-s*Math.PI/2,archCol(WARM,.35),Math.PI);
       for(var x=19.5;x<bx2-1;x+=6)spotB.quad(4.2,9,s*x,4.5,WZ+.01,0,0,archCol(WARM,.16),Math.PI)});
@@ -129,7 +129,7 @@
 
     /* ----- lettering: TESTAMENTS above the portal (lit, with halo); tagline cut into the portal lintel ----- */
     var sign=archText(13.6,1.9,function(c,W,H){c.fillStyle='#fbf7ef';c.font='500 '+Math.round(H*.8)+'px "Bodoni Moda"';sp(c,'TESTAMENTS',W/2,H*.8,Math.round(H*.13))},300);
-    dark.bx(-7.6,7.6,10.95,13.35,FZ,FZ+.03);sign.position.set(0,12.15,FZ+.04);scene.add(sign);refl.push(sign);
+    bronze.bx(-6.4,6.4,11.02,11.06,FZ,FZ+.03);sign.position.set(0,12.15,FZ+.04);scene.add(sign);refl.push(sign);
     var halo=glow(15,2.6,0xfff0dc,.1);halo.position.set(0,12.1,FZ+.01);scene.add(halo);
     var sub=archText(8,.62,function(c,W,H){c.fillStyle='#e9e4da';c.font='500 '+Math.round(H*.56)+'px Inter';sp(c,'UNDERSTAND THE WHY.',W/2,H*.72,Math.round(H*.3))},500);
     sub.position.set(0,PH+.6,FZ+.81);scene.add(sub);refl.push(sub);
