@@ -93,9 +93,9 @@
     /* the focal wall, straight ahead on entering */
     var p=next();if(p)exHangL(p.id,r,'u1',-2.6,2.65,sz(p,true));else exPlateL(r,'u1',-2.6,2.65,2.4,3.1,c);
     /* a diptych on the long wall */
-    var a=next(),b=next(),wa=a?sz(a)*a.w/a.h:1.8,wb=b?sz(b)*b.w/b.h:1.8,gap=1.1,tot=wa+wb+gap,c0=20.6,ua=c0-tot/2+wa/2,ub=c0+tot/2-wb/2;
-    if(a)exHangL(a.id,r,'v0',ua,2.5,sz(a));else exPlateL(r,'v0',ua,2.5,1.8,2.4,c);
-    if(b)exHangL(b.id,r,'v0',ub,2.5,sz(b));else exPlateL(r,'v0',ub,2.5,1.8,2.4,c);
+    var a=next(),b=next(),hd=a&&b?Math.min(sz(a),sz(b)):a?sz(a):b?sz(b):2.4,wa=a?hd*a.w/a.h:1.8,wb=b?hd*b.w/b.h:1.8,gap=1.1,tot=wa+wb+gap,c0=20.6,ua=c0-tot/2+wa/2,ub=c0+tot/2-wb/2;
+    if(a)exHangL(a.id,r,'v0',ua,2.5,hd);else exPlateL(r,'v0',ua,2.5,1.8,hd,c);
+    if(b)exHangL(b.id,r,'v0',ub,2.5,hd);else exPlateL(r,'v0',ub,2.5,1.8,hd,c);
     /* singles */
     [['v1',17],['v1',24.5],['v0',27.5]].forEach(function(s){var q=next();if(q)exHangL(q.id,r,s[0],s[1],2.5,sz(q));else exPlateL(r,s[0],s[1],2.5,1.8,2.4,c)});
     /* section title, beside the entrance */

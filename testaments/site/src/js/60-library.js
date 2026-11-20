@@ -73,7 +73,7 @@
     rows.forEach(function(r){[-1,1].forEach(function(s){var g=glow(.9,.6,0xffd9a6,.22);g.rotation.x=-Math.PI/2;g.position.set(cx+s*(rw/2+.12),r.y+.012,r.z+1.2);scene.add(g)})});
     /* the cinema is dressed in black: carpet under the seating, dark fabric on the screen wall and side walls */
     var cz1=-47.4,cz2=Lb.z2+.24;
-    var carpet=new T.Mesh(new T.PlaneGeometry(Lb.x2-Lb.x1-.4,cz1-cz2),M.dark);carpet.rotation.x=-Math.PI/2;carpet.position.set(cx,.02,(cz1+cz2)/2);scene.add(carpet);
+    var carpet=new T.Mesh(new T.PlaneGeometry(Lb.x2-Lb.x1-.4,cz1-cz2),new T.MeshStandardMaterial({color:0x121016,roughness:1,polygonOffset:true,polygonOffsetFactor:-2,polygonOffsetUnits:-2}));carpet.rotation.x=-Math.PI/2;carpet.position.set(cx,.03,(cz1+cz2)/2);scene.add(carpet);
     var drape=[];libB(drape,Lb.x2-Lb.x1-.4,5.2,.04,cx,2.6,cz2);libB(drape,.04,5.2,cz1-cz2,Lb.x1+.17,2.6,(cz1+cz2)/2);libB(drape,.04,5.2,cz1-cz2,Lb.x2-.17,2.6,(cz1+cz2)/2);
     libMerge(drape,new T.MeshStandardMaterial({color:0x0c0b0e,roughness:1}));
 
@@ -155,10 +155,14 @@
     var bse=new T.Mesh(new T.BoxGeometry(.7,.06,.6),M.dark);bse.position.y=.03;lec.add(bse);
     var desk=new T.Mesh(new T.BoxGeometry(1.08,.05,.78),M.oak);desk.position.y=1.08;desk.rotation.x=-.32;lec.add(desk);
     var lip=new T.Mesh(new T.BoxGeometry(1.08,.06,.03),M.brass);lip.position.set(0,1.0,.37);lip.rotation.x=-.32;lec.add(lip);
-    var mag=plane(.98,.64,ctex(1520,1000,function(x,W,H){x.fillStyle='#f5f3ef';x.fillRect(0,0,W,H);x.fillStyle='#090909';x.fillRect(0,0,W/2,H);x.fillStyle='#f5f3ef';x.font='500 68px "Bodoni Moda"';sp(x,'TESTAMENTS',W/4,240,12);x.font='italic 400 84px "Bodoni Moda"';x.textAlign='center';x.fillText('Understand',W/4,560);x.fillText('the Why.',W/4,660);x.fillStyle='#b49be0';x.fillRect(W/4-30,720,60,4);
-      x.fillStyle='#090909';x.font='600 40px Inter';sp(x,'READ THE MAGAZINE',W*3/4,460,10);x.font='italic 400 64px "Bodoni Moda"';x.textAlign='center';x.fillText('Every Chapter Matters.',W*3/4,580);var g=x.createLinearGradient(W/2-60,0,W/2+60,0);g.addColorStop(0,'rgba(0,0,0,0)');g.addColorStop(.5,'rgba(0,0,0,.28)');g.addColorStop(1,'rgba(0,0,0,0)');x.fillStyle=g;x.fillRect(W/2-60,0,120,H)}),true);
+    var mag=plane(.98,.64,ctex(1520,1000,function(x,W,H){x.fillStyle='#f5f3ef';x.fillRect(0,0,W,H);x.fillStyle='#090909';x.fillRect(0,0,W/2,H);x.textAlign='center';
+      x.fillStyle='#f5f3ef';x.font='500 96px "Bodoni Moda"';sp(x,'TESTAMENTS',W/4,470,8);x.fillStyle='#b49be0';x.fillRect(W/4-50,540,100,8);
+      x.fillStyle='#090909';x.font='italic 400 120px "Bodoni Moda"';x.textAlign='center';x.fillText('Read the',W*3/4,400);x.fillText('magazine',W*3/4,530);x.font='700 64px Inter';sp(x,'PRESS E / TAP',W*3/4,720,6);
+      var g=x.createLinearGradient(W/2-60,0,W/2+60,0);g.addColorStop(0,'rgba(0,0,0,0)');g.addColorStop(.5,'rgba(0,0,0,.28)');g.addColorStop(1,'rgba(0,0,0,0)');x.fillStyle=g;x.fillRect(W/2-60,0,120,H)}),true);
     mag.rotation.x=-Math.PI/2+.32;mag.position.set(0,1.115,0);lec.add(mag);lec.position.set(-11,0,-43.5);scene.add(lec);
     col(-11.4,-10.6,-43.85,-43.15);
+    var rs=libSign(1.3,.42,function(c,W,H){c.fillStyle='#0b0b0c';c.fillRect(0,0,W,H);c.fillStyle='#f7f4ee';c.textAlign='center';c.font='600 '+Math.round(H*.3)+'px Inter';sp(c,'READ THE MAGAZINE',W/2,H*.48,Math.round(H*.04));c.fillStyle='#b49be0';c.fillRect(W/2-H*.12,H*.6,H*.24,Math.max(4,H*.02));c.fillStyle='#d8d5cf';c.font='500 '+Math.round(H*.2)+'px Inter';sp(c,'PRESS E / TAP',W/2,H*.87,Math.round(H*.03))},500);
+    place(rs,-11,2.05,-43.82,'pz');var rsp=[];libB(rsp,.02,.75,.02,-11.5,1.6,-43.86);libB(rsp,.02,.75,.02,-10.5,1.6,-43.86);libMerge(rsp,M.brass);
     var lg=glow(1.4,1,0xfff0dc,.25);lg.rotation.x=-Math.PI/2+.32;lg.position.set(-11,1.13,-43.5);scene.add(lg);
     floorGlow(-11,-43.5,3,3,0xfff0dc,.3);
     addInter(-11,-43.5,null,2.8,'Read','Read the magazine',function(){openReader()});
