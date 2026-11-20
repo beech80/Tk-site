@@ -32,12 +32,12 @@
         var pr=shopPrice(c).toUpperCase(),fs=Math.round(H*.1);t.font='600 '+fs+'px Inter';while(t.measureText(pr).width+pr.length*H*.01>W*.92&&fs>10){fs--;t.font='600 '+fs+'px Inter'}
         t.fillStyle='#ffffff';sp(t,pr,W/2,H*.71,Math.round(H*.01));t.fillStyle='#cfccc5';t.font='600 '+Math.round(H*.08)+'px Inter';sp(t,edState(c).toUpperCase(),W/2,H*.87,Math.round(H*.015))},800);
       pl.position.set(x,.49,pz+.632);scene.add(pl);
-      floorGlow(x,pz,3.2,3.2,0xfff0dc,.2);floorGlow(x,pz,2,2,0x6e42a3,.14);
+      floorGlow(x,pz,3.2,3.2,0xfff0dc,.15);floorGlow(x,pz,2,2,0x6e42a3,.14);
       var pin=new T.Mesh(new T.CircleGeometry(.14,16),MAT.lamp);pin.rotation.x=Math.PI/2;pin.position.set(x,Sh.h-.02,pz-.2);scene.add(pin);
       col(x-.68,x+.68,pz-.68,pz+.68);
       addInter(x,pz+.66,'pz',3.4,'View','View edition · '+c.title,function(){openProduct(c)});
     });
-    libMerge(ped,MAT.ped);libMerge(tops,MAT.lamp);libMerge(ease,MAT.frame);
+    libMerge(ped,MAT.ped);libMerge(tops,M.oak);libMerge(ease,MAT.frame);
 
     /* --- long marble display table with stacks of each edition --- */
     var tz=-44.6,tx1=12.6,tx2=21.9,tw=1.2,tcx=(tx1+tx2)/2,tl=tx2-tx1,tb=[],stk=[],tcov={};
