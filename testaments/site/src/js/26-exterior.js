@@ -145,7 +145,7 @@
     var lc=new T.Mesh(new T.PlaneGeometry(5.6,5.4),new T.MeshBasicMaterial({map:ctex(256,256,function(c,W,H){c.fillStyle='#3a3026';c.fillRect(0,0,W,H);var g=c.createRadialGradient(W/2,H/2,0,W/2,H/2,W*.6);g.addColorStop(0,'#fff1dc');g.addColorStop(1,'#e8cfa8');c.fillStyle=g;c.fillRect(10,10,W-20,H-20);c.fillStyle='rgba(0,0,0,.35)';for(var i=1;i<4;i++){c.fillRect(i*W/4-1,10,2,H-20);c.fillRect(10,i*H/4-1,W-20,2)}})}));
     lc.rotation.x=Math.PI/2;lc.position.set(0,5.17,-3);scene.add(lc);
     glowB.quad(5.4,5.6,0,.02,-3,-Math.PI/2,0,archCol(WARM,.4));
-    var fw=new T.PointLight(0xffe2c0,1.6,24,2);fw.position.set(0,5.6,5.5);scene.add(fw);
+    var fw=new T.PointLight(0xffe2c0,0.8,16,2);fw.position.set(0,5.6,5.5);scene.add(fw);
 
     /* ----- trees: natural low-poly canopies (merged), uplit in restrained purple ----- */
     var trunks=new ArchB(),cans=new ArchB();

@@ -30,5 +30,5 @@
       exOnWall(A,'e',m[2],2.9,4.6,3.4,function(x,W,H){exBg(x,W,H,bg);var L=W*.08;exK(x,m[0],L,H*.16,H*.05,md);exRule(x,L,H*.22,H*.07,H*.01,vio);
         exW(x,m[1],L,H*.36,W*.84,H*.07,H*.1,null,dk)},{act:aboutMission,label:m[0],r:5})});
     box(3,.46,.7,MAT.bench,-29,.23,-13);col(-30.5,-27.5,-13.4,-12.6);
-    var al=new T.PointLight(0xfff4e6,1.4,26,2);al.position.set(-29,5.2,-13);scene.add(al);
+    var al=new T.PointLight(0xfff4e6,0.8,20,2);al.position.set(-29,5.2,-13);scene.add(al);
   }

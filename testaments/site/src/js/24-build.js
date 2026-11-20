@@ -36,7 +36,7 @@
     /* ===== interior ===== */
     slab(BOUNDS.x1,0,BOUNDS.x2,BOUNDS.z2,.001,MAT.floor);
     ROOMS.forEach(buildRoom);
-    var vl=new T.PointLight(0xfff0dc,1.1,12,2);vl.position.set(0,4.4,-3);scene.add(vl);
+    var vl=new T.PointLight(0xfff0dc,0.6,9,2);vl.position.set(0,4.4,-3);scene.add(vl);
     function safe(n,f){try{f()}catch(e){console.error('build '+n,e)}}
     safe('lobby',buildLobby);safe('about',buildAbout);safe('process',buildProcess);safe('library',buildLibrary);safe('shop',buildShop);
     ROOMS.forEach(function(r){if(r.chapter)safe(r.id,function(){buildChapter(r)})});

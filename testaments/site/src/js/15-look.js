@@ -10,7 +10,6 @@
                      very light grain and edge chromatic aberration.
      ====================================================================== */
   var LK={tier:null,post:false,hdr:null,broken:false,t:0,noise:null,u:[],sky:null,moon:null,dust:null,vols:[],w:0,h:0,dbs:null};
-  window.lookDebug=function(f){return f(scene,R,MAT,LK,cam)};
   function lookTier(){return S.quality==='auto'?(coarse?'low':'medium'):S.quality}
   Promise.resolve().then(function(){
     HOOKS.afterMaterials.push(function(){try{lookMaterials()}catch(e){console.warn('look: materials',e)}});
@@ -82,7 +81,7 @@
           ' lkJ*=(1.0-step(.7,abs(normalize(vLkN).y)))*(1.0-smoothstep(28.0,70.0,lkDist));diffuseColor.rgb*=1.0-.3*lkJ;',
           '#endif'
         ].join('\n'))
-        .replace('#include <roughnessmap_fragment>','#include <roughnessmap_fragment>\nroughnessFactor=clamp(roughnessFactor+lkP.z*2.0*lkR+lkJ*.5,.04,1.0);');
+        .replace('#include <roughnessmap_fragment>','#include <roughnessmap_fragment>\nroughnessFactor=clamp(roughnessFactor+lkP.z*2.0*lkR,.04,1.0);');
     };
     m.customProgramCacheKey=function(){return 'lk-'+(kind||'')+(cheap?'-c':'')};m.needsUpdate=true;return m;
   }
@@ -92,7 +91,7 @@
     LK.tier=lookTier();LK.noise=lookNoiseTex();
     function set(m,o){if(!m)return;for(var k in o){if(k==='color'||k==='emissive')m[k].set(o[k]);else m[k]=o[k]}m.needsUpdate=true}
     /* polished dark concrete / terrazzo floor */
-    set(MAT.floor,{color:0x161616,roughness:.46,metalness:0,envMapIntensity:.65});lookDetail(MAT.floor,'FLOOR',[.12,.012,.03,0],[.22,.215,.2,8]);
+    set(MAT.floor,{color:0x161616,roughness:.46,metalness:0,envMapIntensity:.5});lookDetail(MAT.floor,'FLOOR',[.12,.012,.03,0],[.22,.215,.2,8]);
     /* matte charcoal plaster */
     set(MAT.wall,{color:0x222223,roughness:.92,envMapIntensity:.55});lookDetail(MAT.wall,'',[.15,.008,.01,0]);
     set(MAT.whiteWall,{color:0xd3cec5,roughness:.93,envMapIntensity:.45});lookDetail(MAT.whiteWall,'',[.15,.005,.01,0]);
@@ -169,7 +168,7 @@
     ring.dispose();
     /* wall-washer scallops on every gallery wall (skip doors), so lettered walls read evenly */
     var SCAL=ctex(256,256,function(c,W,H){c.save();c.translate(W/2,-H*.08);c.scale(1.4,1.3);var g=c.createRadialGradient(0,0,0,0,0,H*.95);g.addColorStop(0,'rgba(255,255,255,1)');g.addColorStop(.3,'rgba(255,255,255,.78)');g.addColorStop(.65,'rgba(255,255,255,.34)');g.addColorStop(1,'rgba(255,255,255,0)');c.fillStyle=g;c.fillRect(-W*2,0,W*4,H*2);c.restore();
-      var f=c.createLinearGradient(0,0,W,0);f.addColorStop(0,'rgba(0,0,0,1)');f.addColorStop(.18,'rgba(0,0,0,0)');f.addColorStop(.82,'rgba(0,0,0,0)');f.addColorStop(1,'rgba(0,0,0,1)');c.globalCompositeOperation='destination-out';c.fillStyle=f;c.fillRect(0,0,W,H)});
+      var f=c.createLinearGradient(0,0,W,0);for(var q=0;q<=8;q++){var tq=q/8,cq=Math.cos(Math.PI*(tq-.5));f.addColorStop(tq,'rgba(0,0,0,'+(1-cq*cq).toFixed(3)+')')}c.globalCompositeOperation='destination-out';c.fillStyle=f;c.fillRect(0,0,W,H)});
     SCAL.encoding=T.LinearEncoding;
     ROOMS.forEach(function(r){if(r.cor||r.id==='vestibule'||r.dark)return;var wh=!!r.white,H=Math.min(r.h*.8,r.id==='lobby'?6.5:4.6),sp=r.id==='lobby'?3.4:2.7,kk=k(0xffeedd,wh?.024:.05),o=.155;
       [['s',r.x1,r.x2],['n',r.x1,r.x2],['w',r.z2,r.z1],['e',r.z2,r.z1]].forEach(function(sd){var s=sd[0];if(r.open&&r.open.indexOf(s)>=0)return;
@@ -187,6 +186,9 @@
     scene.traverse(function(o){var c=o.material&&o.material.color;
       if(o.isMesh&&c&&o.material.blending===T.AdditiveBlending&&o.position.y<.1&&o.position.z<-6&&o.position.z>-34&&Math.abs(o.position.x)<14&&c.b>c.r*1.2)o.material.opacity=Math.min(o.material.opacity,.28);
       if(o.isPointLight&&o.color.b>o.color.r*1.2&&o.position.z<-6&&o.position.z>-34&&Math.abs(o.position.x)<14)o.intensity*=.55});
+    /* calmer picture washes (no oval hotspots over text panels) and a darker, glowing night plaza */
+    scene.traverse(function(o){if(o.isMesh&&o.material&&o.material.map===SPOT&&!o.material.lkDone){o.material.opacity*=.62;o.material.lkDone=1}
+      if(o.isPointLight&&o.position.z>0)o.intensity*=.62});
     glows.push({c:[0,9.9,-20],u:[1,0,0],v:[0,0,1],w:12,h:12,k:k(0xb8c6e6,.18)});
     /* entrance: warm interior light spilling onto the plaza */
     glows.push({c:[0,.03,2.6],u:[1,0,0],v:[0,0,1],w:9,h:7,k:k(0xffe6c4,.32)});
