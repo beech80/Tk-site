@@ -1987,7 +1987,7 @@ var STOCKISTS = [];   // confirmed partners only: {name, address}
     var ped=new T.Mesh(new T.BoxGeometry(.5,1.02,.42),M.marble);ped.position.y=.51;lec.add(ped);
     var bse=new T.Mesh(new T.BoxGeometry(.7,.06,.6),M.dark);bse.position.y=.03;lec.add(bse);
     var desk=new T.Mesh(new T.BoxGeometry(1.08,.05,.78),M.oak);desk.position.y=1.08;desk.rotation.x=.45;lec.add(desk);
-    var lip=new T.Mesh(new T.BoxGeometry(1.08,.06,.03),M.brass);lip.position.set(0,.93,.38);lip.rotation.x=.45;lec.add(lip);
+    var lip=new T.Mesh(new T.BoxGeometry(1.08,.06,.03),M.brass);lip.position.set(0,.9,.4);lip.rotation.x=.45;lec.add(lip);
     var mag=plane(.98,.64,ctex(1520,1000,function(x,W,H){x.fillStyle='#f5f3ef';x.fillRect(0,0,W,H);x.fillStyle='#090909';x.fillRect(0,0,W/2,H);x.textAlign='center';
       x.fillStyle='#f5f3ef';x.font='500 96px "Bodoni Moda"';sp(x,'TESTAMENTS',W/4,470,8);x.fillStyle='#b49be0';x.fillRect(W/4-50,540,100,8);
       x.fillStyle='#090909';x.font='italic 400 120px "Bodoni Moda"';x.textAlign='center';x.fillText('Read the',W*3/4,400);x.fillText('magazine',W*3/4,530);x.font='700 64px Inter';sp(x,'PRESS E / TAP',W*3/4,720,6);
@@ -1996,7 +1996,7 @@ var STOCKISTS = [];   // confirmed partners only: {name, address}
     col(-11.4,-10.6,-43.85,-43.15);
     var rs=libSign(1.3,.42,function(c,W,H){c.fillStyle='#0b0b0c';c.fillRect(0,0,W,H);c.fillStyle='#f7f4ee';c.textAlign='center';c.font='600 '+Math.round(H*.3)+'px Inter';sp(c,'READ THE MAGAZINE',W/2,H*.48,Math.round(H*.04));c.fillStyle='#b49be0';c.fillRect(W/2-H*.12,H*.6,H*.24,Math.max(4,H*.02));c.fillStyle='#d8d5cf';c.font='500 '+Math.round(H*.2)+'px Inter';sp(c,'PRESS E / TAP',W/2,H*.87,Math.round(H*.03))},500);
     place(rs,-11,2.05,-43.82,'pz');var rsp=[];libB(rsp,.02,.75,.02,-11.5,1.6,-43.86);libB(rsp,.02,.75,.02,-10.5,1.6,-43.86);libMerge(rsp,M.brass);
-    var lg=glow(1.4,1,0xfff0dc,.25);lg.rotation.x=-Math.PI/2+.45;lg.position.set(-11,1.13,-43.5);scene.add(lg);
+    var lg=glow(1.4,1,0xfff0dc,.1);lg.rotation.x=-Math.PI/2+.45;lg.position.set(-11,1.13,-43.5);scene.add(lg);
     floorGlow(-11,-43.5,3,3,0xfff0dc,.3);
     addInter(-11,-43.5,null,2.8,'Read','Read the magazine',function(){openReader()});
 
