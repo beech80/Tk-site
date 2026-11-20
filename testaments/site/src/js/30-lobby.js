@@ -131,7 +131,7 @@
         c.beginPath();c.moveTo(-sz*.42,0);c.lineTo(sz*.42,0);c.moveTo(sz*.12,-sz*.3);c.lineTo(sz*.42,0);c.lineTo(sz*.12,sz*.3);c.stroke();c.restore()}
       dirs.forEach(function(d,i){var y=Hh*(.25+i*.1),nm=d[1].replace(' · ',' '),fs=Math.round(W*.068),mw=W*.72;
         arw(d[0],W*.1,y,W*.085);c.fillStyle='#fbf8f2';c.textAlign='left';try{c.letterSpacing='0px'}catch(e){}c.font='500 '+fs+'px Inter';
-        while(c.measureText(nm).width>mw&&fs>W*.05){fs--;c.font='500 '+fs+'px Inter'}while(c.measureText(nm).width>mw&&nm.length>4)nm=nm.slice(0,-2)+'…';c.fillText(nm,W*.24,y)})},400);
+        c.fillText(nm,W*.24,y,mw)})},400);
     tt.position.set(TX,TH/2+.05,TZ+.145);scene.add(tt);
     col(TX-TW/2,TX+TW/2,TZ-.14,TZ+.14);
 
