@@ -2,6 +2,7 @@
   function quality(){if(!R)return;var q=S.quality==='auto'?(coarse?'low':'medium'):S.quality,d=window.devicePixelRatio||1;R.setPixelRatio(q==='low'?Math.min(d,coarse?1.5:1):q==='medium'?Math.min(d,1.25):Math.min(d,2))}
   var baseFov=68,fovNow=68;
   function resize(){if(!R)return;var w=window.innerWidth,h=window.innerHeight;R.setSize(w,h,false);cam.aspect=w/h;baseFov=w<h?80:68;cam.fov=fovNow=baseFov;cam.updateProjectionMatrix();HOOKS.resize.forEach(function(f){f(w,h)});if(typeof mmResize==='function')mmResize()}
+  if(!HOOKS.footstep)HOOKS.footstep=[];
   window.addEventListener('resize',resize);
   function start(){if(running)return;running=true;clock.getDelta();loop()}
   function loop(){if(!running)return;requestAnimationFrame(loop);var raw=Math.min(.5,clock.getDelta());step(Math.min(.05,raw),raw);for(var hi=0;hi<HOOKS.frame.length;hi++)HOOKS.frame[hi](Math.min(.05,raw),raw);if(HOOKS.render)HOOKS.render();else R.render(scene,cam)}
@@ -34,7 +35,13 @@
     return true}
 
   /* camera feel */
-  var look={x:0,y:0},bobPh=0,bobAmp=0,camY=EYE,autoStuck=0;
+  var look={x:0,y:0},bobPh=0,bobAmp=0,camY=EYE,autoStuck=0,loopSteps=0,loopRoll=0,loopPad={x:0,y:0,lx:0,ly:0};
+  /* gamepad: left stick walks, right stick looks (radial deadzone + response curve), A uses, LT/stick-click sprints */
+  var loopPadA=false;function loopPadRead(dt){var gp=null,ps=navigator.getGamepads?navigator.getGamepads():[];for(var i=0;i<ps.length;i++)if(ps[i]&&ps[i].connected){gp=ps[i];break}
+    loopPad.x=loopPad.y=loopPad.lx=loopPad.ly=0;loopPad.run=false;if(!gp)return;function dz(x,y,e){var m=Math.hypot(x,y);if(m<.16)return [0,0];var k=Math.min(1,(m-.16)/.84);k=Math.pow(k,e)/m;return [x*k,y*k]}
+    var l=dz(gp.axes[0]||0,gp.axes[1]||0,1.4),r=dz(gp.axes[2]||0,gp.axes[3]||0,1.8);loopPad.x=l[0];loopPad.y=l[1];loopPad.lx=r[0];loopPad.ly=r[1];
+    var b=gp.buttons||[];loopPad.run=!!((b[10]&&b[10].pressed)||(b[6]&&b[6].value>.5));var aP=!!(b[0]&&b[0].pressed);if(aP&&!loopPadA&&mode==='play'&&near)interact();loopPadA=aP;
+    if(loopPad.lx||loopPad.ly)lookBy(loopPad.lx*dt*900,loopPad.ly*dt*600,.0022)}
   function step(dt,raw){
     if(mode==='ui'&&$('lb').hidden&&$('reader').hidden&&$('film').hidden&&$('ov').hidden&&gate.hidden)resume();
     if(mode==='anim'&&anim)animStep(raw);
@@ -42,27 +49,32 @@
     var moving=false,sprint=false;
     if(mode==='play'){
       /* smoothed look: input accumulates, the camera eases toward it */
-      var la=S.smooth===false?1:1-Math.exp(-dt*32),lx=look.x*la,ly=look.y*la;look.x-=lx;look.y-=ly;
+      var la=S.smooth===false?1:1-Math.exp(-dt*(coarse?20:32)),lx=look.x*la,ly=look.y*la;look.x-=lx;look.y-=ly;
       P.yaw-=lx;P.pitch=Math.max(-1.1,Math.min(1.1,P.pitch-ly));
-      var f=0,s=0;if(keys.KeyW||keys.ArrowUp)f+=1;if(keys.KeyS||keys.ArrowDown)f-=1;if(keys.KeyD||keys.ArrowRight)s+=1;if(keys.KeyA||keys.ArrowLeft)s-=1;f+=-joy.y;s+=joy.x;
+      var f=0,s=0;if(keys.KeyW||keys.ArrowUp)f+=1;if(keys.KeyS||keys.ArrowDown)f-=1;if(keys.KeyD||keys.ArrowRight)s+=1;if(keys.KeyA||keys.ArrowLeft)s-=1;loopPadRead(dt);f+=-joy.y-loopPad.y;s+=joy.x+loopPad.x;
       var fl=Math.hypot(f,s);if(fl>1){f/=fl;s/=fl}
-      sprint=!!(keys.ShiftLeft||keys.ShiftRight)||Math.hypot(joy.x,joy.y)>.97;
+      sprint=!!(keys.ShiftLeft||keys.ShiftRight||loopPad.run)||Math.hypot(joy.x,joy.y)>.97;
       var spd=3.1*S.speed*(sprint?1.7:1),sy=Math.sin(P.yaw),cy=Math.cos(P.yaw),tx=(-sy*f+cy*s)*spd,tz=(-cy*f-sy*s)*spd;
       if(auto){if(fl>.05)auto=null;else{var dx=auto.x-P.x,dz=auto.z-P.z,dd=Math.hypot(dx,dz),as=3.1*S.speed*Math.min(1,dd/1.2+.25);if(dd<.3)auto=null;else{tx=dx/dd*as;tz=dz/dd*as;var want=Math.atan2(-dx,-dz),diff=((want-P.yaw+Math.PI*3)%(Math.PI*2))-Math.PI;if(auto.turn!==false&&dd>.8)P.yaw+=diff*Math.min(1,dt*2.6)}}}
       moving=fl>.05||!!auto;
-      var a=1-Math.exp(-dt*(moving?8:11));P.vx+=(tx-P.vx)*a;P.vz+=(tz-P.vz)*a;
+      /* accelerate gently, brake a little firmer; turning keeps momentum instead of snapping */
+      var tl=Math.hypot(tx,tz),cl=Math.hypot(P.vx,P.vz),rate=!moving?9.5:(tl>cl+.05?6.2:8.5),a=1-Math.exp(-dt*rate);P.vx+=(tx-P.vx)*a;P.vz+=(tz-P.vz)*a;
       if(Math.abs(P.vx)<1e-3&&Math.abs(P.vz)<1e-3&&!moving){P.vx=P.vz=0}
       var dist=Math.hypot(P.vx,P.vz)*dt,n=Math.max(1,Math.ceil(dist/.12)),hit=false;
       for(var k=0;k<n;k++){P.x+=P.vx*dt/n;P.z+=P.vz*dt/n;if(collide())hit=true}
       if(auto){if(hit&&Math.hypot(P.vx,P.vz)<.5)autoStuck+=dt;else autoStuck=0;if(autoStuck>.4){auto=null;autoStuck=0}}
       /* walking bob */
-      var sp=Math.hypot(P.vx,P.vz),bw=(S.reduced||S.bob===false)?0:Math.min(1,sp/3.1);bobAmp+=(bw-bobAmp)*Math.min(1,dt*5);bobPh+=dt*sp*4.2;
+      var sp=Math.hypot(P.vx,P.vz),bw=(S.reduced||S.bob===false)?0:Math.min(1,sp/3.1);bobAmp+=(bw-bobAmp)*Math.min(1,dt*5);
+      /* stride lengthens with speed (~2.6 steps/s walking, ~3.3 sprinting); one footfall per half cycle */
+      var oPh=bobPh;bobPh+=dt*sp*Math.PI/(.62+.14*sp);if(sp>.4&&Math.floor(oPh/Math.PI)!==Math.floor(bobPh/Math.PI)){loopSteps++;if(HOOKS.footstep)HOOKS.footstep.forEach(function(fn){fn(sp,curRoom)})}
+      /* lean a touch into strafes, from velocity in camera space */
+      var lat=(Math.cos(P.yaw)*P.vx-Math.sin(P.yaw)*P.vz)/3.1;loopRoll+=((S.reduced?0:-lat*.006)-loopRoll)*Math.min(1,dt*4);
       camY+=(EYE-camY)*Math.min(1,dt*3);
-    }else{bobAmp*=.9;look.x=look.y=0}
+    }else{bobAmp*=.9;loopRoll*=.9;look.x=look.y=0}
     if(Math.hypot(P.x,P.z)<9||(mode==='anim'&&P.z<12))doorT=Math.min(1,doorT+raw*.9);
     doorL.position.x=-1.5-2.95*ease(doorT);doorR.position.x=1.5+2.95*ease(doorT);doorCol.off=doorT>.55;
-    var by=bobAmp*.026*Math.cos(bobPh*2),bx=bobAmp*.018*Math.sin(bobPh);
-    cam.position.set(P.x+Math.cos(P.yaw)*bx,camY+by,P.z-Math.sin(P.yaw)*bx);cam.rotation.set(P.pitch,P.yaw,bobAmp*.0035*Math.sin(bobPh));
+    var by=bobAmp*.03*(Math.abs(Math.sin(bobPh))-.64),bx=bobAmp*.018*Math.sin(bobPh);
+    cam.position.set(P.x+Math.cos(P.yaw)*bx,camY+by,P.z-Math.sin(P.yaw)*bx);cam.rotation.set(P.pitch,P.yaw,bobAmp*.0035*Math.sin(bobPh)+loopRoll);
     /* a slight widening of view when walking fast */
     var ft=baseFov+((sprint&&moving&&!S.reduced&&Math.hypot(P.vx,P.vz)>3.6)?5:0);fovNow+=(ft-fovNow)*Math.min(1,dt*4);if(Math.abs(cam.fov-fovNow)>.02){cam.fov=fovNow;cam.updateProjectionMatrix()}
     if(mode==='play')findNear();else setPrompt(null);
@@ -162,5 +174,5 @@
     if(S.reduced){teleport(0,-11,0,true);doorT=1;play();return}
     $('skiphint').hidden=false;
     camPath([[P.x,P.z,P.yaw,P.pitch,camY],[-.6,20,.05,.02,2.1],[0,8,0,0,1.75],[0,1.5,0,0,1.66],[0,-5,0,0,EYE],[0,-11,0,0,EYE]],coarse?7:8.5)}
-  function teleport(x,z,yaw,instant){var go=function(){P.x=x;P.z=z;P.yaw=yaw||0;P.pitch=0;P.vx=P.vz=0;auto=null;look.x=look.y=0;camY=EYE;if(z<0)doorT=1};if(instant||S.reduced){go();return}var f=$('fade');f.classList.add('on');setTimeout(function(){go();setTimeout(function(){f.classList.remove('on')},60)},360)}
+  function teleport(x,z,yaw,instant){var go=function(){P.x=x;P.z=z;P.yaw=yaw||0;P.pitch=0;P.vx=P.vz=0;auto=null;look.x=look.y=0;camY=(instant||S.reduced)?EYE:EYE-.12;if(z<0)doorT=1};if(instant||S.reduced){go();return}var f=$('fade');f.classList.add('on');setTimeout(function(){go();setTimeout(function(){f.classList.remove('on')},60)},360)}
   function travel(id){var s=SPAWN[id];if(!s)return;closeOv();teleport(s[0],s[1],s[2]);if(mode!=='play')play()}

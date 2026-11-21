@@ -34,6 +34,7 @@
       pl.position.set(x,.49,pz+.632);scene.add(pl);
       floorGlow(x,pz,3.2,3.2,0xfff0dc,.15);floorGlow(x,pz,2,2,0x6e42a3,.14);
       var pin=new T.Mesh(new T.CircleGeometry(.14,16),MAT.lamp);pin.rotation.x=Math.PI/2;pin.position.set(x,Sh.h-.02,pz-.2);scene.add(pin);
+      shopVitrine(x,pz,Sh.h);
       col(x-.68,x+.68,pz-.68,pz+.68);
       addInter(x,pz+.66,'pz',3.4,'View','View edition · '+c.title,function(){openProduct(c)});
     });
@@ -68,6 +69,8 @@
     ledges.forEach(function(y,r){for(var i=0;i<6;i++){var c=CH[(i+r)%CH.length],l=(i+r)%2===1,key=c.slug+(l?'L':'D');
       (fo[key]=fo[key]||{c:c,l:l,p:[]}).p.push({g:new T.PlaneGeometry(.5,.65),x:ex-.08,y:y+.36,z:sz1+.15+sl*(i+.5)/6,ry:-Math.PI/2,rx:0})}});
     Object.keys(fo).forEach(function(k){libMerge(fo[k].p.map(function(p){p.g.rotateX(-.08);return p}),new T.MeshBasicMaterial({map:coverTex(fo[k].c,fo[k].l)}))});
+    var ul=[];ledges.forEach(function(y){libB(ul,.02,.012,sl+.2,ex-.2,y-.026,sc)});libMerge(ul,MAT.warm);
+    ledges.forEach(function(y){var g=spot(sl*1.05,.75,.32);place(g,ex+.005,y-.38,sc,'nx')});
     var ew=spot(sl*1.1,4.2,.4);place(ew,ex+.02,2.2,sc,'nx');
     col(ex-.3,Sh.x2,sz1-.2,sz0+.2);
     libPlaque(Sh,'e',-55.6,2.6,2.6,1.3,'PRINT EDITIONS','Every Chapter Matters.','About 24 pages · limited first run');
@@ -89,4 +92,20 @@
 
     /* one soft, even fill for the room */
     var shl=new T.PointLight(0xfff0dc,.8,22,2);shl.position.set(cx,5,-47.5);scene.add(shl);
+  }
+
+  /* product display: a downlight cone onto each plinth (additive shader, no real light), brass rim; glass vitrine on medium/high */
+  var shopConeMat=null;
+  function shopVitrine(x,z,ch){
+    if(!shopConeMat)shopConeMat=new T.ShaderMaterial({transparent:true,depthWrite:false,blending:T.AdditiveBlending,side:T.DoubleSide,
+      vertexShader:'varying float vY;varying vec3 vN;varying vec3 vV;void main(){vY=uv.y;vec4 w=modelViewMatrix*vec4(position,1.);vN=normalize(normalMatrix*normal);vV=normalize(-w.xyz);gl_Position=projectionMatrix*w;}',
+      fragmentShader:'varying float vY;varying vec3 vN;varying vec3 vV;void main(){float f=pow(abs(dot(vN,vV)),1.5);float a=.05*f*smoothstep(0.,.35,vY)*(.35+.65*vY);gl_FragColor=vec4(vec3(1.,.93,.82)*a,1.);}'});
+    var top=ch-.05,bot=1.0,hgt=top-bot;
+    var cone=new T.Mesh(new T.CylinderGeometry(.08,.78,hgt,24,1,true),shopConeMat);cone.position.set(x,bot+hgt/2,z-.1);scene.add(cone);
+    var rim=[];libB(rim,1.27,.02,.02,x,.985,z+.63);libB(rim,1.27,.02,.02,x,.985,z-.63);libB(rim,.02,.02,1.27,x+.63,.985,z);libB(rim,.02,.02,1.27,x-.63,.985,z);libMerge(rim,libMats().brass);
+    var pool=glow(1.4,1.4,0xfff1dc,.25);pool.rotation.x=-Math.PI/2;pool.position.set(x,.995,z);scene.add(pool);
+    if(!(S.quality==='medium'||S.quality==='high'))return;
+    var gm=new T.MeshStandardMaterial({color:0xdfe6ee,roughness:.05,metalness:.1,transparent:true,opacity:.1,depthWrite:false});
+    var gl=new T.Mesh(new T.BoxGeometry(1.1,1.3,1.1),gm);gl.position.set(x,1.65,z-.05);gl.renderOrder=3;scene.add(gl);
+    var ed=new T.LineSegments(new T.EdgesGeometry(gl.geometry),new T.LineBasicMaterial({color:0xcfc6b4,transparent:true,opacity:.35}));ed.position.copy(gl.position);scene.add(ed);
   }

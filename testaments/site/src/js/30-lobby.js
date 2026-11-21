@@ -20,6 +20,20 @@
     var rbo=new T.Mesh(new T.CylinderGeometry(RO+.6,RO+.6,BD,64,1,true),A.beam);rbo.position.set(OX,H-BD/2,OZ);scene.add(rbo);
     var ring=new T.Mesh(new T.RingGeometry(RO+.02,RO+.09,64),MAT.lamp);ring.rotation.x=Math.PI/2;ring.position.set(OX,H-BD-.01,OZ);scene.add(ring);
     var shaft=new T.Mesh(new T.CylinderGeometry(RO-.1,RO+.9,H-BD,48,1,true),new T.MeshBasicMaterial({color:0x9fb0d0,transparent:true,opacity:.025,blending:T.AdditiveBlending,depthWrite:false,side:T.DoubleSide}));shaft.position.set(OX,(H-BD)/2,OZ);scene.add(shaft);
+    /* volumetric skylight: soft slanted god-ray blades falling from the oculus onto the monument, dust motes on desktop */
+    var lobQ=S.quality==='auto'?(coarse?'low':'medium'):S.quality,lobHi=lobQ!=='low';
+    var rayT=ctex(64,256,function(c,W,Hh){var g=c.createLinearGradient(0,0,0,Hh);g.addColorStop(0,'rgba(255,255,255,.95)');g.addColorStop(.35,'rgba(255,255,255,.45)');g.addColorStop(1,'rgba(255,255,255,0)');c.fillStyle=g;c.fillRect(0,0,W,Hh);
+      c.globalCompositeOperation='destination-in';var h=c.createLinearGradient(0,0,W,0);h.addColorStop(0,'rgba(0,0,0,0)');h.addColorStop(.5,'rgba(0,0,0,1)');h.addColorStop(1,'rgba(0,0,0,0)');c.fillStyle=h;c.fillRect(0,0,W,Hh)});
+    var rayM=new T.MeshBasicMaterial({map:rayT,color:0xb8c6e6,transparent:true,opacity:lobHi?.085:.06,blending:T.AdditiveBlending,depthWrite:false,side:T.DoubleSide});
+    var rays=new T.Group(),nRay=lobHi?9:4,rr=archRng(21),RH=H-BD;
+    for(var q=0;q<nRay;q++){var wq=1.4+rr()*2.2,pl=new T.Mesh(new T.PlaneGeometry(wq,RH*1.08),rayM);
+      pl.position.set((rr()-.5)*RO*1.1,RH/2,(rr()-.5)*RO*.8);pl.rotation.set(0,q/nRay*Math.PI+rr()*.3,0);pl.rotateX(-.13);rays.add(pl)}
+    rays.position.set(OX,0,OZ+.8);scene.add(rays);
+    glowB.quad(7.5,7.5,OX,.025,OZ+1.6,-Math.PI/2,0,archCol(0xc4d0ee,.32));
+    if(lobHi){var dn=260,dp=new Float32Array(dn*3),dr=archRng(33);for(var d0=0;d0<dn;d0++){var da=dr()*Math.PI*2,rd=Math.sqrt(dr())*RO;dp[d0*3]=OX+Math.cos(da)*rd;dp[d0*3+1]=.4+dr()*(RH-.6);dp[d0*3+2]=OZ+1+Math.sin(da)*rd}
+      var dg=new T.BufferGeometry();dg.setAttribute('position',new T.BufferAttribute(dp,3));
+      var dust=new T.Points(dg,new T.PointsMaterial({color:0xdfe6ff,size:.035,transparent:true,opacity:.55,blending:T.AdditiveBlending,depthWrite:false,map:GLOW}));scene.add(dust);
+      HOOKS.frame.push(function(dt){if(S.reduced||!curRoom||curRoom.id!=='lobby')return;dust.rotation.y+=dt*.012;rayM.opacity=.085+Math.sin(clock.elapsedTime*.25)*.012})}
     var sl=new T.PointLight(0xc9d4f0,1.3,26,2);sl.position.set(OX,8.5,OZ);scene.add(sl);
     glowB.quad(12,12,OX,.02,OZ,-Math.PI/2,0,archCol(0x9fb0d0,.22));
 
@@ -81,6 +95,11 @@
         c.fillStyle='rgba(0,0,0,.75)';sp(c,w,W/2-3,y-3,gap);c.fillStyle='rgba(255,255,255,.22)';sp(c,w,W/2+2,y+2,gap);c.fillStyle='#ece8e0';sp(c,w,W/2,y,gap)})},500);
     eng.position.set(0,PY+3.35,MZ+.6*(1-(3.35/5.2)*.08)+.012);scene.add(eng);
     var ml=new T.PointLight(0x7d4fc4,.8,12,2);ml.position.set(0,.6,MZ+6);scene.add(ml);
+    /* key light from the oculus grazing the carved face; a bronze reveal and light line under the plinth */
+    if(lobHi){var key=new T.SpotLight(0xe8ecff,1.6,16,.42,.6,1.5);key.position.set(0,H-1,MZ+4.5);key.target.position.set(0,PY+2.6,MZ);scene.add(key,key.target)}
+    else spotB.quad(2.8,6,0,PY+2.8,MZ+.64,0,0,archCol(0xdfe6ff,.1),Math.PI);
+    bronzeB.bx(-1.62,1.62,PY-.03,PY,MZ+1.05,MZ+1.07);lampB.bx(-1.9,1.9,.25,.27,MZ+1.33,MZ+1.36);
+    glowB.quad(4.4,1.2,0,.03,MZ+1.9,-Math.PI/2,0,archCol(WARM,.18));
     spotB.quad(2.3,5,0,PY+2.5,MZ+.63,0,0,archCol(PUR,.12),Math.PI);
     glowB.quad(5.5,3.4,0,.02,MZ+1.6,-Math.PI/2,0,archCol(0x7a4cc0,.26));
     /* the tagline, cut small beneath a bronze rule */

@@ -55,17 +55,21 @@
     var scr=new T.Mesh(new T.PlaneGeometry(sw,sh),new T.MeshBasicMaterial(vt?{map:vt,toneMapped:false}:{color:0x222222}));scr.position.set(cx,sy,sz);scene.add(scr);
     var halo=glow(sw*1.7,sh*1.9,0x9fa6c8,.12);halo.position.set(cx,sy,sz-.04);scene.add(halo);
     floorGlow(cx,-55.5,10,4,0xb9c0dc,.16);
+    libScreenFx(cx,sy,sz,sw,sh,rows,rw);
     addInter(cx,-57.7,'pz',13,'Watch','Watch the TESTAMENTS film',function(){openFilm()});
 
     /* --- stepped rows: three upholstered benches on rising risers (one solid block for collision) --- */
-    var fab=[],base=[],riser=[],rows=[{z:-52.6,y:0},{z:-50.4,y:.2},{z:-48.2,y:.4}],rw=8.2;
+    var fab=[],base=[],arm=[],riser=[],rows=[{z:-52.6,y:0},{z:-50.4,y:.2},{z:-48.2,y:.4}],rw=8.2;
     rows.forEach(function(r){
       if(r.y)libB(riser,rw+.2,r.y,2.1,cx,r.y/2,r.z+.05);
       libB(base,rw-.3,.34,.46,cx,r.y+.17,r.z+.02);
-      libB(fab,rw,.16,.62,cx,r.y+.42,r.z);
-      libB(fab,rw,.52,.14,cx,r.y+.74,r.z+.3,0,-.12);
+      var ns=8,pw=rw/ns;
+      for(var k=0;k<ns;k++){var sx=cx-rw/2+pw*(k+.5);
+        libB(fab,pw-.1,.15,.6,sx,r.y+.43,r.z-.02);libB(fab,pw-.1,.06,.5,sx,r.y+.52,r.z-.04);
+        libB(fab,pw-.08,.62,.13,sx,r.y+.8,r.z+.3,0,-.14);}
+      for(var k2=0;k2<=ns;k2++){var ax=cx-rw/2+pw*k2;libB(arm,.07,.05,.56,ax,r.y+.66,r.z+.02);libB(base,.06,.3,.5,ax,r.y+.5,r.z+.02)}
     });
-    libMerge(fab,M.fabric);libMerge(base,M.dark);if(riser.length)libMerge(riser,MAT.stone);
+    libMerge(fab,M.fabric);libMerge(base,M.dark);libMerge(arm,M.brass);if(riser.length)libMerge(riser,MAT.stone);
     col(cx-rw/2-.25,cx+rw/2+.25,-53.05,-47.05);
     /* aisle step lights on both ends of each row (emissive strips, no real lights) */
     var stepL=[];rows.forEach(function(r){[-1,1].forEach(function(s){libB(stepL,.22,.025,.05,cx+s*(rw/2+.12),r.y+.06,r.z+1.06)})});
@@ -190,4 +194,19 @@
     var bk=new T.Mesh(new T.BoxGeometry(w+.06,h+.06,.08),MAT.frame);place(bk,pos.x+NV[pos.n][0]*.055,y,pos.z+NV[pos.n][1]*.055,pos.n);
     var s=spot(w*1.5,h*2.2,.35);place(s,pos.x+NV[pos.n][0]*.006,y+h*.35,pos.z+NV[pos.n][1]*.006,pos.n);
     return m;
+  }
+
+  /* cinema set-piece: the screen's light falling on the room (fake, additive). Seat-back rim glow + ceiling bounce;
+     on medium/high one cool fill light breathes with the film. */
+  function libScreenFx(cx,sy,sz,sw,sh,rows,rw){
+    var hi=S.quality==='medium'||S.quality==='high';
+    var edge=glow(sw*1.12,sh*1.2,0xc8d0f0,.18);edge.position.set(cx,sy,sz-.03);scene.add(edge);
+    var ceil=glow(sw*1.4,6,0x9fa8d8,.07);ceil.rotation.x=Math.PI/2;ceil.position.set(cx,5.95,sz+3);scene.add(ceil);
+    var rim=[];rows.forEach(function(r){var g=glow(rw*1.05,.5,0xb6bfe6,.09);g.position.set(cx,r.y+1.08,r.z+.22);rim.push(g);scene.add(g)});
+    var stage=[];libB(stage,sw+1.2,.18,.9,cx,.09,sz+.6);libMerge(stage,libMats().dark);
+    var lip=box(sw+1.2,.012,.012,MAT.warm,cx,.19,sz+1.05);
+    floorGlow(cx,-51,9,9,0x6e42a3,.05);
+    if(!hi)return;
+    var fl=new T.PointLight(0xaab4e8,.55,14,2);fl.position.set(cx,sy,sz+3.2);scene.add(fl);
+    var t=0;if(!S.reduced)HOOKS.frame.push(function(dt){if(curRoom.id!=='library')return;t+=dt;var k=.85+.1*Math.sin(t*1.7)*Math.sin(t*.53+1)+.05*Math.sin(t*4.1);fl.intensity=.55*k;edge.material.opacity=.18*k;rim.forEach(function(g){g.material.opacity=.09*k})});
   }

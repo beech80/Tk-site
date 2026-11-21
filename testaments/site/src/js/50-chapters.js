@@ -32,14 +32,29 @@
   /* local-frame versions: w is 'u0','u1','v0','v1', a is the local coordinate along that wall */
   function exL(r,w,a){return {s:wingSide(r.wing,w),a:wingAlong(r.wing,w,a)}}
   function exSignL(r,w,a,y,W,H,fn,o){var p=exL(r,w,a);return exOnWall(r,p.s,p.a,y,W,H,fn,o)}
-  function exHangL(id,r,w,a,y,h){var p=exL(r,w,a);hang(id,r,p.s,p.a,y,h)}
+  function exHangL(id,r,w,a,y,h){var p=exL(r,w,a),ph=photo(id);hang(id,r,p.s,p.a,y,h);exDepth(r,p.s,p.a,y,h*ph.w/ph.h,h)}
+  function exQ(){return S.quality==='auto'?(coarse?'low':'medium'):S.quality}
+  /* museum presentation around a frame (w,h = image size): a cast shadow on the wall on every tier;
+     on medium/high also a deep shadow-box reveal and a brass picture light with its warm cone */
+  var EX_SH=null,EX_BRASS=null;
+  function exShadowTex(){if(!EX_SH)EX_SH=ctex(128,128,function(x,W,H){var g=x.createRadialGradient(W/2,H/2,W*.18,W/2,H/2,W*.5);g.addColorStop(0,'rgba(0,0,0,1)');g.addColorStop(1,'rgba(0,0,0,0)');x.fillStyle=g;x.fillRect(0,0,W,H)});return EX_SH}
+  function exDepth(r,side,along,y,w,h){var pos=onWall(r,side,along),g=new T.Group(),hi=exQ()!=='low';
+    var sh=new T.Mesh(new T.PlaneGeometry(w+.6,h+.7),new T.MeshBasicMaterial({map:exShadowTex(),transparent:true,opacity:r.white?.28:.6,depthWrite:false}));sh.position.set(.05,-.09,.004);g.add(sh);
+    if(hi){if(!EX_BRASS)EX_BRASS=new T.MeshStandardMaterial({color:0x8a7148,metalness:.85,roughness:.32,emissive:0x2a1d0c});
+      var bw=Math.min(w*.55,1.1),bar=new T.Mesh(new T.CylinderGeometry(.035,.035,bw,10),EX_BRASS);bar.rotation.z=Math.PI/2;bar.position.set(0,h/2+.2,.26);g.add(bar);
+      var arm=new T.Mesh(new T.BoxGeometry(.03,.03,.24),EX_BRASS);arm.position.set(0,h/2+.2,.13);g.add(arm);
+      var lip=new T.Mesh(new T.BoxGeometry(bw*.92,.012,.05),new T.MeshBasicMaterial({color:0xfff0d2}));lip.position.set(0,h/2+.17,.27);g.add(lip);
+      var cone=glow(w*1.3,h*.9,0xffe2b8,r.white?.12:.22);cone.position.set(0,h*.3,.07);g.add(cone);
+      /* shadow-box reveal: thin dark sides give the frame real thickness at grazing angles */
+      var dm=new T.MeshBasicMaterial({color:0x050505});[[-1,0],[1,0]].forEach(function(d){var s=new T.Mesh(new T.BoxGeometry(.02,h+.14,.09),dm);s.position.set(d[0]*(w/2+.08),0,.045);g.add(s)})}
+    place(g,pos.x,y,pos.z,pos.n);return g}
   function exPlateL(r,w,a,y,W,H,c){var p=exL(r,w,a),pos=onWall(r,p.s,p.a),g=new T.Group();
     /* a designed 'on release' plate: large, legible type in place of the photograph */
     var fr=new T.Mesh(new T.BoxGeometry(W+.14,H+.14,.06),MAT.frame);fr.position.z=.03;g.add(fr);
     var t=exSign(W,H,function(x,Wd,Hd){exBg(x,Wd,Hd,'#0d0d0e');var m=Math.min(Wd,Hd);x.strokeStyle='rgba(255,255,255,.16)';x.lineWidth=Math.max(2,m*.006);x.strokeRect(m*.06,m*.06,Wd-m*.12,Hd-m*.12);
       exK(x,'Chapter '+c.num,Wd/2,Hd*.36,m*.055,EX.vio,'center');exT(x,c.title,Wd/2,Hd*.52,m*.13,null,'center');
       exRule(x,Wd/2-m*.05,Hd*.58,m*.1,Math.max(2,m*.006),'#6b6760');exK(x,'Plate · on release',Wd/2,Hd*.68,m*.05,'#cfcac1','center')},Math.min(exPPM(),200));
-    t.position.z=.065;g.add(t);var sl=spot(W*2.2,H*2.3,.45);sl.position.set(0,H*.4,.008);g.add(sl);place(g,pos.x,y,pos.z,pos.n);
+    t.position.z=.065;g.add(t);var sl=spot(W*2.2,H*2.3,.45);sl.position.set(0,H*.4,.008);g.add(sl);place(g,pos.x,y,pos.z,pos.n);exDepth(r,p.s,p.a,y,W,H);
     addInter(pos.x,pos.z,pos.n,3.6,'View','Plate · on release',function(){toast('Photographs for '+c.title+' will hang here when the chapter is published.')},{y:y,w:W+.14,h:H+.14})}
   /* a box sized in the local frame (df along f, dl along l); solid adds a collider */
   function exBox(r,df,h,dl,mat,u,y,v,solid){var W=r.wing,p=wingPt(W,u,v),sx=Math.abs(W.f[0])*df+Math.abs(W.l[0])*dl,sz=Math.abs(W.f[1])*df+Math.abs(W.l[1])*dl;
@@ -60,8 +75,21 @@
     var tone=exTone(c);
     ({intro:exIntro,gallery:exGallery,story:exStory,film:exFilm,magazine:exMagazine})[r.part](r,c,tone);
     /* the wing's light temperature: a soft tinted pool in every room */
+    exMood(r,tone);
     var m=wingPt(r.wing,(r.lu[0]+r.lu[1])/2,(r.lv[0]+r.lv[1])/2);floorGlow(m.x,m.z,(r.x2-r.x1)*.8,(r.z1-r.z2)*.8,tone.light,r.part==='film'?.03:.08);
   }
+
+  /* title wall: the panel stands proud of the wall on a shadow, with a grazing wash from a ceiling slot */
+  function exTitleLight(r,tp,w,h,y,tone){var g=new T.Group();
+    var sh=new T.Mesh(new T.PlaneGeometry(w+.9,h+.9),new T.MeshBasicMaterial({map:exShadowTex(),transparent:true,opacity:.7,depthWrite:false}));sh.position.set(.06,-.12,.012);g.add(sh);
+    var wash=spot(w*1.5,h*1.9,.32,tone.light);wash.position.set(0,h*.35,.02);g.add(wash);
+    if(exQ()!=='low'){var slot=new T.Mesh(new T.BoxGeometry(w*.9,.02,.08),new T.MeshBasicMaterial({color:tone.light}));slot.position.set(0,r.h-y-.01,.5);g.add(slot);
+      var gr=glow(w*1.2,1.4,tone.light,.18);gr.position.set(0,r.h-y-.6,.03);g.add(gr)}
+    place(g,tp.x,y,tp.z,tp.n)}
+  /* chapter mood: a coloured cove line at the ceiling and a low skirting glow along the long walls */
+  function exMood(r,tone){if(r.part==='film')return;var W=r.wing,a=r.lu[0]+.6,b=r.lu[1]-.6,len=b-a,hi=exQ()!=='low';
+    ['v0','v1'].forEach(function(w){var vv=w==='v0'?r.lv[0]:r.lv[1],p=wingPt(W,(a+b)/2,vv),n=wingN(W,w),m=new T.Mesh(new T.PlaneGeometry(len,hi?1.6:1.1),new T.MeshBasicMaterial({map:GLOW,color:tone.light,transparent:true,opacity:hi?.07:.05,blending:T.AdditiveBlending,depthWrite:false}));
+      m.position.set(p.x-n[0]*.2,r.h-.35,p.z-n[1]*.2);m.rotation.y=Math.atan2(-n[0],-n[1]);scene.add(m)})}
 
   /* A · introduction */
   function exIntro(r,c,tone){
@@ -75,7 +103,7 @@
       else exI(x,'Introduction on release.',L,H*.76,H*.05,'#cdc8bf');
       exK(x,(STATUS[c.status]||'')+(c.release?'  ·  '+c.release:''),L,H*.9,H*.034,EX.vio)},
       {act:function(){openChapter(c)},verb:'Explore',label:'Chapter '+c.num+' · '+c.title,r:9,tint:tone.light});
-    var t=exL(r,'u1',-2.4),tp=onWall(r,t.s,t.a);floorGlow(tp.x+NV[tp.n][0]*1.1,tp.z+NV[tp.n][1]*1.1,r.wing.f[0]?2.2:6.4,r.wing.f[0]?6.4:2.2,0x6e42a3,.4);
+    var t=exL(r,'u1',-2.4),tp=onWall(r,t.s,t.a);exTitleLight(r,tp,6.4,4.2,3.1,tone);floorGlow(tp.x+NV[tp.n][0]*1.1,tp.z+NV[tp.n][1]*1.1,r.wing.f[0]?2.2:6.4,r.wing.f[0]?6.4:2.2,0x6e42a3,.4);
     /* hero image: the first assigned photograph, or a designed plate */
     var mine=PHOTOS.filter(function(p){return p.chapter===c.slug});
     if(mine[0])exHangL(mine[0].id,r,'v0',5,2.6,mine[0].h>mine[0].w?3.3:2.6);else exPlateL(r,'v0',5,2.6,3.8,2.6,c);

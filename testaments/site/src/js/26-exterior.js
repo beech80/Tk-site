@@ -175,13 +175,43 @@
     col(-PW-1,-PW,-1,34);col(PW,PW+1,-1,34);col(-PW-1,PW+1,33.5,34.5);
 
     var stM=stone.mesh(A.clad);refl.push(stM);pave.mesh(A.pave);dark.mesh(A.dark);var brM=bronze.mesh(A.bronze);var lmM=lamp.mesh(MAT.lamp);refl.push(lmM);
-    glowB.mesh(A.glowV);var spM=spotB.mesh(A.spotV);
+    var spM=spotB.mesh(A.spotV);
 
     /* ----- the mirrored world seen through the pools (planar reflection by geometry) ----- */
     var lowQ=(S.quality==='auto'?(coarse?'low':'medium'):S.quality)==='low';
     if(lowQ)A.water.opacity=.85;else{var mg=new T.Group();mg.scale.y=-1;mg.position.y=2*WY;refl.forEach(function(o){mg.add(o.clone())});mg.add(halo.clone());scene.add(mg)}
 
-    /* ----- night sky ----- */
-    var sg=new T.BufferGeometry(),pts=[];for(var i=0;i<600;i++){var a=rn()*Math.PI*2,rr=70+rn()*60;pts.push(Math.cos(a)*rr,25+rn()*60,Math.sin(a)*rr-20)}
-    sg.setAttribute('position',new T.Float32BufferAttribute(pts,3));scene.add(new T.Points(sg,new T.PointsMaterial({color:0x8d8aa0,size:.25,fog:false})));
+    /* ----- night sky: stars with varied size/brightness, a faint milky band, slow twinkle ----- */
+    var hiQ=!lowQ,NS=lowQ?500:1400,sp3=[],sa=[],sz=[];
+    for(var i=0;i<NS;i++){var band=i<NS*.35,a=rn()*Math.PI*2,el;
+      if(band){var u=rn()*Math.PI*2;a=u;el=.35+.3*Math.sin(u*1+.8)+(rn()-.5)*.18}else el=.06+Math.pow(rn(),.8)*1.45;
+      var r=120,ce=Math.cos(el);sp3.push(Math.cos(a)*ce*r,Math.sin(el)*r,Math.sin(a)*ce*r);
+      var m=Math.pow(rn(),3.2);sa.push(rn());sz.push(m)}
+    var sg=new T.BufferGeometry();sg.setAttribute('position',new T.Float32BufferAttribute(sp3,3));sg.setAttribute('aSeed',new T.Float32BufferAttribute(sa,1));sg.setAttribute('aMag',new T.Float32BufferAttribute(sz,1));
+    var stm=new T.ShaderMaterial({transparent:true,depthWrite:false,blending:T.AdditiveBlending,fog:false,uniforms:{uT:{value:0},uPx:{value:1}},
+      vertexShader:'attribute float aSeed;attribute float aMag;uniform float uT;uniform float uPx;varying float vA;varying vec3 vC;void main(){vec4 mv=modelViewMatrix*vec4(position+cameraPosition,1.0);gl_Position=projectionMatrix*mv;gl_Position.z=gl_Position.w*.9999;\nfloat tw=.75+.25*sin(uT*(1.3+aSeed*2.7)+aSeed*40.0);float h=normalize(position).y;\nvA=(.18+.82*aMag)*tw*smoothstep(.02,.22,h);vC=mix(vec3(.75,.8,1.0),vec3(1.0,.9,.78),fract(aSeed*13.7));\ngl_PointSize=max(1.0,(1.0+aMag*2.6)*uPx);}',
+      fragmentShader:'varying float vA;varying vec3 vC;void main(){vec2 d=gl_PointCoord-.5;float a=smoothstep(.5,.0,length(d));gl_FragColor=vec4(vC*vA*a*.9,1.0);}'});
+    var stars=new T.Points(sg,stm);stars.frustumCulled=false;stars.renderOrder=999;scene.add(stars);
+
+    /* ----- atmosphere (medium/high): low ground mist bands and a warm halo hanging over the forecourt ----- */
+    if(hiQ){var mist=new ArchB(),mc=archCol(0x6f6a86,.08);
+      [[0,40,140,10],[0,58,170,14],[-55,0,12,120],[55,0,12,120]].forEach(function(m,i){var vert=i>1;
+        if(vert)mist.quad(m[3],6,m[0],2.2,m[1],0,Math.PI/2,mc);else mist.quad(m[2],6,m[0],2.2,m[1],0,0,mc)});
+      mist.mesh(A.washV).renderOrder=2;
+      var hz=glow(36,10,0xffd9b0,.07);hz.position.set(0,4,FZ+6);scene.add(hz)}
+    /* entrance light spilling onto the paving, and a brighter threshold */
+    glowB.quad(9,11,0,.105,6,-Math.PI/2,0,archCol(WARM,lowQ?.18:.26));
+    var gb2=glowB.mesh(A.glowV);
+
+    /* ----- water: drifting light ripples over the pools (medium/high) ----- */
+    var wMats=[];
+    if(hiQ)pools.forEach(function(p){var wm=new T.ShaderMaterial({transparent:true,depthWrite:false,blending:T.AdditiveBlending,uniforms:{uT:{value:0}},
+      vertexShader:'varying vec2 vW;void main(){vec4 w=modelMatrix*vec4(position,1.0);vW=w.xz;gl_Position=projectionMatrix*viewMatrix*w;}',
+      fragmentShader:'uniform float uT;varying vec2 vW;void main(){float r=sin(vW.x*2.3+uT*.6+sin(vW.y*1.7+uT*.4)*1.6)*sin(vW.y*3.1-uT*.5+sin(vW.x*1.1)*1.2);\nfloat n=smoothstep(.55,1.0,r);float toward=smoothstep(29.0,13.0,vW.y);\nvec3 c=mix(vec3(.55,.42,.75),vec3(1.0,.86,.66),toward)*n*.05;gl_FragColor=vec4(c,1.0);}'});
+      var wr=new T.Mesh(new T.PlaneGeometry(p[1]-p[0],p[3]-p[2]),wm);wr.rotation.x=-Math.PI/2;wr.position.set((p[0]+p[1])/2,WY+.003,(p[2]+p[3])/2);wr.renderOrder=2;scene.add(wr);wMats.push(wm)});
+
+    var extT=0;
+    HOOKS.frame.push(function(dt,raw){if(cam.position.z<-2)return;if(!S.reduced)extT+=raw;
+      stm.uniforms.uT.value=extT;stm.uniforms.uPx.value=Math.max(1,R.domElement.height/900);
+      for(var i=0;i<wMats.length;i++)wMats[i].uniforms.uT.value=extT});
   }
