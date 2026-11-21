@@ -77,7 +77,7 @@
       exRule(x,L,H*.72,H*.08,H*.01);exK(x,'Five stages  ·  01 – 05',L,H*.86,H*.045,EX.vio)},{act:function(){openProcess(-1)},label:'How a chapter is made',r:9});
     /* room light: foot shadow, cove, title wash, and a purple inlaid route linking 01 to 05 */
     apDress(Pr,0xffe9d0,.12,['n','s','e']);apWash(Pr,'e',-13,3.6,14,6,.4);
-    var rmat=new T.MeshBasicMaterial({color:0x7a4fb8});[[22.6,35.4,-15.9],[25.6,35.4,-10.1]].forEach(function(l){var m=new T.Mesh(new T.BoxGeometry(l[1]-l[0],.006,.04),rmat);m.position.set((l[0]+l[1])/2,.016,l[2]);scene.add(m)});
+    var rmat=new T.MeshBasicMaterial({color:0x4e3478});[[22.6,35.4,-15.9],[25.6,35.4,-10.1]].forEach(function(l){var m=new T.Mesh(new T.BoxGeometry(l[1]-l[0],.006,.04),rmat);m.position.set((l[0]+l[1])/2,.016,l[2]);scene.add(m)});
     var rv=new T.Mesh(new T.BoxGeometry(.04,.006,5.8),rmat);rv.position.set(35.4,.016,-13);scene.add(rv);
     box(3,.46,.7,MAT.bench,29,.23,-13);col(27.5,30.5,-13.4,-12.6);
   }

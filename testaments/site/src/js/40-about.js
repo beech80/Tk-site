@@ -62,7 +62,7 @@
     var rug=exSign(6,3.2,function(c,W,H){c.fillStyle='#2a2826';c.fillRect(0,0,W,H);c.strokeStyle='#4a4641';c.lineWidth=W*.006;c.strokeRect(W*.03,H*.06,W*.94,H*.88);
       for(var k=0;k<900;k++){c.fillStyle='rgba(255,255,255,'+(Math.random()*.03)+')';c.fillRect(Math.random()*W,Math.random()*H,2,2)}},120);
     rug.rotation.x=-Math.PI/2;rug.position.set(-29,.012,-13);scene.add(rug);
-    apBeam(-29,-13,A.h,.18,1.6,0xfff1dc,.05);apBeam(-37.2,-13,A.h,.12,1.1,0xfff1dc,.035);
+    apBeam(-29,-13,A.h,.18,1.9,0xfff1dc,.025);
     box(3,.46,.7,MAT.bench,-29,.23,-13);col(-30.5,-27.5,-13.4,-12.6);
     var al=apHi()&&new T.PointLight(0xfff4e6,0.8,20,2);if(al){al.position.set(-29,5.2,-13);scene.add(al)}
   }
