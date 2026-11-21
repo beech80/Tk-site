@@ -1,6 +1,6 @@
   /* ---------- photo viewer ---------- */
   var lb=$('lb'),lbi=0,lbSet=PHOTOS;
-  function showLB(){var p=lbSet[lbi];$('lbImg').src=src(p.id);$('lbImg').alt=p.alt;$('lbImg').classList.remove('z');$('lbCap').textContent=p.alt;$('lbCount').textContent='Pl. '+(PHOTOS.indexOf(p)+1)+'  ·  '+(lbi+1)+' / '+lbSet.length}
+  function showLB(){var p=lbSet[lbi];$('lbImg').src=src(p.id);$('lbImg').alt=p.alt;var im=$('lbImg');im.classList.remove('z','sw');void im.offsetWidth;im.classList.add('sw');$('lbCap').textContent=p.alt;$('lbCount').textContent='Pl. '+(PHOTOS.indexOf(p)+1)+'  ·  '+(lbi+1)+' / '+lbSet.length}
   function openPhoto(id,set){pauseFor();lbSet=set||PHOTOS;lbi=Math.max(0,lbSet.findIndex(function(p){return p.id===id}));showLB();lb.hidden=false;$('lbClose').focus()}
   $('lbClose').addEventListener('click',function(){lb.hidden=true});
   $('lbPrev').addEventListener('click',function(){lbi=(lbi-1+lbSet.length)%lbSet.length;showLB()});$('lbNext').addEventListener('click',function(){lbi=(lbi+1)%lbSet.length;showLB()});

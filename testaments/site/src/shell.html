@@ -346,7 +346,7 @@ kbd{display:inline-grid;place-items:center;min-width:22px;height:22px;padding:0 
 .keys kbd,.howto kbd{background:rgba(12,11,16,.6);border-color:rgba(255,255,255,.4);border-bottom-width:2px;border-radius:4px;letter-spacing:0}
 
 /* room title card: cinematic */
-.roomcard{gap:12px;transform:translateY(10px);transition:opacity .8s var(--ease),transform 1.1s var(--ease)}
+.roomcard{gap:12px;left:50%;right:auto;width:min(720px,100vw);margin-left:max(-360px,-50vw);padding:34px 24px;background:radial-gradient(ellipse 50% 50% at 50% 50%,rgba(0,0,0,.5),rgba(0,0,0,0));transform:translateY(10px);transition:opacity .8s var(--ease),transform 1.1s var(--ease)}
 .roomcard .k{display:flex;align-items:center;gap:14px;font-size:11px;letter-spacing:.32em}
 .roomcard .k:not(:empty)::before,.roomcard .k:not(:empty)::after{content:"";width:28px;height:1px;background:linear-gradient(90deg,transparent,var(--violet))}
 .roomcard .k:not(:empty)::after{transform:scaleX(-1)}
@@ -356,7 +356,7 @@ kbd{display:inline-grid;place-items:center;min-width:22px;height:22px;padding:0 
 .roomcard.on::after{width:64px}
 
 /* toast */
-.toast{background:rgba(12,11,16,.86);border:1px solid var(--hair);border-radius:10px;font-size:14px;padding:12px 20px;box-shadow:0 14px 40px -16px rgba(0,0,0,.9);transition:opacity .4s var(--ease),transform .5s var(--ease)}
+.toast{bottom:calc(env(safe-area-inset-bottom,0px) + 64px);background:rgba(12,11,16,.86);border:1px solid var(--hair);border-radius:10px;font-size:14px;padding:12px 20px;box-shadow:0 14px 40px -16px rgba(0,0,0,.9);transition:opacity .4s var(--ease),transform .5s var(--ease)}
 .toast::before{content:"";position:absolute;left:18px;right:18px;top:-1px;height:1px;background:linear-gradient(90deg,transparent,var(--violet),transparent)}
 
 /* skip + touch controls */
@@ -372,7 +372,7 @@ kbd{display:inline-grid;place-items:center;min-width:22px;height:22px;padding:0 
 
 /* placards: backdrop fade + card rise; exit animation */
 .ov{background:radial-gradient(ellipse at 50% 40%,rgba(20,14,30,.72),rgba(4,4,6,.9) 70%);animation:ovIn .5s var(--ease)}
-.ov.out{opacity:0;transition:opacity .22s ease}
+.ov.out{opacity:0;pointer-events:none;transition:opacity .22s ease}
 .ov.out .card{transform:translateY(8px) scale(.985);transition:transform .22s ease}
 .card{border-color:rgba(255,255,255,.09);box-shadow:0 40px 100px -30px rgba(0,0,0,.95),0 0 0 1px rgba(0,0,0,.4);animation:cardIn .7s var(--ease)}
 .card::before{content:"";position:absolute;left:0;right:0;top:-1px;height:1px;background:linear-gradient(90deg,transparent,rgba(180,155,224,.85) 30%,rgba(180,155,224,.85) 70%,transparent);pointer-events:none}
@@ -422,7 +422,6 @@ kbd{display:inline-grid;place-items:center;min-width:22px;height:22px;padding:0 
   .room{font-size:10.5px;letter-spacing:.18em}
   .chip{height:36px;padding:0 12px;font-size:10.5px;letter-spacing:.14em}
   .tbtns{gap:6px}
-  #mapSvg text.s{display:none}
 }
 @media (pointer:coarse){.chip{min-width:44px}.toast{top:calc(env(safe-area-inset-top,0px) + 176px)}}
 @media (prefers-reduced-motion:reduce){*{animation-duration:.01ms!important;animation-iteration-count:1!important}.roomcard .n{clip-path:none!important}}
