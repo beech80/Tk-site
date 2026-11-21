@@ -55,7 +55,6 @@
     var scr=new T.Mesh(new T.PlaneGeometry(sw,sh),new T.MeshBasicMaterial(vt?{map:vt,toneMapped:false}:{color:0x222222}));scr.position.set(cx,sy,sz);scene.add(scr);
     var halo=glow(sw*1.7,sh*1.9,0x9fa6c8,.12);halo.position.set(cx,sy,sz-.04);scene.add(halo);
     floorGlow(cx,-55.5,10,4,0xb9c0dc,.16);
-    libScreenFx(cx,sy,sz,sw,sh,rows,rw);
     addInter(cx,-57.7,'pz',13,'Watch','Watch the TESTAMENTS film',function(){openFilm()});
 
     /* --- stepped rows: three upholstered benches on rising risers (one solid block for collision) --- */
@@ -72,6 +71,7 @@
     libMerge(fab,M.fabric);libMerge(base,M.dark);libMerge(arm,M.brass);if(riser.length)libMerge(riser,MAT.stone);
     col(cx-rw/2-.25,cx+rw/2+.25,-53.05,-47.05);
     /* aisle step lights on both ends of each row (emissive strips, no real lights) */
+    libScreenFx(cx,sy,sz,sw,sh,rows,rw);
     var stepL=[];rows.forEach(function(r){[-1,1].forEach(function(s){libB(stepL,.22,.025,.05,cx+s*(rw/2+.12),r.y+.06,r.z+1.06)})});
     libMerge(stepL,MAT.warm);
     rows.forEach(function(r){[-1,1].forEach(function(s){var g=glow(.9,.6,0xffd9a6,.22);g.rotation.x=-Math.PI/2;g.position.set(cx+s*(rw/2+.12),r.y+.012,r.z+1.2);scene.add(g)})});

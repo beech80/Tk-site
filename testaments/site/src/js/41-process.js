@@ -65,11 +65,19 @@
         [[-.35,-.35],[.35,-.35],[-.35,.35],[.35,.35]].forEach(function(e){prMesh(g,new T.BoxGeometry(.012,.5,.012),M.steel,cx+e[0],1.25,cz+e[1])});
         prMesh(g,new T.BoxGeometry(.712,.012,.712),M.steel,cx,1.5,cz);prMesh(g,new T.BoxGeometry(.7,.006,.7),M.glass,cx,1.505,cz);
         col(cx-.45,cx+.45,cz-.45,cz+.45)}
-      scene.add(g);floorGlow(cx,cz,3.2,2.4,0xfff1dc,.16);
+      scene.add(g);floorGlow(cx,cz,3.2,2.4,0xfff1dc,.22);
+      /* stage lighting: a beam over the installation, a wash on its wall text, a numbered floor disc */
+      apBeam(cx,cz,Pr.h,.16,1.5,0xfff1dc,.06);apWash(Pr,side,at-off*1.8,2.9,4.2,4,.34);
+      var nd=exSign(.7,.7,function(c,W,H){c.fillStyle='#141313';c.beginPath();c.arc(W/2,H/2,W*.48,0,7);c.fill();c.strokeStyle='#6e42a3';c.lineWidth=W*.02;c.beginPath();c.arc(W/2,H/2,W*.44,0,7);c.stroke();exT(c,s[0],W/2,H*.62,H*.32,'#ebe7df','center')},200);
+      nd.rotation.set(-Math.PI/2,0,dir===1?0:Math.PI);nd.position.set(cx,.014,cz+dir*1.25);scene.add(nd);
       addInter(cx,cz,null,2.8,'Read',s[0]+' · '+s[1],function(){openProcess(i)},g);
     });
     exOnWall(Pr,'e',-13,3.1,10.4,3.6,function(x,W,H){exBg(x,W,H);var L=W*.07;exK(x,'The Process',L,H*.16,H*.05);
       exT(x,'BEFORE THE PAGE,',L-H*.01,H*.42,H*.135,null,'left',H*.015);exT(x,'THERE IS A CONVERSATION.',L-H*.01,H*.63,H*.135,null,'left',H*.015);
       exRule(x,L,H*.72,H*.08,H*.01);exK(x,'Five stages  ·  01 – 05',L,H*.86,H*.045,EX.vio)},{act:function(){openProcess(-1)},label:'How a chapter is made',r:9});
+    /* room light: foot shadow, cove, title wash, and a purple inlaid route linking 01 to 05 */
+    apDress(Pr,0xffe9d0,.12,['n','s','e']);apWash(Pr,'e',-13,3.6,14,6,.4);
+    var rmat=new T.MeshBasicMaterial({color:0x7a4fb8});[[22.6,35.4,-15.9],[25.6,35.4,-10.1]].forEach(function(l){var m=new T.Mesh(new T.BoxGeometry(l[1]-l[0],.006,.04),rmat);m.position.set((l[0]+l[1])/2,.016,l[2]);scene.add(m)});
+    var rv=new T.Mesh(new T.BoxGeometry(.04,.006,5.8),rmat);rv.position.set(35.4,.016,-13);scene.add(rv);
     box(3,.46,.7,MAT.bench,29,.23,-13);col(27.5,30.5,-13.4,-12.6);
   }
