@@ -10,6 +10,7 @@
 
   /* ---------- film ---------- */
   function openFilm(u){pauseFor();var v=$('filmVid');if(typeof u==='string'&&u)v.src=u;$('film').hidden=false;try{v.currentTime=0;v.play().catch(function(){})}catch(e){}$('filmClose').focus()}
+  if(window.__vertFilm){var fv=$('filmVid');fv.poster='assets/intro-vertical-poster.jpg';fv.querySelector('source').src='assets/intro-vertical.mp4';fv.load()}
   $('filmClose').addEventListener('click',function(){try{$('filmVid').pause()}catch(e){}$('film').hidden=true});
 
   /* ---------- reader ---------- */

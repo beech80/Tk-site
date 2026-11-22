@@ -430,6 +430,8 @@ kbd{display:inline-grid;place-items:center;min-width:22px;height:22px;padding:0 
 <!-- ======================= INTRO FILM ======================= -->
 <div id="gate" role="dialog" aria-modal="true" aria-label="TESTAMENTS intro film">
   <video id="gateVideo" autoplay muted loop playsinline preload="auto" poster="assets/intro-poster.jpg"><source src="assets/intro.mp4" type="video/mp4"></video>
+  <script>/* phones held upright: a vertical cut of the film (title kept whole) */
+  (function(){if(!(matchMedia('(pointer: coarse)').matches&&innerHeight>innerWidth))return;var v=document.getElementById('gateVideo');v.poster='assets/intro-vertical-poster.jpg';v.querySelector('source').src='assets/intro-vertical.mp4';v.load();window.__vertFilm=1})();</script>
   <div class="veil"></div>
   <div class="top"><span class="lbl">testaments.press</span><button class="sound lbl" id="soundBtn" type="button" aria-pressed="false">Sound off</button></div>
   <div class="gstage">
