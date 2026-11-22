@@ -46,7 +46,7 @@
   }
 
   function buildLibrary(){
-    var Lb=RM.library,M=libMats(),sv=$('screenVid'),vt=null;try{vt=new T.VideoTexture(sv);vt.encoding=T.sRGBEncoding}catch(e){}
+    var Lb=RM.library,M=libMats(),sv=$('screenVid'),vt=null;try{vt=new T.VideoTexture(sv);vt.encoding=T.sRGBEncoding;vt.minFilter=T.LinearMipmapLinearFilter;vt.magFilter=T.LinearFilter;vt.generateMipmaps=R.capabilities.isWebGL2;if(!vt.generateMipmaps)vt.minFilter=T.LinearFilter;vt.anisotropy=R.capabilities.getMaxAnisotropy()}catch(e){}
     screenTex=vt;
     var cx=-17.25,sw=9.2,sh=sw*822/1620,sy=3.25,sz=-57.7;
 
