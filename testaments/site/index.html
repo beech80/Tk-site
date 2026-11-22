@@ -442,6 +442,12 @@ kbd{display:inline-grid;place-items:center;min-width:22px;height:22px;padding:0 
 }
 @media (pointer:coarse){.chip{min-width:44px}.toast{top:calc(env(safe-area-inset-top,0px) + 176px)}}
 @media (prefers-reduced-motion:reduce){*{animation-duration:.01ms!important;animation-iteration-count:1!important}.roomcard .n{clip-path:none!important}}
+
+/* close button always on top and clear of content */
+.card .x{z-index:20;background:rgba(20,20,24,.92);color:#fff;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
+.card.light .x{background:rgba(245,243,239,.95);color:#080808}
+.card > *:not(.x){position:relative;z-index:1}
+@media (max-width:600px){.card{padding-top:74px}.card h2{margin-top:6px}.card .x{position:sticky;top:0;float:right;margin:-58px -8px 0 0}}
 </style>
 
 <!-- ======================= INTRO FILM ======================= -->
@@ -3036,6 +3042,7 @@ var STOCKISTS = [];   // confirmed partners only: {name, address}
 /* ---- 99-start.js ---- */
   window.Museum={state:function(){var r=roomAt(P.x,P.z);return {mode:mode,x:P.x,z:P.z,yaw:P.yaw,room:r.id,near:near&&near.label,ov:ovKind}},set:function(x,z,yaw){P.x=x;P.z=z;P.yaw=yaw;P.pitch=0}};
   boot();
+  window.Museum.ui=function(k,i){closeOv();({product:function(){openProduct(CH[i||0])},chapter:function(){openChapter(CH[i||0])},about:function(){openInfo("faq")},map:openMap,menu:openMenu,contact:openContact,list:openChapterList})[k]()};
 })();
 </script>
 
